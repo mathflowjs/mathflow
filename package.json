@@ -23,7 +23,7 @@
         "test:types": "tsc --noEmit --skipLibCheck",
         "test": "pnpm lint && pnpm test:types && jest --detectOpenHandles",
         "docs:dev": "vitepress dev docs",
-        "docs:build": "vitepress build docs",
+        "docs:build": "unbuild && vitepress build docs",
         "docs:preview": "vitepress preview docs",
         "prepare": "husky install",
         "release": "release-it",

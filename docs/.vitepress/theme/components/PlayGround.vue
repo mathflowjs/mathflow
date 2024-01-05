@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { evaluate } from 'https://unpkg.com/mathflow/dist/index.mjs';
+import { evaluate } from '../../../../dist/index.mjs';
 
 const code = ref('');
 const output = ref('');
