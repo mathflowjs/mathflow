@@ -1,0 +1,17 @@
+logs
+*.log*
+pnpm-debug.log*
+
+node_modules
+dist
+coverage
+
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+.eslintcache
+*.env*
+
+docs/.vitepress/dist
+docs/.vitepress/cache

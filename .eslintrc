@@ -1,0 +1,9 @@
+{
+  "extends": ["eslint-config-unjs"],
+  "rules": {},
+  "ignorePatterns": [
+      "**/node_modules/",
+      "**/dist/",
+      "**/*.js"
+  ]
+}

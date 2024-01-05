@@ -1,0 +1,34 @@
+{
+    "git": {
+        "tagName": "v${version}",
+        "commitMessage": "chore(release): v${version}",
+        "requireBranch": "master"
+    },
+    "changelogFile": "CHANGELOG.md",
+    "github": {
+        "release": true,
+        "releaseName": "MathScript v${version}",
+        "autoGenerate": true,
+        "assets": ["dist/"],
+        "comments": true
+    },
+    "npm": {
+        "publish": true,
+        "skipChecks": true
+    },
+    "hooks": {
+        "before:init": "git fetch --tags"
+    },
+    "plugins": {
+        "@release-it/conventional-changelog": {
+            "infile": "CHANGELOG.md",
+            "header": "# Changelog",
+            "preset": {
+                "name": "conventionalcommits"
+            },
+            "gitRawCommitsOpts": {
+                "merges": null
+            }
+        }
+    }
+}
