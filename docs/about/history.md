@@ -9,7 +9,7 @@ It is a minimal bask-like shell implementation written in TypeScript.
 During it's development, I learnt how to build a small custom parser for parsing user input into an abstract syntax tree
 that eventually made the implementation possible.
 
-On the morning of *30th December 2023*, I was browsing the internet when I landed on an awesome [youtube video]()
+On the morning of *30th December 2023*, I was browsing the internet when I landed on an awesome [youtube video](https://www.youtube.com/watch?v=8VB5TY1sIRo)
 describing how to create a programming language from scratch using TypeScript.
 Watch this youtube video inspired me into thinking, *"What I created an simple custom scripting language that would solve Mathematics problems?".*
 

@@ -2,7 +2,7 @@
 
 ![](https://github.com/henryhale/mathscript/blob/master/docs/public/logo.svg)
 
-# Math Script
+# MathScript
 
 _Simplifying Math, Empowering Code._
 
