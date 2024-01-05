@@ -33,6 +33,6 @@ console.log(result);
 // Output: { value: 2, scope: { variables: {} } }
 ```
 
-To learn the MathFlow syntax, head over to the [syntax](syntax) section for details.
+To learn the MathFlow syntax, head over to the [syntax](./basics.md) section for details.
 
-For more examples, check the [examples](#examples) section.
+For more examples, check the [examples](./scripts.md) section.
