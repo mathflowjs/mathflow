@@ -9,21 +9,21 @@ Before getting started, make sure that you have the following installed on your 
 
 ## Installation
 
-You can install MathScript via npm:
+You can install MathFlow via npm:
 
 ```sh:no-line-numbers
-npm install mathscript
-# pnpm add mathscript
+npm install mathflow
+# pnpm add mathflow
 ```
 
 ## Usage
 
 ```js
-import { evaluate } from 'mathscript';
+import { evaluate } from 'mathflow';
 
 // Example script
 const script = `
-# Hello MathScript! 
+# Hello MathFlow! 
 1 * 3 - 2 + 2sin(30)
 `;
 
@@ -33,6 +33,6 @@ console.log(result);
 // Output: { value: 2, scope: { variables: {} } }
 ```
 
-To learn the MathScript syntax, head over to the [syntax](syntax) section for details.
+To learn the MathFlow syntax, head over to the [syntax](syntax) section for details.
 
 For more examples, check the [examples](#examples) section.

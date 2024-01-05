@@ -1,5 +1,5 @@
 {
-    "name": "mathscript",
+    "name": "mathflow",
     "version": "0.0.0",
     "description": "A concise, expressive scripting language for mathematical calculations with standard functions.",
     "type": "module",

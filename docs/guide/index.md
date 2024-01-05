@@ -2,16 +2,16 @@
 
 :wave: Hello World!
 
-You're reading the official documentation for [MathScript](https://github.com/henryhale/mathscript).
+You're reading the official documentation for [MathFlow](https://github.com/henryhale/mathflow).
 
-## What is MathScript?
+## What is MathFlow?
 
-**MathScript** is a lightweight and expressive scripting language designed for mathematical expressions and calculations. It provides a simple and intuitive syntax for performing mathematical operations, including support for standard arithmetic, functions like sin, cos, tan, and other functions.
+**MathFlow** is a lightweight and expressive scripting language designed for mathematical expressions and calculations. It provides a simple and intuitive syntax for performing mathematical operations, including support for standard arithmetic, functions like sin, cos, tan, and other functions.
 
-## What MathScript is not?
+## What MathFlow is not?
 
 ::: warning
-- MathScript is not a fully-fledged scripting language. This means that it can not be used to build applications by itself.
+- MathFlow is not a fully-fledged scripting language. This means that it can not be used to build applications by itself.
 :::
 
 ## Main Objectives
@@ -21,9 +21,9 @@ This implies that the development of this project tends in the direction of prov
 
 ## How it Works
 
-This section describes how MathScript is able to work.
+This section describes how MathFlow is able to work.
 
-This library [API](../api/index.md) exposes the `evaluate` function that takes the MathScript code and returns a result. Below are the stages the source code undergoes to produce the result;
+This library [API](../api/index.md) exposes the `evaluate` function that takes the MathFlow code and returns a result. Below are the stages the source code undergoes to produce the result;
 
 -   A global scope that holds all variables is created
 -   The source code is then split into individual statements. This process involves;

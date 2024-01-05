@@ -1,10 +1,10 @@
 # Syntax
 
-This section shows you the MathScript syntax to enable you write scripts.
+This section shows you the MathFlow syntax to enable you write scripts.
 
 ## Comments
 
-In MathScript, comments are statements on a new line starting with a _hash symbol_, `#`. These are _ignored_ during evaluation.
+In MathFlow, comments are statements on a new line starting with a _hash symbol_, `#`. These are _ignored_ during evaluation.
 
 ```sh
 # this is comment 1
@@ -14,5 +14,5 @@ In MathScript, comments are statements on a new line starting with a _hash symbo
 
 ## Spaces
 
-Indents, spaces, tabs or empty lines are _ignored_ in MathScript.
+Indents, spaces, tabs or empty lines are _ignored_ in MathFlow.
 This implies that they carry no special meaning.

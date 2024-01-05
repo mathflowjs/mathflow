@@ -3,12 +3,12 @@
 layout: home
 
 hero:
-    name: MathScript
+    name: MathFlow
     text: Simplifying Math, Empowering Code.
     tagline: Ready to elevate your mathematical scripting experience?
     image: 
       src: /logo.svg
-      alt: MathScript Logo
+      alt: MathFlow Logo
     actions:
         - theme: brand
           text: Get Started
@@ -18,7 +18,7 @@ hero:
           link: /playground/
         - theme: alt
           text: View on GitHub
-          link: https://github.com/henryhale/mathscript
+          link: https://github.com/henryhale/mathflow
 
 features:
     - title: Mathematical Expressions

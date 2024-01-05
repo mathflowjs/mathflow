@@ -4,7 +4,7 @@ Expressions are parts of a statement that may contain a composition of binary op
 
 ## Operators
 
-MathScript currently supports only binary operators, that is, `+`, `-`, `/`, `*`.
+MathFlow currently supports only binary operators, that is, `+`, `-`, `/`, `*`.
 Computations follow the arithmetic precedence of each operator.
 
 ```sh
@@ -26,7 +26,7 @@ The script below results into `5` as the resultant value.
 
 ## Terms
 
-MathScript enables you to write normal mathematical terms.
+MathFlow enables you to write normal mathematical terms.
 
 ```sh
 x = 3

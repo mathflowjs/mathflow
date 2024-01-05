@@ -1,6 +1,6 @@
 # Built-in Functions
 
-Just like Mathematics, MathScript have commonly used functions built in. A full list of those functions can be found in this [file](../src/global.ts).
+Just like Mathematics, MathFlow have commonly used functions built in. A full list of those functions can be found in this [file](../src/global.ts).
 
 -   `exp` - returns _e_ (the base of natural logarithms) raised to a power
 -   `log` - returns the base 10 logarithm of a number

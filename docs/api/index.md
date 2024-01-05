@@ -2,7 +2,7 @@
 
 ## evaluate()
 
-Evaluate a source code written using MathScript syntax
+Evaluate a source code written using MathFlow syntax
 
 - **Type**
 
@@ -21,14 +21,14 @@ Evaluate a source code written using MathScript syntax
 
 - **Details**
 
-    It takes one argument that must be a string containing MathScript expressions.
+    It takes one argument that must be a string containing MathFlow expressions.
 
 - **Example**
 
     Adding two numbers: `1` and `2`
 
     ```ts
-    import { evaluate } from 'mathscript';
+    import { evaluate } from 'mathflow';
 
     const script = `
     # declare variables

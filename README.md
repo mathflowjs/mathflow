@@ -1,8 +1,8 @@
 <div align=center>
 
-![](https://github.com/henryhale/mathscript/blob/master/docs/public/logo.svg)
+![](https://github.com/henryhale/mathflow/blob/master/docs/public/logo.svg)
 
-# MathScript
+# MathFlow
 
 _Simplifying Math, Empowering Code._
 
@@ -10,7 +10,7 @@ _Simplifying Math, Empowering Code._
 
 ## Overview
 
-MathScript is a lightweight and expressive scripting language designed for mathematical expressions and calculations. It provides a simple and intuitive syntax for performing mathematical operations, including support for standard arithmetic, functions like sin, cos, tan, and other functions.
+MathFlow is a lightweight and expressive scripting language designed for mathematical expressions and calculations. It provides a simple and intuitive syntax for performing mathematical operations, including support for standard arithmetic, functions like sin, cos, tan, and other functions.
 
 ## Features
 
@@ -21,14 +21,14 @@ MathScript is a lightweight and expressive scripting language designed for mathe
 
 ## Documentation
 
-To get started with MathScript, read the [documentation here](https://github.com/henryhale/mathscript/blob/master/docs/guide/getting-started.md).
+To get started with MathFlow, read the [documentation here](https://github.com/henryhale/mathflow/blob/master/docs/guide/getting-started.md).
 
 ## Contributing
 
-Contributions are welcome to make MathScript even better! Feel free to open issues or submit pull requests.
+Contributions are welcome to make MathFlow even better! Feel free to open issues or submit pull requests.
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/henryhale/mathscript/blob/master/LICENSE.md)
+This project is licensed under the [MIT License](https://github.com/henryhale/mathflow/blob/master/LICENSE.md)
 
 Copyright &copy; 2024-present, [Henry Hale](https://github.com/henryhale)

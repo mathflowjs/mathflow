@@ -15,8 +15,8 @@ const members = [
         name: 'Henry Hale',
         title: 'Creator',
         avatar: 'https://www.github.com/henryhale.png',
-        org: 'mathscript',
-        orgLink: 'https://github.com/henryhale/mathscript',
+        org: 'mathflow',
+        orgLink: 'https://github.com/henryhale/mathflow',
         links: [
             { 
                 icon: 'github', 

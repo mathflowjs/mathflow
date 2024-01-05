@@ -7,7 +7,7 @@
     "changelogFile": "CHANGELOG.md",
     "github": {
         "release": true,
-        "releaseName": "MathScript v${version}",
+        "releaseName": "MathFlow v${version}",
         "autoGenerate": true,
         "assets": ["dist/"],
         "comments": true

@@ -4,14 +4,14 @@ import { defineConfig } from 'vitepress';
 export default defineConfig({
     base: '/',
     lang: 'en-US',
-    title: 'MathScript',
+    title: 'MathFlow',
     description:
         'A lightweight and expressive scripting language designed for mathematical expressions and calculations.',
     head: [['link', { rel: 'icon', href: '/logo.svg' }]],
     themeConfig: {
         // https://vitepress.dev/reference/default-theme-config
         logo: '/logo.svg',
-        siteTitle: 'MathScript',
+        siteTitle: 'MathFlow',
         search: {
             provider: 'local'
         },
@@ -60,18 +60,18 @@ export default defineConfig({
         ],
 
         socialLinks: [
-            { icon: 'github', link: 'https://github.com/henryhale/mathscript' }
+            { icon: 'github', link: 'https://github.com/henryhale/mathflow' }
         ],
 
         editLink: {
             text: 'Edit this page on GitHub',
             pattern:
-                'https://github.com/henryhale/mathscript/edit/master/docs/:path'
+                'https://github.com/henryhale/mathflow/edit/master/docs/:path'
         },
 
         footer: {
             message:
-                'Released under the <a href="https://github.com/henryhale/mathscript/blob/master/LICENSE.md">MIT License</a>.',
+                'Released under the <a href="https://github.com/henryhale/mathflow/blob/master/LICENSE.md">MIT License</a>.',
             copyright:
                 'Copyright &copy; 2024-present, <a href="https://github.com/henryhale">Henry Hale</a>.'
         }

@@ -4,7 +4,7 @@ Here's a list of a few basic programs;
 
 :::details Area of a triangle
 ```js
-import { evaluate } from 'mathscript';
+import { evaluate } from 'mathflow';
 
 const script = `
 # base
@@ -29,7 +29,7 @@ console.log(result);
 
 :::details Gradient of a line
 ```js
-import { evaluate } from 'mathscript';
+import { evaluate } from 'mathflow';
 
 const script = `
 # Point A
