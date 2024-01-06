@@ -21,7 +21,7 @@ MathFlow is a lightweight and expressive scripting language designed for mathema
 
 ## Documentation
 
-To get started with MathFlow, read the [documentation here](https://github.com/henryhale/mathflow/blob/master/docs/guide/getting-started.md).
+To get started with MathFlow, read the [documentation here](https://mathflow.js.org).
 
 ## Contributing
 
