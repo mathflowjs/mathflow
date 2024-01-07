@@ -8,6 +8,6 @@ describe('interpreter', () => {
         const tokens = tokenize(expr);
         const ast = parse(tokens);
         const scope = { variables: { x: 1 } };
-        expect(interpret(ast, scope)).toBe(4);
+        expect(interpret(ast, scope, [], true)).toBe(4);
     });
 });

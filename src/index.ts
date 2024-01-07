@@ -55,9 +55,9 @@ function generateSolution(raw: string[]) {
     function step(str: string, box: string[]) {
         let tmp = str;
         if (str) {
-            tmp = str.replaceAll(/#\d/g, (m) => map[m]?.result || m);
+            tmp = str.replaceAll(/#\d/g, (m) => map[m]?.result || '');
             box.unshift(tmp);
-            str = str.replaceAll(/#\d/g, (m) => map[m]?.expr || m);
+            str = str.replaceAll(/#\d/g, (m) => map[m]?.expr || '');
             if (!str.includes('#')) {
                 box.unshift(str);
             }
