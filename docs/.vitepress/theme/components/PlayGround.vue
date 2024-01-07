@@ -10,7 +10,7 @@ const copied = ref(false);
 
 function runScript() {
     try {
-        output.value = JSON.stringify(evaluate(code.value), null, 2);
+        output.value = evaluate(code.value);
     } catch (error) {
         output.value = '' + error;
     }
@@ -45,6 +45,8 @@ onMounted(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.has('s')) {
         code.value = decodeURIComponent(params.get('s'));
+    } else {
+        code.value = '# Hello World!\n# This is a comment\nx = 1\ny = 2\n\n# return sum of x and y\nx + y\n\n# now hit run to view the solution';
     }
 });
 </script>
@@ -52,10 +54,7 @@ onMounted(() => {
 <template>
     <div class="box">
         <div>
-            <label for="code">Code</label>
-            <br />
-            <textarea ref="input" v-model.trim="code" @input="reset" name="code" id="code" spellcheck="false"
-                autocomplete="off"></textarea>
+            <textarea ref="input" v-model.trim="code" @input="reset" spellcheck="false" autocomplete="off"></textarea>
         </div>
         <div>
             <button @click="runScript">Run</button>
@@ -68,9 +67,15 @@ onMounted(() => {
                 <span @click="copyURL">{{ copied ? 'Copied' : 'Copy' }}</span>
             </div>
         </div>
-        <div v-show="output.length">
+        <div v-show="(typeof output !== 'string')">
+            <div v-if="output.solution">
+                <b>Solution:</b>
+                <div v-for="n in output.solution" :key="n">= {{ n }}</div>
+            </div>
+        </div>
+        <div v-show="(typeof output !== 'string')">
             <b>Output:</b>
-            <p>{{ output }}</p>
+            <p>{{ JSON.stringify(output, null, 2) }}</p>
         </div>
     </div>
 </template>
@@ -84,7 +89,7 @@ onMounted(() => {
 }
 
 .box>div {
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 button {
