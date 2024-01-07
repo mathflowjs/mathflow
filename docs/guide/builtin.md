@@ -20,8 +20,8 @@ Just like Mathematics, MathFlow have commonly used functions built in. A full li
 These functions can take up a single number or expression.
 
 ```js
-log(100);
-sin(15 + 15);
-cos(acos(0.5));
-sqrt(4);
+log(100)
+sin(15 + 15)
+cos(acos(0.5))
+sqrt(4)
 ```

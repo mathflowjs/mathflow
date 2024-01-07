@@ -13,27 +13,27 @@ A variable is a global area that stores a value.
 Declare variables the same way you would do on paper.
 
 ```sh
-x = 1;
+x = 1
 ```
 
 Variables can be declared with expressions. Each declaraion or statement must exist on a newline.
 
 ```sh
-x = 1 + 2;
+x = 1 + 2
 ```
 
 On declaration, variables can reference others in an expression.
 
 ```sh
-x = 1;
-y = x + 1;
-z = x / (2 * y);
+x = 1
+y = x + 1
+z = x / (2 * y)
 ```
 
 Multicharacter variable identifiers start with a letter followed by a single number.
 
 ```sh
-x1 = 1;
-x2 = 2;
-x3 = x1 + x2;
+x1 = 1
+x2 = 2
+x3 = x1 + x2
 ```
