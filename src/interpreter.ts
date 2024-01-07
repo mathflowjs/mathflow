@@ -9,45 +9,88 @@ export type Scope = {
     variables: Record<string, number>;
 };
 
+// tokenize results from evaluated expressions
+let id: number;
+
 /**
  * Run through the entire AST evaluating the expressions on each subtree
  */
-export function interpret<T extends Node>(node: T, scope: Scope): number {
+export function interpret<T extends Node>(
+    node: T,
+    scope: Scope,
+    solution: string[],
+    reset = false
+): number {
+    if (reset) {
+        // reset result id token
+        id = 0;
+        reset = false;
+    }
+
     let result: number = DEFAULT_VALUE;
-    // handle both floats and integers
+    let left: number;
+    let right: number;
+
     switch (node.type) {
+        // handle both floats and integers
         case TokenType.Number: {
             result = Number.parseFloat(node.value);
 
+            solution.push(`${result}`);
             break;
         }
+
+        // handle all binary operators
         case TokenType.BinaryOperator: {
+            // build the solution in parts
+            let partial = '';
+
+            // compute node.left first
+            left = interpret(node.left, scope, solution);
+
+            // build node.left solution
+            const trackLeft =
+                node.left?.type === TokenType.BinaryOperator ||
+                node.left?.type === TokenType.Keyword;
+            if (trackLeft) {
+                solution.push(`#${++id}`);
+            }
+            partial = `(${trackLeft ? '#' + id : left} ${node.operator} `;
+
+            // compute node.right
+            right = interpret(node.right, scope, solution);
+
+            // build node.right solution
+            const trackRight =
+                node.right?.type === TokenType.BinaryOperator ||
+                node.right?.type === TokenType.Keyword;
+            if (trackRight) {
+                solution.push(`#${++id}`);
+            }
+            partial += `${trackRight ? '#' + id : right})`;
+
+            // save solutions for both node.left and node.right
+            solution.push(partial);
+
+            // now apply the operator
             switch (node.operator) {
                 case Operator.ADD: {
-                    result =
-                        interpret(node.left, scope) +
-                        interpret(node.right, scope);
+                    result = left + right;
                     break;
                 }
 
                 case Operator.SUB: {
-                    result =
-                        interpret(node.left, scope) -
-                        interpret(node.right, scope);
+                    result = left - right;
                     break;
                 }
 
                 case Operator.MUL: {
-                    result =
-                        interpret(node.left, scope) *
-                        interpret(node.right, scope);
+                    result = left * right;
                     break;
                 }
 
                 case Operator.DIV: {
-                    result =
-                        interpret(node.left, scope) /
-                        interpret(node.right, scope);
+                    result = left / right;
                     break;
                 }
 
@@ -56,16 +99,30 @@ export function interpret<T extends Node>(node: T, scope: Scope): number {
                 }
             }
 
+            // finally, save operator's result
+            solution.push(`${result}`);
+
             break;
         }
         case TokenType.Keyword: {
-            result = KEYWORDS[node.name](interpret(node.argument, scope));
+            // first evaluate the argument expression
+            // e.g sin(15 + 15) - handle (15 + 15) first
+            result = interpret(node.argument, scope, solution);
 
+            solution.push(`#${++id}`);
+            solution.push(`(${node.name}(#${id}))`);
+
+            // execute the keyword handler
+            result = KEYWORDS[node.name](result);
+
+            solution.push(`${result}`);
             break;
         }
         case TokenType.Identifier: {
+            // get variable value, fallback to default value
             result = scope.variables[node.name] || DEFAULT_VALUE;
 
+            solution.push(`${result}`);
             break;
         }
         default: {

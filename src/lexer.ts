@@ -72,6 +72,7 @@ export function tokenize(expr: string): Token[] {
         } else if (isBinaryOperator(expr[index])) {
             tokens.push(createToken(expr[index++], TokenType.BinaryOperator));
         } else if (isInt(expr[index])) {
+            // build a number with many digits
             let num = '';
             while (
                 index < expr.length &&
@@ -83,6 +84,7 @@ export function tokenize(expr: string): Token[] {
             }
             tokens.push(createToken(num, TokenType.Number));
         } else if (isAlpha(expr[index])) {
+            // build a multicharacter indentifier
             let identifier = '';
             let hasChar = false;
             while (index < expr.length) {
@@ -94,14 +96,17 @@ export function tokenize(expr: string): Token[] {
                     break;
                 }
             }
+            // check if it a keyword or user variable
             if (KEYWORDS[identifier]) {
                 tokens.push(createToken(identifier, TokenType.Keyword));
             } else {
                 tokens.push(createToken(identifier, TokenType.Identifier));
             }
         } else if (isSkippable(expr[index])) {
+            // ignore irrelevant characters
             index++;
         } else {
+            // unsupported character
             throw new Error(
                 "Unexpected character '" +
                     expr[index] +
@@ -111,10 +116,12 @@ export function tokenize(expr: string): Token[] {
         }
     }
 
+    // incase there is no closing bracket
     if (openParen) {
         throw new Error('Unexpected end of expression: ' + expr);
     }
 
+    // track the end of the script with end of file token
     tokens.push(createToken('EOF', TokenType.EOF));
 
     return tokens;
