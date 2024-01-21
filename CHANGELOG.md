@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.0](https://github.com/henryhale/mathflow/compare/v0.1.0...v0.2.0) (2024-01-21)
+
+
+### Features
+
+* add configuration object ([dafbb9a](https://github.com/henryhale/mathflow/commit/dafbb9a6dd827843e0e47774ad7cc19a49c2322b))
+* add configuration object ([b03317b](https://github.com/henryhale/mathflow/commit/b03317b52e713e0c2f3b211b9215a7c42c33a281))
+
+
+### Bug Fixes
+
+* insert values to builtin function when generating solution ([32a1ccc](https://github.com/henryhale/mathflow/commit/32a1ccc778aa26f1e2208a7adc4e2a0d4e4dc4e9))
+* remove extra brackets ([fc71ce0](https://github.com/henryhale/mathflow/commit/fc71ce0c55eeb12220ec58e9650c81889189db16))
+
 ## [0.1.0](https://github.com/henryhale/mathflow/compare/v0.0.4...v0.1.0) (2024-01-07)
 
 
