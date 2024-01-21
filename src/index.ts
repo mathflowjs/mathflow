@@ -56,8 +56,10 @@ function generateSolution(raw: string[]) {
         let tmp = str;
         if (str) {
             tmp = str.replaceAll(/#\d/g, (m) => map[m]?.result || '');
-            box.unshift(tmp);
-            str = str.replaceAll(/#\d/g, (m) => map[m]?.expr || '');
+            str = str.replaceAll(/#\d/g, (m) => map[m]?.expr || map[m]?.result || '');
+            if (tmp !== str) {
+                box.unshift(tmp);
+            }
             if (!str.includes('#')) {
                 box.unshift(str);
             }
