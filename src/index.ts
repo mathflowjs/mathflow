@@ -74,7 +74,7 @@ function generateSolution(raw: string[]) {
     // console.log("sln:", solution);
 
     return solution.map((t) => {
-        return t.replaceAll('((', '(').replaceAll('))', ')');
+        return t.startsWith('(') ? t.slice(1, -1) : t;
     });
 }
 

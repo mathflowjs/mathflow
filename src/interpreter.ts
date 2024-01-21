@@ -110,7 +110,7 @@ export function interpret<T extends Node>(
             result = interpret(node.argument, scope, solution);
 
             solution.push(`#${++id}`);
-            solution.push(`(${node.name}(#${id}))`);
+            solution.push(`${node.name}(#${id})`);
 
             // execute the keyword handler
             result = KEYWORDS[node.name](result);
