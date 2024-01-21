@@ -132,3 +132,5 @@ export function evaluate(code: string): Result {
         solution: generateSolution(solution)
     };
 }
+
+export { config } from './global';

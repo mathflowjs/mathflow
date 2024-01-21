@@ -34,3 +34,13 @@ export const KEYWORDS: Record<string, (x: number) => number> = {
  * Default value for variables
  */
 export const DEFAULT_VALUE = 0;
+
+/**
+ * Output configuration
+ */
+export const config = {
+    /**
+     * Number of digits after the decimal point (min - 0, max - 20)
+     */
+    fractionDigits: 4
+};

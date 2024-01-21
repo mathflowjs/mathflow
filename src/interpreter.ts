@@ -1,4 +1,4 @@
-import { DEFAULT_VALUE, KEYWORDS, Operator } from './global';
+import { DEFAULT_VALUE, KEYWORDS, Operator, config } from './global';
 import { TokenType } from './lexer';
 import { Node } from './parser';
 
@@ -11,6 +11,13 @@ export type Scope = {
 
 // tokenize results from evaluated expressions
 let id: number;
+
+/**
+ * Round off a number to a specific number of decimal points
+ */
+export function roundOff(value: number): number {
+    return Number.parseFloat(value.toFixed(config.fractionDigits));
+}
 
 /**
  * Run through the entire AST evaluating the expressions on each subtree
@@ -47,6 +54,7 @@ export function interpret<T extends Node>(
 
             // compute node.left first
             left = interpret(node.left, scope, solution);
+            left = roundOff(left);
 
             // build node.left solution
             const trackLeft =
@@ -59,6 +67,7 @@ export function interpret<T extends Node>(
 
             // compute node.right
             right = interpret(node.right, scope, solution);
+            right = roundOff(right);
 
             // build node.right solution
             const trackRight =
@@ -99,6 +108,8 @@ export function interpret<T extends Node>(
                 }
             }
 
+            result = roundOff(result);
+
             // finally, save operator's result
             solution.push(`${result}`);
 
@@ -108,12 +119,14 @@ export function interpret<T extends Node>(
             // first evaluate the argument expression
             // e.g sin(15 + 15) - handle (15 + 15) first
             result = interpret(node.argument, scope, solution);
+            result = roundOff(result);
 
             solution.push(`#${++id}`);
             solution.push(`${node.name}(#${id})`);
 
             // execute the keyword handler
             result = KEYWORDS[node.name](result);
+            result = roundOff(result);
 
             solution.push(`${result}`);
             break;

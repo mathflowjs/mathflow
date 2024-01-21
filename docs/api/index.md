@@ -47,3 +47,32 @@ Evaluate a source code written using MathFlow syntax
     ```
 
 - **See also:** [Guide - Getting Started](../guide/getting-started.md) or [Guide - Syntax](../guide/basics.md) for details.
+
+## config
+
+Configure the behaviour of the compiler
+
+- **Type**
+
+    ```ts
+    type Config = {
+        fractionDigits: number;
+    };
+    ```
+
+- **Details**
+    
+    - `config.fractionDigits` sets the number of digits after the floating point.
+    
+- **Example**
+  
+    ```ts
+    import { config, evaluate } from 'mathflow';
+
+    config.fractionDigits = 3;
+
+    console.log(
+        evaluate(`1/6`).value
+    );
+    //Output: 0.167
+    ```

@@ -1,4 +1,4 @@
-import { evaluate } from '../src/index';
+import { config, evaluate } from '../src/index';
 
 describe('mathscript', () => {
     test('comments', () => {
@@ -38,5 +38,12 @@ describe('mathscript', () => {
             value: 2,
             scope: { variables: {} }
         });
+    });
+    test('configuration - fraction digits', () => {
+        expect(evaluate(`1/6`).value).toBe(0.1667);
+        config.fractionDigits = 2;
+        expect(evaluate(`1/6`).value).toBe(0.17);
+        config.fractionDigits = 6;
+        expect(evaluate(`1/6`).value).toBe(0.166_667);
     });
 });
