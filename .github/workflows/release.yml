@@ -62,7 +62,7 @@ jobs:
 
       # Tests
       - name: Run tests
-        run: pnpm test
+        run: pnpm lint:fix && pnpm test
 
       # Setup NPM
       - name: Create .npmrc

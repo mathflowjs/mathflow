@@ -56,7 +56,10 @@ function generateSolution(raw: string[]) {
         let tmp = str;
         if (str) {
             tmp = str.replaceAll(/#\d/g, (m) => map[m]?.result || '');
-            str = str.replaceAll(/#\d/g, (m) => map[m]?.expr || map[m]?.result || '');
+            str = str.replaceAll(
+                /#\d/g,
+                (m) => map[m]?.expr || map[m]?.result || ''
+            );
             if (tmp !== str) {
                 box.unshift(tmp);
             }
