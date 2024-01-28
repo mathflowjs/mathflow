@@ -1,7 +1,8 @@
-import { DEFAULT_VALUE } from './global';
+import { CONSTANTS, DEFAULT_VALUE, FUNCTIONS } from './global';
 import { Scope, interpret } from './interpreter';
 import { tokenize } from './lexer';
 import { parse } from './parser';
+import { generateSolution } from './solution';
 
 /**
  * Computes the value of an expression
@@ -17,71 +18,11 @@ function execute(expr: string, scope: Scope, solution: string[]): number {
     return result;
 }
 
-type Result = {
+export type Result = {
     value: number;
     scope: Scope;
     solution: string[];
 };
-
-type Term = {
-    result: string;
-    expr: string;
-};
-
-function generateSolution(raw: string[]) {
-    // console.log('raw:', raw);
-
-    if (!raw.includes('#1') || raw.length < 2) {
-        return raw.filter((t, i) => {
-            return t.startsWith('(') || i === raw.length - 1;
-        });
-    }
-
-    const map: { [k: string]: Term } = {};
-
-    for (const [i, t] of raw.entries()) {
-        if (t.startsWith('#')) {
-            map[t] = {
-                result: raw[i - 1],
-                expr: raw[i - 2]?.startsWith('#') ? '' : raw[i - 2]
-            };
-        }
-    }
-
-    // console.log(map);
-
-    const solution: string[] = [];
-
-    function step(str: string, box: string[]) {
-        let tmp = str;
-        if (str) {
-            tmp = str.replaceAll(/#\d/g, (m) => map[m]?.result || '');
-            str = str.replaceAll(
-                /#\d/g,
-                (m) => map[m]?.expr || map[m]?.result || ''
-            );
-            if (tmp !== str) {
-                box.unshift(tmp);
-            }
-            if (!str.includes('#')) {
-                box.unshift(str);
-            }
-        }
-        if (str.includes('#')) {
-            step(str, box);
-        }
-    }
-
-    step(raw.at(-2) || '', solution);
-
-    solution.push(raw.at(-1) as string);
-
-    // console.log("sln:", solution);
-
-    return solution.map((t) => {
-        return t.startsWith('(') ? t.slice(1, -1) : t;
-    });
-}
 
 /**
  * Evaluate a set of statements in a script
@@ -91,9 +32,6 @@ export function evaluate(code: string): Result {
     const scope: Scope = {
         variables: {}
     };
-
-    // initiate solution array
-    const solution: string[] = [];
 
     // generate individual statements
     const statements = code
@@ -105,35 +43,49 @@ export function evaluate(code: string): Result {
         .split('\n')
         .filter((value) => {
             value = value.trim();
+            // ignore comments or empty lines
             if (!value || value.startsWith('#')) {
                 return false;
             }
-            const matches = value
-                .replaceAll(' ', '')
-                .match(/^([A-Za-z]\d?)=(.+)$/);
-            if (matches) {
-                scope.variables[matches[1]] = execute(
-                    matches[2],
-                    scope,
-                    // disabling solutions from variable declarations
-                    []
-                );
-                return false;
+            // capture multiple variable declarations on the same line
+            const variables = value.replaceAll(' ', '').split(',');
+            let matched = false;
+            let matches: RegExpMatchArray | null;
+            for (const v of variables) {
+                matches = v.match(/^([A-Za-z](\d+)?)=(.+)$/);
+                if (matches) {
+                    if (CONSTANTS[matches[1]] || FUNCTIONS[matches[1]]) {
+                        throw new Error(
+                            `Identifier '${matches[1]}' is a builtin constant or function`
+                        );
+                    }
+                    scope.variables[matches[1]] = execute(
+                        matches[3],
+                        scope,
+                        // disabling solutions from variable declarations
+                        []
+                    );
+                    matched = true;
+                }
             }
-            return true;
+            return !matched;
         });
 
-    let result: number = DEFAULT_VALUE;
+    // resultant value
+    let value: number = DEFAULT_VALUE;
 
+    // initiate solution array
+    let solution: string[] = [];
+
+    // evaluate all statements keeping track of scope and steps
     for (const stmt of statements) {
-        result = execute(stmt, scope, solution);
+        value = execute(stmt, scope, solution);
     }
 
-    return {
-        value: result,
-        scope,
-        solution: generateSolution(solution)
-    };
+    // refine the solution
+    solution = generateSolution(solution);
+
+    return { value, scope, solution };
 }
 
 export { config } from './global';

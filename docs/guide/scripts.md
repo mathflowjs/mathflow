@@ -10,7 +10,7 @@ a = 1
 # second number
 b = 2
 
-# sum
+# return the sum
 a + b
 ```
 :::

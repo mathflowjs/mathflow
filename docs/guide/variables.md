@@ -6,7 +6,7 @@ A variable is a global area that stores a value.
 
 -   Must start with a letter, uppercase or lowercase e.g. `x`, `A`
 -   Case sensitive: `x` is different from `X`
--   Can contain only one number after a letter: `x1` not `x12`
+-   Can contain numbers after a letter like `x1`, `x12`, `x123`
 
 **How to declare a variable?**
 
@@ -30,7 +30,7 @@ y = x + 1
 z = x / (2 * y)
 ```
 
-Multicharacter variable identifiers start with a letter followed by a single number.
+Multicharacter variable identifiers start with a letter followed by a number.
 
 ```sh
 x1 = 1

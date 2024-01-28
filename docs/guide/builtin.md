@@ -1,6 +1,15 @@
-# Built-in Functions
+# Built-ins
 
-Just like Mathematics, MathFlow have commonly used functions built in. A full list of those functions can be found in this [file](../src/global.ts).
+## Constants
+
+Mathflow comes with pre-defined universal constants to ease your workflow.
+
+- `pi` - This is the ratio of the circumference of a circle to its diameter
+- `e` - The mathematical constant _e_. This is Euler's number, the base of natural logarithms.
+
+## Functions
+
+Just like Mathematics, MathFlow has commonly used functions built in. A full list of those functions can be found in this [file](https://github.com/henryhale/mathflow/blob/master/src/global.ts).
 
 -   `exp` - returns _e_ (the base of natural logarithms) raised to a power
 -   `log` - returns the base 10 logarithm of a number
@@ -20,8 +29,8 @@ Just like Mathematics, MathFlow have commonly used functions built in. A full li
 These functions can take up a single number or expression.
 
 ```js
-log(100)
-sin(15 + 15)
-cos(acos(0.5))
-sqrt(4)
+log(100)        // 2
+sin(15 + 15)    // 0.5
+cos(acos(0.5))  // 0.5
+sqrt(4)         // 2
 ```

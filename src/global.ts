@@ -7,15 +7,16 @@ export enum Operator {
     ADD = '+',
     SUB = '-',
     MUL = '*',
-    DIV = '/'
+    DIV = '/',
+    POW = '^'
 }
 
 /**
- * Dictionary of reserved identifiers
+ * Reserved function identifiers
  * key - Multi-character keys
  * value - computation function
  */
-export const KEYWORDS: Record<string, (x: number) => number> = {
+export const FUNCTIONS: Record<string, (x: number) => number> = {
     exp: (x) => Math.exp(x),
     log: (x) => Math.log10(x),
     ln: (x) => Math.log(x),
@@ -28,6 +29,14 @@ export const KEYWORDS: Record<string, (x: number) => number> = {
     acos: (x) => toDegrees(Math.acos(x)),
     atan: (x) => toDegrees(Math.atan(x)),
     sqrt: (x) => Math.sqrt(x)
+};
+
+/**
+ * Reserved variable identifiers
+ */
+export const CONSTANTS: Record<string, number> = {
+    pi: Math.PI,
+    e: Math.E
 };
 
 /**

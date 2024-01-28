@@ -1,6 +1,13 @@
-import { DEFAULT_VALUE, KEYWORDS, Operator, config } from './global';
+import {
+    CONSTANTS,
+    DEFAULT_VALUE,
+    FUNCTIONS,
+    Operator,
+    config
+} from './global';
+import { matchValue } from './helpers';
 import { TokenType } from './lexer';
-import { Node } from './parser';
+import { Node, NodeType } from './parser';
 
 /**
  * Object to store useful data used during interpretation
@@ -22,8 +29,8 @@ export function roundOff(value: number): number {
 /**
  * Run through the entire AST evaluating the expressions on each subtree
  */
-export function interpret<T extends Node>(
-    node: T,
+export function interpret(
+    node: Node,
     scope: Scope,
     solution: string[],
     reset = false
@@ -41,7 +48,8 @@ export function interpret<T extends Node>(
     switch (node.type) {
         // handle both floats and integers
         case TokenType.Number: {
-            result = Number.parseFloat(node.value);
+            result = Number.parseFloat(node.value as string);
+            result = roundOff(result);
 
             solution.push(`${result}`);
             break;
@@ -53,26 +61,30 @@ export function interpret<T extends Node>(
             let partial = '';
 
             // compute node.left first
-            left = interpret(node.left, scope, solution);
+            left = interpret(node.left as Node, scope, solution);
             left = roundOff(left);
 
             // build node.left solution
-            const trackLeft =
-                node.left?.type === TokenType.BinaryOperator ||
-                node.left?.type === TokenType.Keyword;
+            const trackLeft = matchValue(
+                node.left?.type as NodeType,
+                TokenType.BinaryOperator,
+                TokenType.Function
+            );
             if (trackLeft) {
                 solution.push(`#${++id}`);
             }
             partial = `(${trackLeft ? '#' + id : left} ${node.operator} `;
 
             // compute node.right
-            right = interpret(node.right, scope, solution);
+            right = interpret(node.right as Node, scope, solution);
             right = roundOff(right);
 
             // build node.right solution
-            const trackRight =
-                node.right?.type === TokenType.BinaryOperator ||
-                node.right?.type === TokenType.Keyword;
+            const trackRight = matchValue(
+                node.right?.type as NodeType,
+                TokenType.BinaryOperator,
+                TokenType.Function
+            );
             if (trackRight) {
                 solution.push(`#${++id}`);
             }
@@ -103,6 +115,11 @@ export function interpret<T extends Node>(
                     break;
                 }
 
+                case Operator.POW: {
+                    result = left ** right;
+                    break;
+                }
+
                 default: {
                     break;
                 }
@@ -115,17 +132,24 @@ export function interpret<T extends Node>(
 
             break;
         }
-        case TokenType.Keyword: {
+        case TokenType.Function: {
             // first evaluate the argument expression
             // e.g sin(15 + 15) - handle (15 + 15) first
-            result = interpret(node.argument, scope, solution);
+            result = interpret(node.argument as Node, scope, solution);
             result = roundOff(result);
 
             solution.push(`#${++id}`);
             solution.push(`${node.name}(#${id})`);
 
             // execute the keyword handler
-            result = KEYWORDS[node.name](result);
+            result = FUNCTIONS[node.name as string](result);
+            result = roundOff(result);
+
+            solution.push(`${result}`);
+            break;
+        }
+        case TokenType.Constant: {
+            result = CONSTANTS[node.name as string];
             result = roundOff(result);
 
             solution.push(`${result}`);
@@ -133,7 +157,7 @@ export function interpret<T extends Node>(
         }
         case TokenType.Identifier: {
             // get variable value, fallback to default value
-            result = scope.variables[node.name] || DEFAULT_VALUE;
+            result = scope.variables[node.name as string] || DEFAULT_VALUE;
 
             solution.push(`${result}`);
             break;

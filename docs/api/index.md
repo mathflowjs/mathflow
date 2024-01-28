@@ -14,6 +14,7 @@ Evaluate a source code written using MathFlow syntax
     type Result = {
         value: number;
         scope: Scope;
+        solution: string[];
     };
 
     declare function evaluate(code: string): Result;
@@ -43,7 +44,7 @@ Evaluate a source code written using MathFlow syntax
     const result = evaluate(script);
 
     console.log(result);
-    // Output: { value: 3, scope: { variables: { a: 1, b: 2, c: 3 } } }
+    // Output: { value: 3, scope: { variables: { a: 1, b: 2, c: 3 } }, solution: ['3'] }
     ```
 
 - **See also:** [Guide - Getting Started](../guide/getting-started.md) or [Guide - Syntax](../guide/basics.md) for details.

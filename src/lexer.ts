@@ -1,15 +1,19 @@
-import { KEYWORDS } from './global';
+import { FUNCTIONS, CONSTANTS } from './global';
+import { matchValue } from './helpers';
 
 export enum TokenType {
     Number,
 
+    UnaryOperator,
     BinaryOperator,
 
     OpenParen,
     ClosedParen,
 
     Identifier,
-    Keyword,
+
+    Constant,
+    Function,
 
     EOF
 }
@@ -27,16 +31,23 @@ function createToken(value = '', type: TokenType): Token {
 }
 
 /**
+ * Check if the character `char` is a unary operator
+ */
+function isUnaryOperator(char: string): boolean {
+    return /^[+-]$/.test(char);
+}
+
+/**
  * Check if the character `char` is a binary operator
  */
-function isBinaryOperator(char: string): boolean {
-    return /^[*+/^-]$/.test(char);
+export function isBinaryOperator(char: string): boolean {
+    return isUnaryOperator(char) || /^[*/^]$/.test(char);
 }
 
 /**
  * Check if the character `char` is alphabetic
  */
-function isAlpha(char: string): boolean {
+export function isAlpha(char: string): boolean {
     return /^[a-z]$/i.test(char);
 }
 
@@ -61,6 +72,36 @@ export function tokenize(expr: string): Token[] {
     const tokens = new Array<Token>();
     let index = 0;
     let openParen = false;
+    let sign = '';
+
+    function extractNumber(): string {
+        // build a multiple digit number with floating points if any
+        let num = '';
+        while (
+            index < expr.length &&
+            (isInt(expr[index]) ||
+                (expr[index] === '.' && isInt(expr[index + 1])))
+        ) {
+            num += expr[index];
+            index++;
+        }
+        return num;
+    }
+
+    function extractString(): string {
+        let str = '';
+        let hasChar = false;
+        while (index < expr.length) {
+            if (isAlpha(expr[index]) || (hasChar && isInt(expr[index]))) {
+                hasChar = true;
+                str += expr[index];
+                index++;
+            } else {
+                break;
+            }
+        }
+        return str;
+    }
 
     while (index < expr.length) {
         if (expr[index] === '(') {
@@ -70,36 +111,46 @@ export function tokenize(expr: string): Token[] {
             openParen = false;
             tokens.push(createToken(expr[index++], TokenType.ClosedParen));
         } else if (isBinaryOperator(expr[index])) {
-            tokens.push(createToken(expr[index++], TokenType.BinaryOperator));
-        } else if (isInt(expr[index])) {
-            // build a number with many digits
-            let num = '';
-            while (
-                index < expr.length &&
-                (isInt(expr[index]) ||
-                    (expr[index] === '.' && isInt(expr[index + 1])))
+            // capture operator's sign incase of unary operator - signed number
+            if (
+                isUnaryOperator(expr[index]) &&
+                (!tokens.at(-1) ||
+                    matchValue(
+                        tokens.at(-1)?.type,
+                        TokenType.BinaryOperator,
+                        TokenType.OpenParen
+                    ))
             ) {
-                num += expr[index];
-                index++;
+                sign = expr[index++];
+            } else {
+                // otherwise take it as a normal binary operator
+                tokens.push(
+                    createToken(expr[index++], TokenType.BinaryOperator)
+                );
             }
-            tokens.push(createToken(num, TokenType.Number));
+        } else if (isInt(expr[index])) {
+            // build a number with all digits
+            const num = extractNumber();
+            // incase this is a signed number
+            tokens.push(createToken(sign + num, TokenType.Number));
+            // reset the sign
+            if (sign) {
+                sign = '';
+            }
         } else if (isAlpha(expr[index])) {
             // build a multicharacter indentifier
-            let identifier = '';
-            let hasChar = false;
-            while (index < expr.length) {
-                if (isAlpha(expr[index]) || (hasChar && isInt(expr[index]))) {
-                    hasChar = true;
-                    identifier += expr[index];
-                    index++;
-                } else {
-                    break;
-                }
+            const identifier = extractString();
+
+            // built-in function
+            if (FUNCTIONS[identifier]) {
+                tokens.push(createToken(identifier, TokenType.Function));
             }
-            // check if it a keyword or user variable
-            if (KEYWORDS[identifier]) {
-                tokens.push(createToken(identifier, TokenType.Keyword));
-            } else {
+            // built-in constant
+            else if (CONSTANTS[identifier]) {
+                tokens.push(createToken(identifier, TokenType.Constant));
+            }
+            // user defined variable
+            else {
                 tokens.push(createToken(identifier, TokenType.Identifier));
             }
         } else if (isSkippable(expr[index])) {
@@ -121,7 +172,7 @@ export function tokenize(expr: string): Token[] {
         throw new Error('Unexpected end of expression: ' + expr);
     }
 
-    // track the end of the script with end of file token
+    // track the end of the script with End-Of-File token
     tokens.push(createToken('EOF', TokenType.EOF));
 
     return tokens;

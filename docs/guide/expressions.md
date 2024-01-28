@@ -4,7 +4,11 @@ Expressions are parts of a statement that may contain a composition of binary op
 
 ## Operators
 
-MathFlow currently supports only binary operators, that is, `+`, `-`, `/`, `*`.
+MathFlow currently supports the following operators;
+
+- Unary Operators: `+` , `-`
+- Binary Operators: `+` , `-`, `/`, `*`, `^`
+
 Computations follow the arithmetic precedence of each operator.
 
 ```sh
@@ -41,7 +45,7 @@ y = 2
 z = xy
 ```
 
-To handle that kind of composition, add a binary operator between the variables. Otherwise, it is considered as an identifier or keyword.
+To handle that kind of composition, add a binary operator between the variables. Otherwise, it is considered as an _identifier_ or a reserved keyword.
 
 ```sh
 x = 3

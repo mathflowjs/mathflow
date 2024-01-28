@@ -30,7 +30,7 @@ const script = `
 const result = evaluate(script);
 
 console.log(result);
-// Output: { value: 2, scope: { variables: {} } }
+// Output: { value: 2, scope: { variables: {} }, solution: ... }
 ```
 
 To learn the MathFlow syntax, head over to the [syntax](./basics.md) section for details.

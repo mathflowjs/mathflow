@@ -23,7 +23,7 @@ A
 const result = evaluate(script);
 
 console.log(result);
-// Output: { value: 2, scope: { variables: { b: 1.4, h: 4, A: 2.8 } } }
+// Output: { value: 2, scope: { variables: { b: 1.4, h: 4, A: 2.8 } }, solution: ... }
 ```
 :::
 
@@ -50,6 +50,6 @@ m
 const result = evaluate(script);
 
 console.log(result);
-// Output: { value: 2.8, scope: { variables: { x1: 1, y1: 1, x2: 3, y2: 5, m: 2 } } }
+// Output: { value: 2.8, scope: { variables: { x1: 1, y1: 1, x2: 3, y2: 5, m: 2 } }, solution: ['2.8'] }
 ```
 :::

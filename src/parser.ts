@@ -1,39 +1,24 @@
 import { Operator } from './global';
+import { matchValue } from './helpers';
 import { TokenType } from './lexer';
 import type { Token } from './lexer';
 
 export type NodeType =
     | TokenType.BinaryOperator
     | TokenType.Number
-    | TokenType.Keyword
+    | TokenType.Constant
+    | TokenType.Function
     | TokenType.Identifier;
 
 export interface Node {
-    [x: string]: any;
+    // [x: string]: unknown;
     type: NodeType;
-}
-
-export interface BinaryOperator extends Node {
-    type: TokenType.BinaryOperator;
-    left: Node;
-    right: Node;
-    operator: Operator;
-}
-
-export interface IdentifierNode extends Node {
-    type: TokenType.Identifier;
-    name: string;
-}
-
-export interface KeywordNode extends Node {
-    type: TokenType.Keyword;
-    name: string;
-    argument: Node;
-}
-
-export interface NumericNode extends Node {
-    type: TokenType.Number;
-    value: string;
+    left?: Node;
+    right?: Node;
+    operator?: Operator;
+    name?: string;
+    argument?: Node;
+    value?: string;
 }
 
 /**
@@ -43,34 +28,36 @@ export interface NumericNode extends Node {
 export function parse(tokens: Token[] = []): Node {
     let index = 0;
 
-    // check for end of the file (last token)
+    // check for end of the script (last token)
     function isEOF() {
         return tokens[index].type === TokenType.EOF;
     }
 
-    // check whether the current character matches the provided types
-    function isType(...types: TokenType[]): boolean {
-        return types.includes(tokens[index].type);
-    }
-
     // Handle an atomic expression on one side of a binary operator
     function parseFactor(): Node {
-        if (!isEOF() && isType(TokenType.OpenParen)) {
+        if (!isEOF() && matchValue(tokens[index]?.type, TokenType.OpenParen)) {
             index++;
             const result = parseNode();
             index++;
             return result;
-        } else if (isType(TokenType.Number)) {
-            return tokens[index++] as NumericNode;
-        } else if (isType(TokenType.Identifier, TokenType.Keyword)) {
+        } else if (matchValue(tokens[index]?.type, TokenType.Number)) {
+            return tokens[index++] as Node;
+        } else if (
+            matchValue(
+                tokens[index]?.type,
+                TokenType.Identifier,
+                TokenType.Constant,
+                TokenType.Function
+            )
+        ) {
             const { type, value: name } = tokens[index++];
-            if (type === TokenType.Keyword) {
+            if (type === TokenType.Function) {
                 index++;
                 const argument = parseNode();
                 index++;
-                return { type, name, argument } as KeywordNode;
+                return { type, name, argument };
             }
-            return { type, name } as IdentifierNode;
+            return { type, name } as Node;
         } else {
             throw new Error(`Unexpected token: ${tokens[index].value}`);
         }
@@ -81,8 +68,12 @@ export function parse(tokens: Token[] = []): Node {
         let result = parseFactor();
         while (
             !isEOF() &&
-            (tokens[index].value === Operator.MUL ||
-                tokens[index].value === Operator.DIV)
+            matchValue(
+                tokens[index].value,
+                Operator.MUL,
+                Operator.DIV,
+                Operator.POW
+            )
         ) {
             const operator = tokens[index].value;
             index++;
@@ -92,7 +83,7 @@ export function parse(tokens: Token[] = []): Node {
                 operator,
                 left: result,
                 right: factor
-            } as BinaryOperator;
+            } as Node;
         }
         return result;
     }
@@ -102,8 +93,7 @@ export function parse(tokens: Token[] = []): Node {
         let result = parseTerm();
         while (
             !isEOF() &&
-            (tokens[index].value === Operator.ADD ||
-                tokens[index].value === Operator.SUB)
+            matchValue(tokens[index].value, Operator.ADD, Operator.SUB)
         ) {
             const operator = tokens[index].value;
             index++;
@@ -113,7 +103,7 @@ export function parse(tokens: Token[] = []): Node {
                 operator,
                 left: result,
                 right: term
-            } as BinaryOperator;
+            } as Node;
         }
         return result;
     }
