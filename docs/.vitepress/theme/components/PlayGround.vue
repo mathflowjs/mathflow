@@ -35,7 +35,7 @@ function copyURL() {
         copied.value = true;
         setTimeout(() => {
             copied.value = false;
-        }, 100);
+        }, 750);
     } catch (error) {
         console.error(error);
     }
@@ -120,6 +120,7 @@ textarea {
     overflow-wrap: break-word;
     border-radius: 8px;
     min-height: 250px;
+    max-height: 500px;
 }
 
 .copy {
