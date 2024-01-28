@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/henryhale/mathflow/compare/v0.2.0...v0.3.0) (2024-01-28)
+
+
+### Features
+
+* add new operators, constants, refactors and update docs ([8910590](https://github.com/henryhale/mathflow/commit/8910590098aedff218e21c7939ee9c95b74da1c3))
+
 ## [0.2.0](https://github.com/henryhale/mathflow/compare/v0.1.0...v0.2.0) (2024-01-21)
 
 
