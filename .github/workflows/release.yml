@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           registry-url: https://registry.npmjs.org/
-          node-version: 18
+          node-version: lts/*
 
       # Install pnpm
       - uses: pnpm/action-setup@v2
@@ -72,6 +72,6 @@ jobs:
 
       # Publish version to public repository
       - name: Release
-        run: npx release-it --ci
+        run: pnpx release-it --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

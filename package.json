@@ -22,14 +22,11 @@
         "lint:fix": "eslint --cache --ext .ts . --fix && prettier -c src test -w",
         "test:types": "tsc --noEmit --skipLibCheck",
         "test": "pnpm lint && pnpm test:types && jest --detectOpenHandles",
-        "docs:dev": "pnpm build && vitepress dev docs",
-        "docs:build": "pnpm build && vitepress build docs",
-        "docs:preview": "vitepress preview docs",
         "prepare": "husky install",
         "release": "release-it",
         "prepack": "pnpm build"
     },
-    "keywords": [],
+    "keywords": ["math","mathflow","js","interpreter"],
     "author": {
         "name": "Henry Hale",
         "url": "https://github.com/henryhale"
@@ -50,7 +47,6 @@
         "unbuild": "^2.0.0",
         "vitepress": "1.0.0-rc.35"
     },
-    "packageManager": "pnpm@8.14.0",
     "lint-staged": {
         "*.ts": "pnpm test"
     }

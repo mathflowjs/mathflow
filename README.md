@@ -1,12 +1,15 @@
 <div align=center>
 
-![](https://github.com/henryhale/mathflow/blob/master/docs/public/logo.svg)
+![](https://github.com/mathflowjs/mathflow/blob/master/docs/public/logo.svg)
 
 # MathFlow
 
 _Simplifying Math, Empowering Code._
 
 </div>
+
+>Note: This repository has been transfered from [henryhale](https://github.com/henryhale)/mathflow
+>to [mathflowjs](https://github.com/mathflowjs). Check out the [TODO.md](./TODO.md) file to view the roadmap of this project.
 
 ## Overview
 
@@ -29,6 +32,6 @@ Contributions are welcome to make MathFlow even better! Feel free to open issues
 
 ## License
 
-This project is licensed under the [MIT License](https://github.com/henryhale/mathflow/blob/master/LICENSE.md)
+This project is licensed under the [MIT License](https://github.com/mathflowjs/mathflow/blob/master/LICENSE.md)
 
 Copyright &copy; 2024-present, [Henry Hale](https://github.com/henryhale)
