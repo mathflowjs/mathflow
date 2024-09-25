@@ -2,18 +2,21 @@
 A list of features to add to mathflow - based on numpy, mathjs and more.
 
 ### **1. Numbers and Big Numbers**
-- [ ]  `add(a, b, ...)`: Adds all numbers.
-- [ ]  `sub(a, b)`: Subtracts the second number from the first.
-- [ ]  `mul(a, b, ...)`: Multiplies all numbers.
-- [ ]  `div(a, b)`: Divides the first number by the second.
-- [ ]  `mod(a, b)`: Returns the remainder of division of two numbers.
+- [x]  `add(a, b, ...)`: Adds all numbers.
+- [x]  `sub(a, b)`: Subtracts the second number from the first.
+- [x]  `mul(a, b, ...)`: Multiplies all numbers.
+- [x]  `div(a, b)`: Divides the first number by the second.
+- [x]  `mod(a, b)`: Returns the remainder of division of two numbers.
 - [x]  `abs(x)`: Returns the absolute value of a number.
 - [x]  `ceil(x)`: Rounds a number up to the nearest integer.
 - [x]  `floor(x)`: Rounds a number down to the nearest integer.
-- [ ]  `round(x, n?)`: Rounds a number to the nearest integer or to `n` decimal places.
 - [x]  `sign(x)`: Returns the sign of a number: `-1`, `0`, or `1`.
 - [x]  `sqrt(x)`: Returns the square root of a number.
-- [ ]  `pow(x, y)`: Raises `x` to the power of `y`.
+- [x]  `pow(x, y)`: Raises `x` to the power of `y`.
+- [x]  `cbrt(x)`: Computes the cube root of a number.
+- [x]  `root(x, n)`: Computes the n-th root of a number.
+- [x]  `trunc(x)`: Removes the fractional part of a number, leaving the integer part.
+- [ ]  `round(x, n?)`: Rounds a number to the nearest integer or to `n` decimal places.
 - [ ]  `gcd(a, b, ...)`: Calculates the greatest common divisor of all numbers.
 - [ ]  `lcm(a, b, ...)`: Computes the least common multiple of all numbers.
 - [ ]  `rand(min?, max?)`: Generates a random number within a specified range.
@@ -21,11 +24,8 @@ A list of features to add to mathflow - based on numpy, mathjs and more.
 - [ ]  `complex(re, im)`: Creates a complex number with real and imaginary parts.
 - [ ]  `bignumber(x)`: Creates a big number with arbitrary precision.
 - [ ]  `fraction(x)`: Creates a fraction from a number or a string.
-- [ ]  `root(x, n)`: Computes the n-th root of a number.
-- [x]  `cbrt(x)`: Computes the cube root of a number.
 - [ ]  `clamp(x, min, max)`: Clamps a value between a minimum and maximum value.
 - [ ]  `modExp(base, exponent, modulus)`: Computes the modular exponentiation of a number.
-- [x]  `trunc(x)`: Removes the fractional part of a number, leaving the integer part.
 - [ ]  `fix(x)`: Rounds towards zero, removing the fractional part.
 - [ ]  `precision(x, n)`: Adjusts a number to `n` significant digits.
 - [ ]  `sigFigs(x, n)`: Rounds a number to `n` significant figures.
@@ -121,9 +121,11 @@ A list of features to add to mathflow - based on numpy, mathjs and more.
 - [x]  `asinh(x)`: Computes the inverse hyperbolic sine of a value.
 - [x]  `acosh(x)`: Computes the inverse hyperbolic cosine of a value.
 - [x]  `atanh(x)`: Computes the inverse hyperbolic tangent of a value.
-- [ ]  `hypot(a, b, ...)`: Computes the square root of the sum of squares (Euclidean norm).
-- [ ]  `versin(x)`: Computes the versine of an angle.
-- [ ]  `coversin(x)`: Computes the coversine of an angle.
+- [x]  `hypot(a, b, ...)`: Computes the square root of the sum of squares (Euclidean norm).
+- [x]  `versin(x)`: Computes the versine of an angle (in radians).
+- [x]  `versind(x)`: Computes the versine of an angle (in degrees).
+- [x]  `coversin(x)`: Computes the coversine of an angle (in radians).
+- [x]  `coversin(x)`: Computes the coversine of an angle (in degrees).
 
 ### **7. Calculus**
 - [ ]  `derivative(expr, variable)`: Calculates the derivative of an expression.
@@ -160,7 +162,8 @@ A list of features to add to mathflow - based on numpy, mathjs and more.
 
 ### **11. Exponential and Logarithmic Functions**
 - [x]  `exp(x)`: Computes `e` raised to the power of `x`.
-- [ ]  `log(x, base?)`: Computes the logarithm of `x` with an optional base (defaults to natural log).
+- [x]  `ln(x)`: Computes the natural logarithm of `x`.
+- [x]  `log(x, base)`: Computes the logarithm of `x` with a specified `base`.
 - [x]  `log10(x)`: Computes the base-10 logarithm of `x`.
 - [x]  `log2(x)`: Computes the base-2 logarithm of `x`.
 - [ ]  `pow10(exp)`: Computes `10` raised to the power of `exp`.
