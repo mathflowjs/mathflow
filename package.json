@@ -21,8 +21,8 @@
         "lint": "eslint --cache src test && prettier src test --check",
         "lint:fix": "eslint --cache src test --fix && prettier src test --write",
         "test:types": "tsc --noEmit --skipLibCheck",
-        "test": "pnpm lint && pnpm test:types && jest --detectOpenHandles",
-        "test:dev": "jest --detectOpenHandles",
+        "test": "pnpm lint && pnpm test:types && jest test",
+        "test:dev": "jest test",
         "prepare": "husky install",
         "release": "release-it",
         "prepack": "pnpm build"
