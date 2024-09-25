@@ -132,22 +132,25 @@ export function interpret(
 
             break;
         }
+
         case TokenType.Function: {
             // first evaluate the argument expression
             // e.g sin(15 + 15) - handle (15 + 15) first
-            result = interpret(node.argument as Node, scope, solution);
-            result = roundOff(result);
+            const args = Array.isArray(node.arguments)
+                ? node.arguments.map((arg) => interpret(arg, scope, []))
+                : [];
 
             solution.push(`#${++id}`);
             solution.push(`${node.name}(#${id})`);
 
             // execute the keyword handler
-            result = FUNCTIONS[node.name as string](result);
+            result = FUNCTIONS[node.name as string](...args);
             result = roundOff(result);
 
             solution.push(`${result}`);
             break;
         }
+
         case TokenType.Constant: {
             result = CONSTANTS[node.name as string];
             result = roundOff(result);
@@ -155,6 +158,7 @@ export function interpret(
             solution.push(`${result}`);
             break;
         }
+
         case TokenType.Identifier: {
             // get variable value, fallback to default value
             result = scope.variables[node.name as string] || DEFAULT_VALUE;
@@ -162,6 +166,7 @@ export function interpret(
             solution.push(`${result}`);
             break;
         }
+
         default: {
             throw new Error(`Unknown node type: ${node.type}`);
         }

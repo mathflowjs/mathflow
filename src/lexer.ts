@@ -3,19 +3,15 @@ import { matchValue } from './helpers';
 
 export enum TokenType {
     Number,
-
     UnaryOperator,
     BinaryOperator,
-
     OpenParen,
     ClosedParen,
-
     Identifier,
-
     Constant,
     Function,
-
-    EOF
+    EOF,
+    Comma
 }
 
 export type Token = {
@@ -71,8 +67,19 @@ function isSkippable(char: string): boolean {
 export function tokenize(expr: string): Token[] {
     const tokens = new Array<Token>();
     let index = 0;
-    let openParen = false;
     let sign = '';
+    const paren = {
+        stack: [] as boolean[],
+        get active() {
+            return !!this.stack.at(-1);
+        },
+        open() {
+            this.stack.push(true);
+        },
+        close() {
+            this.stack.pop();
+        }
+    };
 
     function extractNumber(): string {
         // build a multiple digit number with floating points if any
@@ -105,11 +112,13 @@ export function tokenize(expr: string): Token[] {
 
     while (index < expr.length) {
         if (expr[index] === '(') {
-            openParen = true;
+            paren.open();
             tokens.push(createToken(expr[index++], TokenType.OpenParen));
         } else if (expr[index] === ')') {
-            openParen = false;
+            paren.close();
             tokens.push(createToken(expr[index++], TokenType.ClosedParen));
+        } else if (expr[index] === ',' && paren.active) {
+            tokens.push(createToken(expr[index++], TokenType.Comma));
         } else if (isBinaryOperator(expr[index])) {
             // capture operator's sign incase of unary operator - signed number
             if (
@@ -134,9 +143,7 @@ export function tokenize(expr: string): Token[] {
             // incase this is a signed number
             tokens.push(createToken(sign + num, TokenType.Number));
             // reset the sign
-            if (sign) {
-                sign = '';
-            }
+            sign = '';
         } else if (isAlpha(expr[index])) {
             // build a multicharacter indentifier
             const identifier = extractString();
@@ -168,7 +175,7 @@ export function tokenize(expr: string): Token[] {
     }
 
     // incase there is no closing bracket
-    if (openParen) {
+    if (paren.active) {
         throw new Error('Unexpected end of expression: ' + expr);
     }
 
