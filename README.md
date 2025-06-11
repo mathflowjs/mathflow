@@ -9,7 +9,7 @@ _Simplifying Math, Empowering Code._
 </div>
 
 >Note: This repository has been transfered from [henryhale](https://github.com/henryhale)/mathflow
->to [mathflowjs](https://github.com/mathflowjs). Check out the [TODO.md](./TODO.md) file to view the roadmap of this project.
+>to [mathflowjs](https://github.com/mathflowjs). Check out the [TODO.md](https://github.com/mathflowjs/mathflow/blob/master/TODO.md) file to view the roadmap of this project.
 
 ## Overview
 
