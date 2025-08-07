@@ -1,4 +1,35 @@
-import { isAlpha, isBinaryOperator } from './lexer';
+import { isBinaryOperator, isAlpha } from "../lexer/tokens";
+
+export type Solution = ReturnType<typeof createSolutionStack>
+
+export function createSolutionStack() {
+    // tokenize results from evaluated expressions
+    let id: number = 0;
+
+    const parts: string[] = [];
+
+    function advance() {
+        parts.push(`#${++id}`);
+    }
+
+    function push(value: string | number) {
+        parts.push(value.toString());
+    }
+
+    function reset() {
+        id = 0
+    }
+
+    return {
+        get steps() {
+            return buildSolution(parts);
+        },
+        get id() { return id },
+        reset,
+        push,
+        advance
+    };
+}
 
 type MapTerm = {
     [k: string]: {
@@ -7,18 +38,8 @@ type MapTerm = {
     };
 };
 
-function removeExtraParen(t: string): string {
-    t = t.replace(/\(\((.*)\)\)/g, (m, x) => {
-        return x.includes('(') ? m : m.slice(1, -1);
-    });
-    return t.startsWith('(') ? t.slice(1, -1) : t;
-}
-
-/**
- * Refine the raw list of strings into well-defined steps
- */
-export function generateSolution(raw: string[]): string[] {
-    // console.log('raw:', raw);
+export function buildSolution(raw: string[]): string[] {
+    console.log('raw:', raw);
 
     if (!raw.includes('#1') || raw.length < 2) {
         return raw
@@ -45,7 +66,7 @@ export function generateSolution(raw: string[]): string[] {
         }
     }
 
-    // console.log(map);
+    console.log(map);
 
     const solution: string[] = [];
 
@@ -72,7 +93,14 @@ export function generateSolution(raw: string[]): string[] {
 
     solution.push(raw.at(-1) as string);
 
-    // console.log('sln:', solution);
+    console.log('sln:', solution);
 
     return solution.map((step) => removeExtraParen(step));
+}
+
+function removeExtraParen(t: string): string {
+    t = t.replace(/\(\((.*)\)\)/g, (m, x) => {
+        return x.includes('(') ? m : m.slice(1, -1);
+    });
+    return t.startsWith('(') ? t.slice(1, -1) : t;
 }
