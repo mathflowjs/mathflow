@@ -1,59 +1,73 @@
-import { parse } from '../src/parser';
-import { TokenType, tokenize } from '../src/lexer';
+import { describe, test, expect, beforeEach } from 'vitest'
+import { tokenize } from '../src/lexer';
+import { Context, createContext } from '../src/context';
+import { NODE, parse } from '../src/parser';
+
+let ctx: Context
+
+beforeEach(() => {
+    ctx = createContext()
+})
 
 describe('parser', () => {
-    test('invalid expressions', () => {
-        expect(() => parse(tokenize(`2 +`))).toThrow();
-        expect(() => parse(tokenize(`add(2),`))).toThrow();
-        expect(() => parse(tokenize(`add(2,)`))).toThrow();
-    });
     test('parsing tokens', () => {
-        expect(parse(tokenize('1+2'))).toMatchObject({
-            left: { type: TokenType.Number, value: '1' },
-            right: { type: TokenType.Number, value: '2' },
-            operator: '+',
-            type: TokenType.BinaryOperator
+        expect(parse(tokenize(ctx, '1+2'))).toMatchObject({
+            type: NODE.PROGRAM, body: [{
+                left: { type: NODE.LITERAL, value: '1' },
+                right: { type: NODE.LITERAL, value: '2' },
+                value: '+',
+                type: NODE.BINARY
+            }]
         });
 
-        const expr = `1 + add(2 + 3, 4 + 5)`;
-        expect(() => parse(tokenize(expr))).not.toThrow();
-        expect(parse(tokenize(expr))).toMatchObject({
-            type: TokenType.BinaryOperator,
-            operator: '+',
-            left: {
-                value: '1',
-                type: TokenType.Number
-            },
-            right: {
-                type: TokenType.Function,
-                name: 'add',
-                arguments: [
-                    {
-                        type: TokenType.BinaryOperator,
-                        operator: '+',
-                        left: {
-                            value: '2',
-                            type: TokenType.Number
+        const expr = `1 + add(x - 3, 4 + 5)`;
+        expect(parse(tokenize(ctx, expr))).toMatchObject({
+            type: NODE.PROGRAM, body: [{
+                type: NODE.BINARY,
+                value: '+',
+                left: {
+                    value: '1',
+                    type: NODE.LITERAL
+                },
+                right: {
+                    type: NODE.CALL,
+                    arguments: [
+                        {
+                            type: NODE.BINARY,
+                            value: '-',
+                            left: {
+                                value: 'x',
+                                type: NODE.IDENTIFIER
+                            },
+                            right: {
+                                value: '3',
+                                type: NODE.LITERAL
+                            }
                         },
-                        right: {
-                            value: '3',
-                            type: TokenType.Number
+                        {
+                            type: NODE.BINARY,
+                            value: '+',
+                            left: {
+                                value: '4',
+                                type: NODE.LITERAL
+                            },
+                            right: {
+                                value: '5',
+                                type: NODE.LITERAL
+                            }
                         }
-                    },
-                    {
-                        type: TokenType.BinaryOperator,
-                        operator: '+',
-                        left: {
-                            value: '4',
-                            type: TokenType.Number
-                        },
-                        right: {
-                            value: '5',
-                            type: TokenType.Number
-                        }
-                    }
-                ]
-            }
+                    ]
+                }
+            }]
         });
     });
+    test('invalid token streams', () => {
+        expect(() => {
+            const tokens = tokenize(ctx, 'y = 2x^3 + sqrt(25) - abs(-10) * cos(0)')
+            // corrupt the tokens - remove last 4 tokens
+            tokens.splice(tokens.length - 4)
+            // try parsing
+            parse(tokens)
+        }).toThrow()
+    })
 });
