@@ -125,8 +125,27 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
                     `invalid operation: '${node.left!.value}' is a constant`
                 );
             }
-            result = evaluate(ctx, node.right!, solution);
-            ctx.variables.set(node.left!.value, result);
+
+            // build solution like binary ops
+
+            let partial = `${node.left!.value} ${node.value} `
+
+            // compute node.right
+            right = evaluate(ctx, node.right!, solution);
+
+            // build node.right solution
+            const trackRight =
+                node.right?.type === NODE.BINARY ||
+                node.right?.type === NODE.CALL;
+            if (trackRight) solution.advance();
+            partial += `${trackRight ? '#' + solution.id : right}`;
+
+            solution.push(partial);
+
+            result = right
+            ctx.variables.set(node.left!.value, right);
+
+            solution.push(result);
             break;
         }
 
