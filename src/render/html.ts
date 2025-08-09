@@ -65,6 +65,11 @@ export function renderTokensAsHTML(
             ? ` data-position="${token.position}" data-line="${token.line}" data-column="${token.column}"`
             : '';
 
+        // skip EOF or implicit token
+        if (token.type === TOKEN.EOF || token.implicit) {
+            return ''
+        }
+
         // handle special cases
         if (token.type === TOKEN.NEWLINE) {
             return value; // just return <br> for newlines
@@ -73,14 +78,14 @@ export function renderTokensAsHTML(
         // handle exponentiation with superscript
         if (token.type === TOKEN.OPERATOR && token.value === SYMBOL.POW) {
             const nextToken = tokens[index + 1];
-            if (nextToken && nextToken.type === TOKEN.NUMBER) {
-                // skip this token, let the number be rendered as superscript by the next iteration
+            if (nextToken && (nextToken.type === TOKEN.NUMBER || nextToken.type === TOKEN.IDENTIFIER)) {
+                // skip this token, let the number/identifier be rendered as superscript by the next iteration
                 return '';
             }
         }
 
         // handle superscript numbers after exponentiation
-        if (token.type === TOKEN.NUMBER && index > 0) {
+        if (index > 0 && (token.type === TOKEN.NUMBER || token.type === TOKEN.IDENTIFIER)) {
             const prevToken = tokens[index - 1];
             if (
                 prevToken &&
