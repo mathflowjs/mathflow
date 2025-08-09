@@ -45,7 +45,7 @@ export function tokenize(ctx: Context, code: string): Token[] {
         return ctx.functions.has(id);
     }
 
-    function advance(stage: string) {
+    function advance() {
         if (code[position] === SYMBOL.NEWLINE) {
             line++;
             column = 1;
@@ -53,8 +53,6 @@ export function tokenize(ctx: Context, code: string): Token[] {
             column++;
         }
         position++;
-        stage.slice();
-        // console.log(stage, position - 1, 'next', position);
     }
 
     function addToken(type: TOKEN, value: string) {
@@ -77,7 +75,7 @@ export function tokenize(ctx: Context, code: string): Token[] {
             x = code[position];
             if (isDigit(x)) {
                 num += x;
-                advance('num');
+                advance();
             } else if (
                 x === SYMBOL.DOT &&
                 !hasDot &&
@@ -86,7 +84,7 @@ export function tokenize(ctx: Context, code: string): Token[] {
             ) {
                 hasDot = true;
                 num += x;
-                advance('num');
+                advance();
             } else if (
                 x.toLowerCase() === SYMBOL.EXPONENT &&
                 !hasExponent &&
@@ -94,7 +92,7 @@ export function tokenize(ctx: Context, code: string): Token[] {
             ) {
                 hasExponent = true;
                 num += x;
-                advance('num');
+                advance();
             } else {
                 break;
             }
@@ -119,7 +117,7 @@ export function tokenize(ctx: Context, code: string): Token[] {
             if (isAlpha(c) || (hasChar && isDigit(c))) {
                 hasChar = true;
                 str += c;
-                advance('identifier');
+                advance();
             } else {
                 break;
             }
@@ -184,18 +182,18 @@ export function tokenize(ctx: Context, code: string): Token[] {
             if (char === SYMBOL.NEWLINE) {
                 addToken(TOKEN.NEWLINE, char);
             }
-            advance('whitespace');
+            advance();
         } else if (char === SYMBOL.LPAREN) {
             parenStack.push();
             addToken(TOKEN.LPAREN, char);
-            advance('lparen');
+            advance();
         } else if (char === SYMBOL.RPAREN && parenStack.active) {
             parenStack.pop();
             addToken(TOKEN.RPAREN, char);
-            advance('rparen');
+            advance();
         } else if (char === SYMBOL.COMMA && parenStack.active) {
             addToken(TOKEN.COMMA, char);
-            advance('comma');
+            advance();
         } else if (
             char === SYMBOL.EQUAL &&
             !parenStack.active &&
@@ -203,10 +201,10 @@ export function tokenize(ctx: Context, code: string): Token[] {
             tokens.at(-1)?.type === TOKEN.IDENTIFIER
         ) {
             addToken(TOKEN.ASSIGNMENT, char);
-            advance('assign');
+            advance();
         } else if (isBinaryOperator(char)) {
             addToken(TOKEN.OPERATOR, char);
-            advance('operator');
+            advance();
         } else if (isDigit(char)) {
             char = extractNumber();
             addToken(TOKEN.NUMBER, char);

@@ -249,7 +249,6 @@ export function parse(tokens: Token[]) {
         }
 
         const nearestToken = stream.current || stream.previous;
-        console.log('current', stream.current, 'previous', stream.previous);
         throw createError(
             ERRORS.SYNTAX,
             `unexpected token near '${nearestToken.value}' at ${nearestToken.line}:${nearestToken.column}`
