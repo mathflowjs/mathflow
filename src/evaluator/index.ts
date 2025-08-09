@@ -31,11 +31,9 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
     let right: number;
 
     function toNumber(value: string | number) {
-        value = Number(value).toPrecision(
-            ctx.preferences.precision
-        )
+        value = Number(value).toPrecision(ctx.preferences.precision);
         value = Number(value).toFixed(ctx.preferences.fractionDigits);
-        return Number.parseFloat(value)
+        return Number.parseFloat(value);
     }
 
     switch (node.type) {
@@ -128,7 +126,7 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
 
             // build solution like binary ops
 
-            let partial = `${node.left!.value} ${node.value} `
+            let partial = `${node.left!.value} ${node.value} `;
 
             // compute node.right
             right = evaluate(ctx, node.right!, solution);
@@ -142,7 +140,7 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
 
             solution.push(partial);
 
-            result = right
+            result = right;
             ctx.variables.set(node.left!.value, right);
 
             solution.push(result);

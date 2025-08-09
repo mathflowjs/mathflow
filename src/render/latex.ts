@@ -135,7 +135,7 @@ function handleSpecialCases(
 }
 
 /**
- * Generate LaTeX representation of the expression from tokens  
+ * Generate LaTeX representation of the expression from tokens
  * - _experimental_
  */
 export function renderTokensAsLaTeX(

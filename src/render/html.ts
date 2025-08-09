@@ -42,7 +42,7 @@ function formatTokenValue(token: Token): string {
 }
 
 /**
- * Generate HTML representation of the expression from tokens  
+ * Generate HTML representation of the expression from tokens
  * - _experimental_
  */
 export function renderTokensAsHTML(
@@ -70,7 +70,7 @@ export function renderTokensAsHTML(
 
         // skip EOF or implicit token
         if (token.type === TOKEN.EOF || token.implicit) {
-            return ''
+            return '';
         }
 
         // handle special cases
@@ -81,14 +81,21 @@ export function renderTokensAsHTML(
         // handle exponentiation with superscript
         if (token.type === TOKEN.OPERATOR && token.value === SYMBOL.POW) {
             const nextToken = tokens[index + 1];
-            if (nextToken && (nextToken.type === TOKEN.NUMBER || nextToken.type === TOKEN.IDENTIFIER)) {
+            if (
+                nextToken &&
+                (nextToken.type === TOKEN.NUMBER ||
+                    nextToken.type === TOKEN.IDENTIFIER)
+            ) {
                 // skip this token, let the number/identifier be rendered as superscript by the next iteration
                 return '';
             }
         }
 
         // handle superscript numbers after exponentiation
-        if (index > 0 && (token.type === TOKEN.NUMBER || token.type === TOKEN.IDENTIFIER)) {
+        if (
+            index > 0 &&
+            (token.type === TOKEN.NUMBER || token.type === TOKEN.IDENTIFIER)
+        ) {
             const prevToken = tokens[index - 1];
             if (
                 prevToken &&
