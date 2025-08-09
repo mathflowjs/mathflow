@@ -7,6 +7,8 @@ export type TEXRenderOptions = {
 const characterMap: Record<string, string> = {
     '=': ' = ',
     ',': ', ',
+    '(': '\\left(',
+    ')': '\\right)',
     '*': ' \\cdot ',
     '/': ' \\div ',
     asin: '\\arcsin',
@@ -21,7 +23,7 @@ const characterMap: Record<string, string> = {
     max: '\\max',
     log: '\\log',
     ln: '\\ln',
-    infinity: '\\infty',
+    Infinity: '\\infty',
     pi: '\\pi'
 };
 
@@ -30,8 +32,6 @@ function formatTokenValue(
     mode: TEXRenderOptions['mode']
 ): string {
     if (characterMap[token.value]) return characterMap[token.value];
-    if (token.type === TOKEN.LPAREN) return '\\left(';
-    if (token.type === TOKEN.RPAREN) return '\\right)';
     if (token.type === TOKEN.FUNCTION) {
         return `\\text{${token.value}}`;
     }
@@ -134,7 +134,10 @@ function handleSpecialCases(
     return result.join('');
 }
 
-// Generate LaTeX representation of the expression from tokens
+/**
+ * Generate LaTeX representation of the expression from tokens  
+ * - _experimental_
+ */
 export function renderTokensAsLaTeX(
     tokens: Token[],
     options: Partial<TEXRenderOptions> = {}
