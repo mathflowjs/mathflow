@@ -31,11 +31,11 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
     let right: number;
 
     function toNumber(value: string | number) {
-        return Number(
-            Number.parseFloat(value.toString()).toPrecision(
-                ctx.preferences.precision
-            )
-        );
+        value = Number(value).toPrecision(
+            ctx.preferences.precision
+        )
+        value = Number(value).toFixed(ctx.preferences.fractionDigits);
+        return Number.parseFloat(value)
     }
 
     switch (node.type) {

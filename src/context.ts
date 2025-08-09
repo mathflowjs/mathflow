@@ -1,6 +1,7 @@
 import { addBuiltinFunctions, type ComputeFunction } from './functions';
 
 type Preferences = {
+    fractionDigits: number;
     precision: number;
     angles: 'rad' | 'deg';
     [k: string]: string | number;
@@ -32,6 +33,7 @@ export function createContext(options: Partial<ContextOptions> = {}): Context {
         variables: new Map(),
         functions: new Map(),
         preferences: {
+            fractionDigits: 15,
             precision: 15,
             angles: 'rad'
         },
