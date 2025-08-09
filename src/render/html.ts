@@ -108,48 +108,47 @@ export function renderTokensAsHTML(
 
 const generateHTMLStyles = (prefix: string) => {
     return `
-        .${prefix}-expression,
         .${prefix}-expression.${prefix}-light {
-            --fg: #111827;
-            --bg: #f9fafb;
-            --border: #e5e7eb;
+            --${prefix}-fg: #111827;
+            --${prefix}-bg: #f9fafb;
+            --${prefix}-border: #e5e7eb;
 
-            --number: #22c55e;
-            --identifier: #3b82f6;
-            --operator: #ef4444;
-            --assignment: #f59e0b;
-            --paren: #8b5cf6;
-            --function: #ec4899;
-            --comma: #64748b;
+            --${prefix}-number: #22c55e;
+            --${prefix}-identifier: #3b82f6;
+            --${prefix}-operator: #ef4444;
+            --${prefix}-assignment: #f59e0b;
+            --${prefix}-paren: #8b5cf6;
+            --${prefix}-function: #ec4899;
+            --${prefix}-comma: #64748b;
         }
 
         .${prefix}-expression.${prefix}-dark {
-            --fg: #f3f4f6;
-            --bg: #1f2937;
-            --border: #374151;
+            --${prefix}-fg: #f3f4f6;
+            --${prefix}-bg: #1f2937;
+            --${prefix}-border: #374151;
 
-            --number: #60a5fa;
-            --identifier: #a78bfa;
-            --operator: #f87171;
-            --assignment: #34d399;
-            --paren: #9ca3af;
-            --function: #fdba74;
-            --comma: #9ca3af;
+            --${prefix}-number: #60a5fa;
+            --${prefix}-identifier: #a78bfa;
+            --${prefix}-operator: #f87171;
+            --${prefix}-assignment: #34d399;
+            --${prefix}-paren: #9ca3af;
+            --${prefix}-function: #fdba74;
+            --${prefix}-comma: #9ca3af;
         }
 
         @media (prefers-color-scheme: dark) {
             .${prefix}-expression.${prefix}-auto {
-                --fg: #f3f4f6;
-                --bg: #1f2937;
-                --border: #374151;
+                --${prefix}-fg: #f3f4f6;
+                --${prefix}-bg: #1f2937;
+                --${prefix}-border: #374151;
 
-                --number: #60a5fa;
-                --identifier: #a78bfa;
-                --operator: #f87171;
-                --assignment: #34d399;
-                --paren: #9ca3af;
-                --function: #fdba74;
-                --comma: #9ca3af;
+                --${prefix}-number: #60a5fa;
+                --${prefix}-identifier: #a78bfa;
+                --${prefix}-operator: #f87171;
+                --${prefix}-assignment: #34d399;
+                --${prefix}-paren: #9ca3af;
+                --${prefix}-function: #fdba74;
+                --${prefix}-comma: #9ca3af;
             }
         }
 
@@ -159,53 +158,53 @@ const generateHTMLStyles = (prefix: string) => {
             line-height: 1.6;
             padding: 12px 16px;
             border-radius: 6px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--fg);
+            background: var(--${prefix}-bg, transparent);
+            border: 1px solid var(--${prefix}-border);
+            color: var(--${prefix}-fg, currentColor);
+            overflow: auto;
         }
       
         .${prefix}-token {
-            margin: 0 1px;
+            margin: 0;
             transition: background-color 0.2s ease;
         }
       
         .${prefix}-token:hover {
-            background-color: var(--border);
+            background-color: var(--${prefix}-border, transparent);
             border-radius: 2px;
+            cursor: default;
         }
       
         .${prefix}-number {
-            color: var(--${prefix}-number);
-            font-weight: 600;
+            color: var(--${prefix}-number, currentColor);
         }
         .${prefix}-identifier {
-            color: var(--${prefix}-identifier);
+            color: var(--${prefix}-identifier, currentColor);
             font-style: italic;
         }
         .${prefix}-operator {
-            color: var(--${prefix}-operator);
-            font-weight: bold;
+            color: var(--${prefix}-operator, currentColor);
+            font-weight: semibold;
         }
         .${prefix}-assignment {
-            color: var(--${prefix}-assignment);
-            font-weight: bold;
+            color: var(--${prefix}-assignment, currentColor);
+            font-weight: semibold;
         }
         .${prefix}-paren {
-            color: var(--${prefix}-paren);
-            font-weight: bold;
-            font-size: 1.1em;
+            color: var(--${prefix}-paren, currentColor);
+            font-weight: semibold;
         }
         .${prefix}-function {
-            color: var(--${prefix}-function);
-            font-weight: 600;
+            color: var(--${prefix}-function, currentColor);
+            font-weight: medium;
         }
         .${prefix}-comma {
-            color: var(--${prefix}-comma);
+            color: var(--${prefix}-comma, currentColor);
         }
       
         .${prefix}-position {
             font-size: 0.7em;
-            color: var(--fg);
+            color: var(--${prefix}-fg, currentColor);
             margin-left: 4px;
             vertical-align: super;
         }
