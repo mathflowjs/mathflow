@@ -1,4 +1,5 @@
 export enum SYMBOL {
+    COMMENT = '#',
     NEWLINE = '\n',
     LPAREN = '(',
     RPAREN = ')',
@@ -46,6 +47,7 @@ export interface Token<T = TOKEN> {
     position: number;
     line: number;
     column: number;
+    implicit?: boolean;
 }
 
 /**

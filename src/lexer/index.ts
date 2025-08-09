@@ -172,7 +172,8 @@ export function tokenize(ctx: Context, code: string): Token[] {
             value: SYMBOL.MUL,
             line,
             column,
-            position
+            position,
+            implicit: true
         });
     }
 
