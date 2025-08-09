@@ -41,7 +41,7 @@ type MapTerm = {
 };
 
 export function buildSolution(raw: string[]): string[] {
-    console.log('raw:', raw);
+    // console.log('raw:', raw);
 
     if (!raw.includes('#1') || raw.length < 2) {
         return raw
@@ -68,15 +68,15 @@ export function buildSolution(raw: string[]): string[] {
         }
     }
 
-    console.log(map);
+    // console.log(map);
 
     const solution: string[] = [];
 
     function step(str: string, box: string[]) {
         let tmp = str;
         if (str) {
-            tmp = str.replaceAll(/#\d/g, (m) => map[m]?.result || '');
-            str = str.replaceAll(/#\d/g, (m) => {
+            tmp = str.replaceAll(/#\d+/g, (m) => map[m]?.result || '');
+            str = str.replaceAll(/#\d+/g, (m) => {
                 return map[m]?.expr || map[m]?.result || '';
             });
             if (tmp !== str) {
@@ -95,7 +95,7 @@ export function buildSolution(raw: string[]): string[] {
 
     solution.push(raw.at(-1) as string);
 
-    console.log('sln:', solution);
+    // console.log('sln:', solution);
 
     return solution.map((step) => removeExtraParen(step));
 }
