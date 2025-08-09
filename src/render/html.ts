@@ -2,20 +2,20 @@ import { isBinaryOperator, SYMBOL, type Token, TOKEN } from '../lexer/tokens';
 
 export type HTMLRenderOptions = {
     classPrefix: string;
-    colorScheme: 'auto' | 'light' | 'dark';
+    colorScheme: 'none' | 'auto' | 'light' | 'dark';
     includeDebugInfo: boolean;
 };
 
 const characterMap: Record<string, string> = {
     '^': '', // will be handled specially for superscript
     '-': '&minus;',
-    '*': '&times;',
+    '*': '&middot;',
     '/': '&divide;',
     '=': '&equals;',
     '+': '&plus;',
     '\n': '<br>',
     pi: '&pi;',
-    sqrt: '&sqrt;',
+    sqrt: '&Sqrt;',
     Infinity: '&infin;'
 };
 
@@ -41,14 +41,17 @@ function formatTokenValue(token: Token): string {
     return value;
 }
 
-// Generate HTML representation of the expression from tokens
+/**
+ * Generate HTML representation of the expression from tokens  
+ * - _experimental_
+ */
 export function renderTokensAsHTML(
     tokens: Token[],
     options: Partial<HTMLRenderOptions> = {}
 ) {
     const config: HTMLRenderOptions = {
         classPrefix: options.classPrefix || 'mf',
-        colorScheme: options.colorScheme || 'auto',
+        colorScheme: options.colorScheme || 'none',
         includeDebugInfo: options.includeDebugInfo || false,
         ...options
     };
