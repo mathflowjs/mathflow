@@ -36,6 +36,11 @@ export function tokenize(ctx: Context, code: string): Token[] {
     const parenStack = createParenStack();
     const tokens: Token[] = [];
 
+    // remove all comments
+    code += SYMBOL.NEWLINE
+    code = code.replace(/\n\s*#.*\n/g, "\n\n")
+    code = code.replace(/\s*#.*\n/g, "\n")
+
     function isFunction(id: string) {
         return ctx.functions.has(id);
     }
