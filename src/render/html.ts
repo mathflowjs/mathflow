@@ -116,6 +116,7 @@ export function renderTokensAsHTML(
 
 const generateHTMLStyles = (prefix: string) => {
     return `
+        .${prefix}-expression.${prefix}-auto,
         .${prefix}-expression.${prefix}-light {
             --${prefix}-fg: #111827;
             --${prefix}-bg: #f9fafb;
