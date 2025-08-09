@@ -1,10 +1,10 @@
-import { isBinaryOperator, SYMBOL, type Token, TOKEN } from "../lexer/tokens";
+import { isBinaryOperator, SYMBOL, type Token, TOKEN } from '../lexer/tokens';
 
 export type HTMLRenderOptions = {
-    classPrefix: string
-    colorScheme: 'auto' | 'light' | 'dark'
-    includeDebugInfo: boolean
-}
+    classPrefix: string;
+    colorScheme: 'auto' | 'light' | 'dark';
+    includeDebugInfo: boolean;
+};
 
 const characterMap: Record<string, string> = {
     '^': '', // will be handled specially for superscript
@@ -29,20 +29,23 @@ const typeClasses: Record<string, string> = {
     [TOKEN.FUNCTION]: 'function',
     [TOKEN.COMMA]: 'comma',
     [TOKEN.NEWLINE]: 'newline'
-}
-
-function formatTokenValue(token: Token): string {
-    let value = characterMap[token.value] || token.value
-    if (isBinaryOperator(token.value) || token.type === TOKEN.ASSIGNMENT) {
-        value = `&nbsp;${value}&nbsp;`
-    } else if (token.type === TOKEN.COMMA) {
-        value = `${value}&nbsp;`
-    }
-    return value
 };
 
-// Generate HTML representation of the expression from tokens 
-export function renderTokensAsHTML(tokens: Token[], options: Partial<HTMLRenderOptions> = {}) {
+function formatTokenValue(token: Token): string {
+    let value = characterMap[token.value] || token.value;
+    if (isBinaryOperator(token.value) || token.type === TOKEN.ASSIGNMENT) {
+        value = `&nbsp;${value}&nbsp;`;
+    } else if (token.type === TOKEN.COMMA) {
+        value = `${value}&nbsp;`;
+    }
+    return value;
+}
+
+// Generate HTML representation of the expression from tokens
+export function renderTokensAsHTML(
+    tokens: Token[],
+    options: Partial<HTMLRenderOptions> = {}
+) {
     const config: HTMLRenderOptions = {
         classPrefix: options.classPrefix || 'mf',
         colorScheme: options.colorScheme || 'auto',
@@ -51,15 +54,16 @@ export function renderTokensAsHTML(tokens: Token[], options: Partial<HTMLRenderO
     };
 
     const getTokenClass = (token: Token) => {
-        const tokenClass = typeClasses[token.type] || 'unknown'
+        const tokenClass = typeClasses[token.type] || 'unknown';
         return `${config.classPrefix}-token ${config.classPrefix}-${tokenClass}`;
     };
 
     const renderToken = (token: Token, index: number) => {
         const className = getTokenClass(token);
         const value = formatTokenValue(token);
-        const debugInfo = config.includeDebugInfo ?
-            ` data-position="${token.position}" data-line="${token.line}" data-column="${token.column}"` : '';
+        const debugInfo = config.includeDebugInfo
+            ? ` data-position="${token.position}" data-line="${token.line}" data-column="${token.column}"`
+            : '';
 
         // handle special cases
         if (token.type === TOKEN.NEWLINE) {
@@ -78,8 +82,11 @@ export function renderTokensAsHTML(tokens: Token[], options: Partial<HTMLRenderO
         // handle superscript numbers after exponentiation
         if (token.type === TOKEN.NUMBER && index > 0) {
             const prevToken = tokens[index - 1];
-            if (prevToken && prevToken.type === TOKEN.OPERATOR &&
-                prevToken.value === SYMBOL.POW) {
+            if (
+                prevToken &&
+                prevToken.type === TOKEN.OPERATOR &&
+                prevToken.value === SYMBOL.POW
+            ) {
                 return `<sup class="${className}"${debugInfo}>${value}</sup>`;
             }
         }
@@ -87,7 +94,7 @@ export function renderTokensAsHTML(tokens: Token[], options: Partial<HTMLRenderO
         return `<span class="${className}"${debugInfo}>${value}</span>`;
     };
 
-    const htmlTokens = tokens.map(renderToken).filter(token => token !== '');
+    const htmlTokens = tokens.map(renderToken).filter((token) => token !== '');
 
     const styles = generateHTMLStyles(config.classPrefix);
 
@@ -97,7 +104,7 @@ export function renderTokensAsHTML(tokens: Token[], options: Partial<HTMLRenderO
         ${htmlTokens.join('')}
       </div>
     `;
-};
+}
 
 const generateHTMLStyles = (prefix: string) => {
     return `

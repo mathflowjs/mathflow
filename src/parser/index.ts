@@ -23,10 +23,9 @@ function createTokenStream(tokens: Token[]) {
     return {
         get isEOF() {
             return (
-                this.current && this.current.type === TOKEN.EOF
-                ||
+                (this.current && this.current.type === TOKEN.EOF) ||
                 current >= tokens.length
-            )
+            );
         },
         get current() {
             return tokens[current];
@@ -48,16 +47,16 @@ export function parse(tokens: Token[]) {
     const stream = createTokenStream(tokens);
 
     function check(type: TOKEN): boolean {
-        if (stream.isEOF) return false
-        return stream.current.type === type
+        if (stream.isEOF) return false;
+        return stream.current.type === type;
     }
 
     // does current token match any given type
     function matchType(...types: TOKEN[]): boolean {
         for (const type of types) {
             if (check(type)) {
-                stream.advance()
-                return true
+                stream.advance();
+                return true;
             }
         }
         return false;
@@ -137,9 +136,7 @@ export function parse(tokens: Token[]) {
     function parseExpression() {
         let node = parseTerm();
 
-        while (
-            check(TOKEN.OPERATOR) && matchValue(SYMBOL.ADD, SYMBOL.SUB)
-        ) {
+        while (check(TOKEN.OPERATOR) && matchValue(SYMBOL.ADD, SYMBOL.SUB)) {
             const op = stream.previous;
             const factor = parseTerm();
 
@@ -159,7 +156,9 @@ export function parse(tokens: Token[]) {
         let node = parsePower();
 
         while (
-            !stream.isEOF && check(TOKEN.OPERATOR) && matchValue(SYMBOL.MUL, SYMBOL.DIV)
+            !stream.isEOF &&
+            check(TOKEN.OPERATOR) &&
+            matchValue(SYMBOL.MUL, SYMBOL.DIV)
         ) {
             const op = stream.previous;
             const factor = parsePower();
@@ -177,21 +176,21 @@ export function parse(tokens: Token[]) {
 
     // power - exponential
     function parsePower() {
-        const node = parseFactor()
+        const node = parseFactor();
 
         if (check(TOKEN.OPERATOR) && matchValue(SYMBOL.POW)) {
-            const op = stream.previous
-            const factor = parseFactor()
+            const op = stream.previous;
+            const factor = parseFactor();
 
             return {
                 ...op,
                 type: NODE.BINARY,
                 left: node,
                 right: factor
-            }
+            };
         }
 
-        return node
+        return node;
     }
 
     // atomic values
@@ -239,9 +238,9 @@ export function parse(tokens: Token[]) {
             stream.advance();
 
             do {
-                const arg = parseExpression()
-                if (arg) args.push(arg)
-            } while (!stream.isEOF && matchType(TOKEN.COMMA))
+                const arg = parseExpression();
+                if (arg) args.push(arg);
+            } while (!stream.isEOF && matchType(TOKEN.COMMA));
 
             // skip )
             stream.advance();

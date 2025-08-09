@@ -25,11 +25,7 @@ function compute(op: SYMBOL, a: number, b: number): number {
 /**
  * Run through the entire AST evaluating the expressions on each subtree left to right
  */
-export function evaluate(
-    ctx: Context,
-    node: Node,
-    solution: Solution
-): number {
+export function evaluate(ctx: Context, node: Node, solution: Solution): number {
     let result = 0;
     let left: number;
     let right: number;
@@ -46,7 +42,7 @@ export function evaluate(
         // handle both floats and integers
         case NODE.LITERAL: {
             result = toNumber(node.value);
-            solution?.push(result)
+            solution?.push(result);
             break;
         }
 
@@ -56,52 +52,58 @@ export function evaluate(
             right = evaluate(ctx, node.right!, solution);
             result = compute(node.value as SYMBOL, left, right);
 
-            solution.push(result)
+            solution.push(result);
             break;
         }
 
         // handle all binary operations
         case NODE.BINARY: {
             // build the solution in parts
-            let partial = ''
+            let partial = '';
 
             // compute node.left first
             left = evaluate(ctx, node.left!, solution);
 
             // build node.left solution
-            const trackLeft = node.left?.type === NODE.BINARY || node.left?.type === NODE.CALL
-            if (trackLeft) solution.advance()
-            partial = `(${trackLeft ? '#' + solution.id : left} ${node.value} `
+            const trackLeft =
+                node.left?.type === NODE.BINARY ||
+                node.left?.type === NODE.CALL;
+            if (trackLeft) solution.advance();
+            partial = `(${trackLeft ? '#' + solution.id : left} ${node.value} `;
 
             // compute node.right
             right = evaluate(ctx, node.right!, solution);
 
             // build node.right solution
-            const trackRight = node.right?.type === NODE.BINARY || node.right?.type === NODE.CALL
-            if (trackRight) solution.advance()
-            partial += `${trackRight ? '#' + solution.id : right})`
+            const trackRight =
+                node.right?.type === NODE.BINARY ||
+                node.right?.type === NODE.CALL;
+            if (trackRight) solution.advance();
+            partial += `${trackRight ? '#' + solution.id : right})`;
 
             // save solutions for both nodes - left & right
-            solution.push(partial)
+            solution.push(partial);
 
             // apply binary operator
             result = compute(node.value as SYMBOL, left, right);
 
             // save final result
-            solution.push(result)
+            solution.push(result);
             break;
         }
 
         case NODE.CALL: {
             // first evaluate the arguments
             // e.g. sin(15 + 15) - compute (15 + 15) first
-            const args = node.arguments!.map((arg) => evaluate(ctx, arg, solution));
+            const args = node.arguments!.map((arg) =>
+                evaluate(ctx, arg, solution)
+            );
             const fn = ctx.functions.get(node.value)!;
             result = fn(...args);
 
-            solution.advance()
-            solution.push(`${node.value}(#${solution.id})`)
-            solution.push(result)
+            solution.advance();
+            solution.push(`${node.value}(#${solution.id})`);
+            solution.push(result);
             break;
         }
 
@@ -112,7 +114,7 @@ export function evaluate(
                 result = ctx.variables.get(node.value) || 0;
             }
 
-            solution.push(result)
+            solution.push(result);
             break;
         }
 

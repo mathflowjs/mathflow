@@ -37,7 +37,7 @@ export function tokenize(ctx: Context, code: string): Token[] {
     const tokens: Token[] = [];
 
     function isFunction(id: string) {
-        return ctx.functions.has(id)
+        return ctx.functions.has(id);
     }
 
     function advance(stage: string) {

@@ -1,6 +1,6 @@
-import { isBinaryOperator, isAlpha } from "../lexer/tokens";
+import { isBinaryOperator, isAlpha } from '../lexer/tokens';
 
-export type Solution = ReturnType<typeof createSolutionStack>
+export type Solution = ReturnType<typeof createSolutionStack>;
 
 export function createSolutionStack() {
     // tokenize results from evaluated expressions
@@ -17,14 +17,16 @@ export function createSolutionStack() {
     }
 
     function reset() {
-        id = 0
+        id = 0;
     }
 
     return {
         get steps() {
             return buildSolution(parts);
         },
-        get id() { return id },
+        get id() {
+            return id;
+        },
         reset,
         push,
         advance
