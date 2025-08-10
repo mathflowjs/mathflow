@@ -53,6 +53,11 @@ function handleSpecialCases(
         const nextToken = tokens[i + 1];
         const prevToken = tokens[i - 1];
 
+        // skip EOF token
+        if (token.type === TOKEN.EOF) {
+            break;
+        }
+
         // Handle function calls with parentheses
         if (
             token.type === TOKEN.FUNCTION &&
@@ -128,6 +133,7 @@ function handleSpecialCases(
         }
 
         result.push(formatTokenValue(token, mode));
+
         i++;
     }
 
