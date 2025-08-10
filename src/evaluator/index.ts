@@ -93,6 +93,8 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             // apply binary operator
             result = compute(node.value as SYMBOL, left, right);
 
+            result = toNumber(result);
+
             // save final result
             solution.push(result);
             break;
@@ -107,9 +109,15 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             const fn = ctx.functions.get(node.value)!;
             result = fn(...args);
 
-            solution.advance();
-            solution.push(`${node.value}(#${solution.id})`);
+            result = toNumber(result);
+
+            if (args.length === 1) {
+                solution.advance();
+                solution.push(`${node.value}(#${solution.id})`);
+            }
+
             solution.push(result);
+
             break;
         }
 
