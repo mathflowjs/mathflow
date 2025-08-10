@@ -1,13 +1,13 @@
-import { describe, test, expect, beforeEach } from 'vitest'
+import { describe, test, expect, beforeEach } from 'vitest';
 import { tokenize } from '../src/lexer';
 import { TOKEN } from '../src/lexer/tokens';
 import { Context, createContext } from '../src/context';
 
-let ctx: Context
+let ctx: Context;
 
 beforeEach(() => {
-    ctx = createContext()
-})
+    ctx = createContext();
+});
 
 describe('lexer', () => {
     test('basic expression', () => {

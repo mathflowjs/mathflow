@@ -1,14 +1,12 @@
-import { describe, test, expect, beforeEach } from 'vitest'
+import { describe, test, expect, beforeEach } from 'vitest';
 import { tokenize } from '../src/lexer';
 import { parse } from '../src/parser';
 import { Context, createContext } from '../src/context';
 import { evaluate } from '../src/evaluator';
 import { createSolutionStack, Solution } from '../src/evaluator/solution';
 
-
-
-let ctx: Context
-let solution: Solution
+let ctx: Context;
+let solution: Solution;
 
 beforeEach(() => {
     ctx = createContext({
@@ -16,10 +14,9 @@ beforeEach(() => {
         preferences: {
             angles: 'deg'
         }
-    })
-    solution = createSolutionStack()
-})
-
+    });
+    solution = createSolutionStack();
+});
 
 describe('evaluator', () => {
     test('simple ast tree', () => {
@@ -44,12 +41,12 @@ describe('solution generator', () => {
         const expr = `3pi - 1`;
         const tokens = tokenize(ctx, expr);
         const ast = parse(tokens);
-        ctx.preferences.precision = 4
-        evaluate(ctx, ast.body[0], solution)
+        ctx.preferences.precision = 4;
+        evaluate(ctx, ast.body[0], solution);
         expect(solution.steps).toStrictEqual([
-            "(3 * 3.142) - 1",
-            "9.426 - 1",
-            "8.426"
+            '(3 * 3.142) - 1',
+            '9.426 - 1',
+            '8.426'
         ]);
     });
-})
+});
