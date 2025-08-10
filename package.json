@@ -17,12 +17,12 @@
         "dist"
     ],
     "scripts": {
+        "dev": "vite",
         "build": "unbuild",
-        "lint": "eslint --cache src test && prettier src test --check",
-        "lint:fix": "eslint --cache src test --fix && prettier src test --write",
+        "lint": "eslint --cache src tests && prettier src tests --check",
+        "lint:fix": "eslint --cache src tests --fix && prettier src tests --write",
         "test:types": "tsc --noEmit --skipLibCheck",
-        "test": "pnpm lint && pnpm test:types && jest test",
-        "test:dev": "jest test",
+        "test": "vitest",
         "prepare": "husky install",
         "release": "release-it",
         "prepack": "pnpm build"
@@ -52,7 +52,9 @@
         "ts-jest": "^29.4.0",
         "typescript": "5.8.3",
         "typescript-eslint": "^8.38.0",
-        "unbuild": "^3.6.0"
+        "unbuild": "^3.6.0",
+        "vite": "^7.1.1",
+        "vitest": "^3.2.4"
     },
     "lint-staged": {
         "*.ts": "pnpm test"
