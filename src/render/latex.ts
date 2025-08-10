@@ -1,6 +1,6 @@
 import { TOKEN, Token } from '../lexer/tokens';
 
-export type TEXRenderOptions = {
+export type LaTeXRenderOptions = {
     mode: 'inline' | 'display' | 'align';
 };
 
@@ -29,7 +29,7 @@ const characterMap: Record<string, string> = {
 
 function formatTokenValue(
     token: Token,
-    mode: TEXRenderOptions['mode']
+    mode: LaTeXRenderOptions['mode']
 ): string {
     if (characterMap[token.value]) return characterMap[token.value];
     if (token.type === TOKEN.FUNCTION) {
@@ -43,7 +43,7 @@ function formatTokenValue(
 
 function handleSpecialCases(
     tokens: Token[],
-    mode: TEXRenderOptions['mode']
+    mode: LaTeXRenderOptions['mode']
 ): string {
     const result = [];
     let i = 0;
@@ -146,7 +146,7 @@ function handleSpecialCases(
  */
 export function renderTokensAsLaTeX(
     tokens: Token[],
-    options: Partial<TEXRenderOptions> = {}
+    options: Partial<LaTeXRenderOptions> = {}
 ) {
     const config = {
         mode: options.mode || 'inline'
