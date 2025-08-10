@@ -1,3 +1,4 @@
+import { solve, solveBatch, type Result } from './solve';
 import { addBuiltinFunctions, type ComputeFunction } from './functions';
 
 type Preferences = {
@@ -14,6 +15,11 @@ export type Context = {
     functions: Map<string, ComputeFunction>;
 };
 
+export interface ContextAPI extends Context {
+    solve: (code: string) => Result;
+    solveBatch: (code: string) => Result[];
+}
+
 export type ContextOptions = {
     preferences: Partial<Preferences>;
     variables: Record<string, number>;
@@ -28,7 +34,12 @@ function merge<T>(dest: Map<string, T>, src: Record<string, T>) {
     }
 }
 
-export function createContext(options: Partial<ContextOptions> = {}): Context {
+/**
+ * isolated math execution context
+ */
+export function createContext(
+    options: Partial<ContextOptions> = {}
+): ContextAPI {
     const ctx: Context = {
         variables: new Map(),
         functions: new Map(),
@@ -61,5 +72,9 @@ export function createContext(options: Partial<ContextOptions> = {}): Context {
 
     addBuiltinFunctions(ctx);
 
-    return ctx;
+    return {
+        ...ctx,
+        solve: (code: string) => solve(ctx, code),
+        solveBatch: (code: string) => solveBatch(ctx, code)
+    };
 }

@@ -2,30 +2,30 @@ import { Context } from './context';
 import { evaluate } from './evaluator';
 import { parse } from './parser';
 import { tokenize } from './lexer';
-import { createSolutionStack, Solution } from './evaluator/solution';
+import { createSolutionStack } from './evaluator/solution';
 
-export type ComputeResult = {
+export type Result = {
     value: number;
-    solution: Solution;
+    solution: string[];
 };
 
 /**
- * evaluate a one-line  expression
+ * evaluate a one-line expression
  */
-export function compute(ctx: Context, code: string): ComputeResult {
-    return computeBatch(ctx, code)[0] || { value: 0 };
+export function solve(ctx: Context, code: string): Result {
+    return solveBatch(ctx, code)[0] || { value: 0, solution: [] };
 }
 
 /**
- * evaluate a multi-line expression
+ * evaluate a multiple-line expression
  */
-export function computeBatch(ctx: Context, code: string): ComputeResult[] {
+export function solveBatch(ctx: Context, code: string): Result[] {
     const tokens = tokenize(ctx, code);
     const ast = parse(tokens);
     const result = ast.body.map((node) => {
         const solution = createSolutionStack();
         const value = evaluate(ctx, node, solution);
-        return { value, solution };
+        return { value, solution: solution.steps };
     });
     return result;
 }

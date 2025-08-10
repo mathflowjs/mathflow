@@ -1,8 +1,9 @@
-export { createContext } from './context';
+export { createContext, Context, ContextAPI, ContextOptions } from './context';
 export { tokenize } from './lexer';
-export { parse } from './parser';
+export { TOKEN } from './lexer/tokens';
+export { parse, NODE, Node } from './parser';
+export { createSolutionStack, Solution } from './evaluator/solution';
 export { evaluate } from './evaluator';
-export { compute } from './compute';
-export { createSolutionStack } from './evaluator/solution';
-export { renderTokensAsHTML } from './render/html';
-export { renderTokensAsLaTeX } from './render/latex';
+export { solve, solveBatch, Result } from './solve';
+export { renderTokensAsHTML, HTMLRenderOptions } from './render/html';
+export { renderTokensAsLaTeX, LaTeXRenderOptions } from './render/latex';
