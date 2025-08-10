@@ -116,7 +116,7 @@ export function renderTokensAsHTML(
     return `
       <div class="${config.classPrefix}-expression ${config.classPrefix}-${config.colorScheme}" data-scheme="${config.colorScheme}">
         <style>${styles}</style>
-        ${htmlTokens.join('')}
+        ${htmlTokens.join('').replace(/<br>$/, '')}
       </div>
     `;
 }
@@ -129,13 +129,13 @@ const generateHTMLStyles = (prefix: string) => {
             --${prefix}-bg: #f9fafb;
             --${prefix}-border: #e5e7eb;
 
-            --${prefix}-number: #22c55e;
-            --${prefix}-identifier: #3b82f6;
-            --${prefix}-operator: #ef4444;
-            --${prefix}-assignment: #f59e0b;
-            --${prefix}-paren: #8b5cf6;
-            --${prefix}-function: #ec4899;
-            --${prefix}-comma: #64748b;
+            --${prefix}-number: #000000;
+            --${prefix}-identifier: #333333;
+            --${prefix}-operator: #666666;
+            --${prefix}-assignment: #000000;
+            --${prefix}-paren: #888888;
+            --${prefix}-function: #222222;
+            --${prefix}-comma: #aaaaaa;
         }
 
         .${prefix}-expression.${prefix}-dark {
@@ -143,13 +143,13 @@ const generateHTMLStyles = (prefix: string) => {
             --${prefix}-bg: #1f2937;
             --${prefix}-border: #374151;
 
-            --${prefix}-number: #60a5fa;
-            --${prefix}-identifier: #a78bfa;
-            --${prefix}-operator: #f87171;
-            --${prefix}-assignment: #34d399;
-            --${prefix}-paren: #9ca3af;
-            --${prefix}-function: #fdba74;
-            --${prefix}-comma: #9ca3af;
+            --${prefix}-number: #ffffff;
+            --${prefix}-identifier: #cccccc;
+            --${prefix}-operator: #999999;
+            --${prefix}-assignment: #ffffff;
+            --${prefix}-paren: #777777;
+            --${prefix}-function: #dddddd;
+            --${prefix}-comma: #555555;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -158,13 +158,13 @@ const generateHTMLStyles = (prefix: string) => {
                 --${prefix}-bg: #1f2937;
                 --${prefix}-border: #374151;
 
-                --${prefix}-number: #60a5fa;
-                --${prefix}-identifier: #a78bfa;
-                --${prefix}-operator: #f87171;
-                --${prefix}-assignment: #34d399;
-                --${prefix}-paren: #9ca3af;
-                --${prefix}-function: #fdba74;
-                --${prefix}-comma: #9ca3af;
+                --${prefix}-number: #ffffff;
+                --${prefix}-identifier: #cccccc;
+                --${prefix}-operator: #999999;
+                --${prefix}-assignment: #ffffff;
+                --${prefix}-paren: #777777;
+                --${prefix}-function: #dddddd;
+                --${prefix}-comma: #555555;
             }
         }
 
