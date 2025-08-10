@@ -9,7 +9,17 @@ export type ComputeResult = {
     solution: Solution;
 };
 
-export function compute(ctx: Context, code: string): ComputeResult[] {
+/**
+ * evaluate a one-line  expression
+ */
+export function compute(ctx: Context, code: string): ComputeResult {
+    return computeBatch(ctx, code)[0] || { value: 0 };
+}
+
+/**
+ * evaluate a multi-line expression
+ */
+export function computeBatch(ctx: Context, code: string): ComputeResult[] {
     const tokens = tokenize(ctx, code);
     const ast = parse(tokens);
     const result = ast.body.map((node) => {
