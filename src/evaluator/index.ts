@@ -31,11 +31,14 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
     let right: number;
 
     function toNumber(value: string | number) {
-        value = value.toString()
+        value = value.toString();
         if (ctx.preferences.precision && ctx.preferences.precision > 0) {
             value = Number(value).toPrecision(ctx.preferences.precision);
         }
-        if (ctx.preferences.fractionDigits && ctx.preferences.fractionDigits > 0) {
+        if (
+            ctx.preferences.fractionDigits &&
+            ctx.preferences.fractionDigits > 0
+        ) {
             value = Number(value).toFixed(ctx.preferences.fractionDigits);
         }
         return Number.parseFloat(value);
@@ -116,7 +119,7 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             } else {
                 result = ctx.variables.get(node.value) || 0;
             }
-            result = toNumber(result)
+            result = toNumber(result);
 
             solution.push(result);
             break;
