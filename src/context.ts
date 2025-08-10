@@ -1,5 +1,8 @@
 import { solve, solveBatch, type Result } from './solve';
 import { addBuiltinFunctions, type ComputeFunction } from './functions';
+import { renderTokensAsHTML } from './render/html';
+import { tokenize } from './lexer';
+import { renderTokensAsLaTeX } from './render/latex';
 
 type Preferences = {
     fractionDigits: number;
@@ -18,6 +21,8 @@ export type Context = {
 export interface ContextAPI extends Context {
     solve: (code: string) => Result;
     solveBatch: (code: string) => Result[];
+    renderAsHTML: (code: string) => string;
+    renderAsLaTeX: (code: string) => string;
 }
 
 export type ContextOptions = {
@@ -75,6 +80,9 @@ export function createContext(
     return {
         ...ctx,
         solve: (code: string) => solve(ctx, code),
-        solveBatch: (code: string) => solveBatch(ctx, code)
+        solveBatch: (code: string) => solveBatch(ctx, code),
+        renderAsHTML: (code: string) => renderTokensAsHTML(tokenize(ctx, code)),
+        renderAsLaTeX: (code: string) =>
+            renderTokensAsLaTeX(tokenize(ctx, code))
     };
 }
