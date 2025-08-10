@@ -126,6 +126,10 @@ export function tokenize(ctx: Context, code: string): Token[] {
         return str;
     }
 
+    function matchType<T>(type: T, ...others: T[]) {
+        return others.includes(type);
+    }
+
     function expandImplicitMultiplication() {
         if (position >= code.length) return;
 
@@ -133,35 +137,34 @@ export function tokenize(ctx: Context, code: string): Token[] {
         const curr = tokens.at(-1);
         if (!prev || !curr) return;
 
-        let expand = false;
-
-        // expand: 2x
-        if (prev.type === TOKEN.NUMBER && curr.type === TOKEN.IDENTIFIER) {
-            expand = true;
-        }
-        // expand: 2(x+1)
-        else if (prev.type === TOKEN.NUMBER && curr.type === TOKEN.LPAREN) {
-            expand = true;
-        }
-        // expand: (x+1)y or (x+1)2
-        else if (
+        const expand = [
+            // )2
+            // )x
+            // )sin
+            // )(
             prev.type === TOKEN.RPAREN &&
-            (curr.type === TOKEN.IDENTIFIER || curr.type === TOKEN.NUMBER)
-        ) {
-            expand = true;
-        }
-        // expand: x(x+1) - not function call
-        else if (
-            prev.type === TOKEN.IDENTIFIER &&
-            curr.type === TOKEN.LPAREN &&
-            !isFunction(prev.value)
-        ) {
-            expand = true;
-        }
-        // expand: (x+1)(x+2)
-        else if (prev.type === TOKEN.RPAREN && curr.type === TOKEN.LPAREN) {
-            expand = true;
-        }
+                matchType(
+                    curr.type,
+                    TOKEN.IDENTIFIER,
+                    TOKEN.FUNCTION,
+                    TOKEN.NUMBER,
+                    TOKEN.LPAREN
+                ),
+
+            // 2sin
+            // 2x
+            // 2(
+            prev.type === TOKEN.NUMBER &&
+                matchType(
+                    curr.type,
+                    TOKEN.LPAREN,
+                    TOKEN.IDENTIFIER,
+                    TOKEN.FUNCTION
+                ),
+
+            // x(
+            prev.type === TOKEN.IDENTIFIER && curr.type === TOKEN.LPAREN
+        ].some((x) => !!x);
 
         if (!expand) return;
 
