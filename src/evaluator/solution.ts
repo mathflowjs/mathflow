@@ -1,36 +1,47 @@
 import { isBinaryOperator, isAlpha } from '../lexer/tokens';
 
-export type Solution = ReturnType<typeof createSolutionStack>;
+type SolutionConfig = {
+    id: number;
+    parts: string[];
+};
+
+export type Solution = {
+    readonly steps: string[];
+    readonly id: number;
+};
+
+const store = new WeakMap<Solution, SolutionConfig>();
+
+export function advance(solution: Solution) {
+    if (!store.has(solution)) return;
+    const c = store.get(solution)!;
+    c.parts.push(`#${++c.id}`);
+}
+
+export function pushValue(solution: Solution, value: string | number) {
+    if (!store.has(solution)) return;
+    const c = store.get(solution)!;
+    c.parts.push(value.toString());
+}
 
 export function createSolutionStack() {
-    // tokenize results from evaluated expressions
-    let id: number = 0;
+    const c: SolutionConfig = {
+        id: 0,
+        parts: []
+    };
 
-    const parts: string[] = [];
-
-    function advance() {
-        parts.push(`#${++id}`);
-    }
-
-    function push(value: string | number) {
-        parts.push(value.toString());
-    }
-
-    function reset() {
-        id = 0;
-    }
-
-    return {
+    const s = {
         get steps() {
-            return buildSolution(parts);
+            return buildSolution(c.parts);
         },
         get id() {
-            return id;
-        },
-        reset,
-        push,
-        advance
+            return c.id;
+        }
     };
+
+    store.set(s, c);
+
+    return s;
 }
 
 type MapTerm = {

@@ -2,7 +2,7 @@ import { type Node, NODE } from '../parser';
 import { type Context } from '../context';
 import { createError, ERRORS } from '../error';
 import { SYMBOL } from '../lexer/tokens';
-import { Solution } from './solution';
+import { Solution, advance, pushValue } from './solution';
 
 function compute(op: SYMBOL, a: number, b: number): number {
     switch (op) {
@@ -48,7 +48,7 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
         // handle both floats and integers
         case NODE.LITERAL: {
             result = toNumber(node.value);
-            solution?.push(result);
+            pushValue(solution, result);
             break;
         }
 
@@ -58,7 +58,7 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             right = evaluate(ctx, node.right!, solution);
             result = compute(node.value as SYMBOL, left, right);
 
-            solution.push(result);
+            pushValue(solution, result);
             break;
         }
 
@@ -74,7 +74,7 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             const trackLeft =
                 node.left?.type === NODE.BINARY ||
                 node.left?.type === NODE.CALL;
-            if (trackLeft) solution.advance();
+            if (trackLeft) advance(solution);
             partial = `(${trackLeft ? '#' + solution.id : left} ${node.value} `;
 
             // compute node.right
@@ -84,11 +84,11 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             const trackRight =
                 node.right?.type === NODE.BINARY ||
                 node.right?.type === NODE.CALL;
-            if (trackRight) solution.advance();
+            if (trackRight) advance(solution);
             partial += `${trackRight ? '#' + solution.id : right})`;
 
             // save solutions for both nodes - left & right
-            solution.push(partial);
+            pushValue(solution, partial);
 
             // apply binary operator
             result = compute(node.value as SYMBOL, left, right);
@@ -96,7 +96,7 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             result = toNumber(result);
 
             // save final result
-            solution.push(result);
+            pushValue(solution, result);
             break;
         }
 
@@ -112,11 +112,11 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             result = toNumber(result);
 
             if (args.length === 1) {
-                solution.advance();
-                solution.push(`${node.value}(#${solution.id})`);
+                advance(solution);
+                pushValue(solution, `${node.value}(#${solution.id})`);
             }
 
-            solution.push(result);
+            pushValue(solution, result);
 
             break;
         }
@@ -129,7 +129,7 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             }
             result = toNumber(result);
 
-            solution.push(result);
+            pushValue(solution, result);
             break;
         }
 
@@ -152,15 +152,15 @@ export function evaluate(ctx: Context, node: Node, solution: Solution): number {
             const trackRight =
                 node.right?.type === NODE.BINARY ||
                 node.right?.type === NODE.CALL;
-            if (trackRight) solution.advance();
+            if (trackRight) advance(solution);
             partial += `${trackRight ? '#' + solution.id : right}`;
 
-            solution.push(partial);
+            pushValue(solution, partial);
 
             result = right;
             ctx.variables.set(node.left!.value, right);
 
-            solution.push(result);
+            pushValue(solution, result);
             break;
         }
 
