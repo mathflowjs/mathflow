@@ -1,14 +1,13 @@
 import { solve, solveBatch, type Result } from './solve';
 import { addBuiltinFunctions, type ComputeFunction } from './functions';
-import { renderTokensAsHTML } from './render/html';
+import { renderTokensAsHTML, HTMLRenderOptions } from './render/html';
 import { tokenize } from './lexer';
-import { renderTokensAsLaTeX } from './render/latex';
+import { renderTokensAsLaTeX, LaTeXRenderOptions } from './render/latex';
 
 type Preferences = {
     fractionDigits: number;
     precision: number;
     angles: 'rad' | 'deg';
-    [k: string]: string | number;
 };
 
 export type Context = {
@@ -19,10 +18,10 @@ export type Context = {
 };
 
 export interface ContextAPI extends Context {
-    solve: (code: string) => Result;
-    solveBatch: (code: string) => Result[];
-    renderAsHTML: (code: string) => string;
-    renderAsLaTeX: (code: string) => string;
+    solve(code: string): Result;
+    solveBatch(code: string): Result[];
+    renderAsHTML(code: string, options?: Partial<HTMLRenderOptions>): string;
+    renderAsLaTeX(code: string, options?: Partial<LaTeXRenderOptions>): string;
 }
 
 export type ContextOptions = {
@@ -58,8 +57,10 @@ export function createContext(
 
     if (options?.preferences) {
         for (const k in ctx.preferences) {
-            const v = options.preferences[k];
-            if (v) ctx.preferences[k] = v;
+            const v = (options.preferences as Record<string, string | number>)[
+                k
+            ];
+            if (v) (ctx.preferences as Record<string, string | number>)[k] = v;
         }
     }
 
@@ -79,10 +80,17 @@ export function createContext(
 
     return {
         ...ctx,
-        solve: (code: string) => solve(ctx, code),
-        solveBatch: (code: string) => solveBatch(ctx, code),
-        renderAsHTML: (code: string) => renderTokensAsHTML(tokenize(ctx, code)),
-        renderAsLaTeX: (code: string) =>
-            renderTokensAsLaTeX(tokenize(ctx, code))
+        solve(code: string) {
+            return solve(ctx, code);
+        },
+        solveBatch(code: string) {
+            return solveBatch(ctx, code);
+        },
+        renderAsHTML(code: string, options?: HTMLRenderOptions) {
+            return renderTokensAsHTML(tokenize(ctx, code), options);
+        },
+        renderAsLaTeX(code: string, options?: LaTeXRenderOptions) {
+            return renderTokensAsLaTeX(tokenize(ctx, code), options);
+        }
     };
 }
