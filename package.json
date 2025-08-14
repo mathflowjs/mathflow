@@ -1,6 +1,6 @@
 {
     "name": "mathflow",
-    "version": "0.3.0",
+    "version": "0.0.0",
     "description": "A lightweight library for evaluating mathematical expressions written in natural mathematical notation.",
     "type": "module",
     "exports": {
