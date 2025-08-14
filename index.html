@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev | MathFlow.js</title>
+    <style>
+        :root {
+            font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+            line-height: 1.5;
+            font-weight: 400;
+
+            color-scheme: light dark;
+            color: rgba(255, 255, 255, 0.87);
+            background-color: #242424;
+
+            font-synthesis: none;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                color: #213547;
+                background-color: #ffffff;
+            }
+        }
+
+        *,
+        *::after,
+        *::before {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            place-items: center;
+            min-width: 320px;
+            min-height: 100vh;
+        }
+
+        main {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        main>* {
+            width: 100%;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 45dvh;
+            padding: 1rem;
+            resize: vertical;
+            font-size: 1.1rem;
+        }
+
+        details,
+        summary {
+            cursor: default;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <h1>MathFlow | Dev</h1>
+
+        <div>
+            <h3>Input math expression:</h3>
+            <textarea id="input" autocapitalize="off" autocorrect="off" autofocus spellcheck="false"></textarea>
+        </div>
+
+        <div>
+            <h3>Solution:</h3>
+            <div id="solution"></div>
+        </div>
+    </main>
+
+    <script type="module" src="./demo/main.ts"></script>
+</body>
+
+</html>

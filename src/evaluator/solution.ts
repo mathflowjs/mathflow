@@ -1,4 +1,48 @@
-import { isAlpha, isBinaryOperator } from './lexer';
+import { isBinaryOperator, isAlpha } from '../lexer/tokens';
+
+type SolutionConfig = {
+    id: number;
+    parts: string[];
+};
+
+export type Solution = {
+    readonly steps: string[];
+    readonly id: number;
+};
+
+const store = new WeakMap<Solution, SolutionConfig>();
+
+export function advance(solution: Solution) {
+    if (!store.has(solution)) return;
+    const c = store.get(solution)!;
+    c.parts.push(`#${++c.id}`);
+}
+
+export function pushValue(solution: Solution, value: string | number) {
+    if (!store.has(solution)) return;
+    const c = store.get(solution)!;
+    c.parts.push(value.toString());
+}
+
+export function createSolutionStack() {
+    const c: SolutionConfig = {
+        id: 0,
+        parts: []
+    };
+
+    const s = {
+        get steps() {
+            return buildSolution(c.parts);
+        },
+        get id() {
+            return c.id;
+        }
+    };
+
+    store.set(s, c);
+
+    return s;
+}
 
 type MapTerm = {
     [k: string]: {
@@ -7,17 +51,7 @@ type MapTerm = {
     };
 };
 
-function removeExtraParen(t: string): string {
-    t = t.replace(/\(\((.*)\)\)/g, (m, x) => {
-        return x.includes('(') ? m : m.slice(1, -1);
-    });
-    return t.startsWith('(') ? t.slice(1, -1) : t;
-}
-
-/**
- * Refine the raw list of strings into well-defined steps
- */
-export function generateSolution(raw: string[]): string[] {
+export function buildSolution(raw: string[]): string[] {
     // console.log('raw:', raw);
 
     if (!raw.includes('#1') || raw.length < 2) {
@@ -52,8 +86,8 @@ export function generateSolution(raw: string[]): string[] {
     function step(str: string, box: string[]) {
         let tmp = str;
         if (str) {
-            tmp = str.replaceAll(/#\d/g, (m) => map[m]?.result || '');
-            str = str.replaceAll(/#\d/g, (m) => {
+            tmp = str.replaceAll(/#\d+/g, (m) => map[m]?.result || '');
+            str = str.replaceAll(/#\d+/g, (m) => {
                 return map[m]?.expr || map[m]?.result || '';
             });
             if (tmp !== str) {
@@ -75,4 +109,11 @@ export function generateSolution(raw: string[]): string[] {
     // console.log('sln:', solution);
 
     return solution.map((step) => removeExtraParen(step));
+}
+
+function removeExtraParen(t: string): string {
+    t = t.replace(/\(\((.*)\)\)/g, (m, x) => {
+        return x.includes('(') ? m : m.slice(1, -1);
+    });
+    return t.startsWith('(') ? t.slice(1, -1) : t;
 }

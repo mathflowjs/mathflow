@@ -8,19 +8,25 @@ _Simplifying Math, Empowering Code._
 
 </div>
 
->Note: This repository has been transfered from [henryhale](https://github.com/henryhale)/mathflow
->to [mathflowjs](https://github.com/mathflowjs). Check out the [TODO.md](https://github.com/mathflowjs/mathflow/blob/master/TODO.md) file to view the roadmap of this project.
-
 ## Overview
 
-MathFlow is a lightweight and expressive scripting language designed for mathematical expressions and calculations. It provides a simple and intuitive syntax for performing mathematical operations, including support for standard arithmetic, functions like sin, cos, tan, and other functions.
+MathFlow is a lightweight JavaScript library for evaluating mathematical expressions written in natural mathematical notation. It parses and computes standard arithmetic, trignometric functions, logarithms, and algebraic expressions exactly as you would write them on paper.
 
 ## Features
 
--   **Mathematical Expressions:** Perform standard arithmetic operations with ease.
--   **Functions:** Built-in support for mathematical functions such as sin, cos, tan, abs and more.
--   **Clean and Modern Syntax:** Readable and easy-to-write syntax for mathematical expressions.
--   **Abstract Syntax Tree (AST):** Utilizes an AST for parsing and interpreting expressions.
+-   **Natural syntax:** Write `2x + 3(y - 1)` instead of `2*x + 3*(y - 1)`. Both are supported anyway.
+-   **Mathematical functions:** Built-in support for `sin`, `cos`, `tan`, `log`, `sqrt`, `abs`, and more.
+-   **Variables:** Assign and use variables like `x = 5`, `y = 5x - 1`
+-   **Clean & modern syntax:** Readable and easy-to-write syntax for mathematical expressions.
+-   **AST-based parsing:** Proper order of operations and expression evaluation.
+-   **Lightweight:** Focused purely on mathematical computation without bloat.
+
+## Use Cases
+
+- Formula calculators and mathematical tools.
+- Educational applications for learning mathematics.
+- Basic scientific computing interfaces.
+- Anywhere you need to evaluate user-input mathematical expressions safely.
 
 ## Documentation
 
