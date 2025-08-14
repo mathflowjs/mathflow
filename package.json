@@ -18,9 +18,9 @@
     ],
     "scripts": {
         "dev": "vite",
-        "build": "unbuild",
-        "lint": "eslint --cache src tests && prettier src tests --check",
-        "lint:fix": "eslint --cache src tests --fix && prettier src tests --write",
+        "build": "unbuild --minify",
+        "lint": "eslint src tests && prettier src tests --check",
+        "lint:fix": "eslint --fix src tests && prettier src tests --write",
         "test": "vitest run",
         "prepare": "husky install",
         "release": "release-it",
