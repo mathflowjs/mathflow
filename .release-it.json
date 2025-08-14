@@ -13,8 +13,7 @@
         "comments": true
     },
     "npm": {
-        "publish": true,
-        "skipChecks": true
+        "publish": true
     },
     "hooks": {
         "before:init": "git fetch --tags"
