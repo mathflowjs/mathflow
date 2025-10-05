@@ -6,19 +6,27 @@ import { renderTokensAsHTML } from '../src/render/html';
 import { createContext } from '../src/context';
 import { createSolutionStack } from '../src/evaluator/solution';
 
-
 const input = document.querySelector('textarea')!;
+
+const solveBtn = document.querySelector('#solve')!;
 
 const solutionBox = document.querySelector('#solution')!;
 
+// create evaluation context
 const ctx = createContext({
     preferences: {
         fractionDigits: 3,
         precision: 15,
-        angles: 'deg',
+        angles: 'deg'
     }
-})
+});
 
+// utility to solve a given math expression string
+// - steps taken
+//      - tokenize input string
+//      - parse tokens into AST tree
+//      - evaluate and solve each node in AST body
+//      - render solution as HTML
 function solve(code = '') {
     console.clear();
 
@@ -27,8 +35,7 @@ function solve(code = '') {
     const tokens = tokenize(ctx, code);
     console.log(
         'tokens:',
-        tokens
-            .map((t) => `${t.type}[${t.value}] ${t.line}:${t.column}`)
+        tokens.map((t) => `${t.type}[${t.value}] ${t.line}:${t.column}`)
     );
 
     // const htmlStr = renderTokensAsHTML(tokens, { colorScheme: 'auto' })
@@ -41,25 +48,32 @@ function solve(code = '') {
     console.log('ast:', ast);
 
     const result = ast.body.map((node) => {
-        const solution = createSolutionStack()
-        const value = evaluate(ctx, node, solution)
-        return { value, solution }
+        const solution = createSolutionStack();
+        const value = evaluate(ctx, node, solution);
+        return { value, solution };
     });
-    console.log('result:', result.map(r => r.value));
-    console.log('solution:', result.map(r => r.solution.steps))
+    console.log(
+        'result:',
+        result.map((r) => r.value)
+    );
+    console.log(
+        'solution:',
+        result.map((r) => r.solution.steps)
+    );
 
-    let solution = ''
+    let solution = '';
     for (const r of result) {
-        const steps = r.solution.steps
-        steps.pop()
-        if (steps.length < 2) continue
-        solution += steps.join('\n') + '\n\n'
+        const steps = r.solution.steps;
+        steps.pop();
+        if (steps.length < 2) continue;
+        solution += steps.join('\n') + '\n\n';
     }
-    solutionBox.innerHTML = renderTokensAsHTML(tokenize(ctx, solution), { colorScheme: 'auto' })
+    solutionBox.innerHTML = renderTokensAsHTML(tokenize(ctx, solution), {
+        colorScheme: 'auto'
+    });
 }
 
-input.addEventListener('input', () => solve(input.value));
-
+// initial test program
 const testProgram = `
 # variables
 x = 5
@@ -80,3 +94,8 @@ r7 = add(x,y,z,w) + div(x^2, y^2) * log2(4)
 input.value = testProgram;
 
 solve(testProgram);
+
+// solve input string when `Solve` button is clicked
+solveBtn.addEventListener('click', () => {
+    solve(input.value);
+});

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dev | MathFlow.js</title>
+    <title>Mathflow</title>
     <style>
         :root {
             font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -69,16 +69,23 @@
         summary {
             cursor: default;
         }
+
+        button {
+            padding: 0.5rem 1rem;
+            width: 50%;
+            margin: 1rem auto;
+        }
     </style>
 </head>
 
 <body>
     <main>
-        <h1>MathFlow | Dev</h1>
+        <h1>Mathflow | Demo</h1>
 
         <div>
             <h3>Input math expression:</h3>
             <textarea id="input" autocapitalize="off" autocorrect="off" autofocus spellcheck="false"></textarea>
+            <button id="solve">Solve</button>
         </div>
 
         <div>
