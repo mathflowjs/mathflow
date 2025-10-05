@@ -1,65 +1,64 @@
 name: Release NPM package
 
 on:
-  workflow_dispatch:
-  # push:
-  #   branches:
-  #     - master
-  #   paths:
-  #     - src/**
+    workflow_dispatch:
+    # push:
+    #   branches:
+    #     - master
+    #   paths:
+    #     - src/**
 
 permissions:
-  contents: write
+    contents: write
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
+    release:
+        runs-on: ubuntu-latest
 
-    steps:
-    
-      # Checkout project repository
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+        steps:
+            # Checkout project repository
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
 
-      # Setup git profile
-      - name: git config
-        run: |
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+            # Setup git profile
+            - name: git config
+              run: |
+                  git config user.name "${GITHUB_ACTOR}"
+                  git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 
-      # Setup Node.js environment
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          registry-url: https://registry.npmjs.org/
-          node-version: latest
+            # Setup Node.js environment
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  registry-url: https://registry.npmjs.org/
+                  node-version: latest
 
-      # Install pnpm
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 10
+            # Install pnpm
+            - uses: pnpm/action-setup@v4
+              name: Install pnpm
+              id: pnpm-install
+              with:
+                  version: 10
 
-      # Install dependencies
-      - name: Install dependencies
-        run: pnpm install
+            # Install dependencies
+            - name: Install dependencies
+              run: pnpm install
 
-      # Tests
-      - name: Run tests
-        run: pnpm lint:fix && pnpm test
+            # Tests
+            - name: Run tests
+              run: pnpm lint:fix && pnpm test
 
-      # Setup NPM
-      - name: Create .npmrc
-        run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+            # Setup NPM
+            - name: Create .npmrc
+              run: npm config set //registry.npmjs.org/:_authToken $NPM_TOKEN
+              env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      # Publish version to public repository
-      - name: Release
-        run: pnpx release-it --ci
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+            # Publish version to public repository
+            - name: Release
+              run: pnpx release-it --ci
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

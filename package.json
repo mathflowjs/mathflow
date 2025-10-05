@@ -1,5 +1,5 @@
 {
-    "name": "mathflow",
+    "name": "@mathflowjs/mathflow",
     "version": "0.0.0",
     "description": "A lightweight library for evaluating mathematical expressions written in natural mathematical notation.",
     "type": "module",
@@ -19,8 +19,9 @@
     "scripts": {
         "dev": "vite",
         "build": "unbuild --minify",
+        "format": "prettier . --write",
         "lint": "eslint src tests && prettier src tests --check",
-        "lint:fix": "eslint --fix src tests && prettier src tests --write",
+        "lint:fix": "eslint --fix src tests && pnpm format",
         "test": "vitest run",
         "prepare": "husky install",
         "release": "release-it",
