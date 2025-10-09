@@ -8,7 +8,6 @@ export default function initNumbers() {
         abs: (x: number) => Math.abs(x),
         ceil: (x: number) => Math.ceil(x),
         floor: (x: number) => Math.floor(x),
-        sign: (x: number) => (x > 0 ? 1 : 0),
         sqrt: (x: number) => Math.sqrt(x),
         pow: (x: number, y: number) => Math.pow(x, y),
         cbrt: (x: number) => Math.pow(x, 1 / 3),
