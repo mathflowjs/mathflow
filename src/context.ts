@@ -52,7 +52,10 @@ export function createContext(
             precision: 15,
             angles: 'rad'
         },
-        constants: new Map([['pi', Math.PI]])
+        constants: new Map([
+            ['pi', Math.PI],
+            ['e', Math.E]
+        ])
     };
 
     if (options?.preferences) {

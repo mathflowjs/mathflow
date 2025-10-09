@@ -2,7 +2,6 @@
 
 ## ...master
 
-
 ### 🚀 Enhancements
 
 - Add solution property in result ([1e694d1](https://github.com/mathflowjs/mathflow/commit/1e694d1))
@@ -32,12 +31,12 @@
 - Bug with implicit multiplication of number and function like 2sin(90) ([4f2d14e](https://github.com/mathflowjs/mathflow/commit/4f2d14e))
 - **feat:** Add missing options and types ([80c7ba9](https://github.com/mathflowjs/mathflow/commit/80c7ba9))
 - **build:** Export types for typescript users ([e78d1c4](https://github.com/mathflowjs/mathflow/commit/e78d1c4))
-- **ci:** ⚠️  Update release workflow ([38c3ece](https://github.com/mathflowjs/mathflow/commit/38c3ece))
+- **ci:** ⚠️ Update release workflow ([38c3ece](https://github.com/mathflowjs/mathflow/commit/38c3ece))
 - **ci:** Allow workflow to publish releases and tags ([ea2e142](https://github.com/mathflowjs/mathflow/commit/ea2e142))
 
 ### 💅 Refactors
 
-- ⚠️  Update internals and exported api ([7bebd33](https://github.com/mathflowjs/mathflow/commit/7bebd33))
+- ⚠️ Update internals and exported api ([7bebd33](https://github.com/mathflowjs/mathflow/commit/7bebd33))
 - Update charactermap in latex.ts ([cb9908d](https://github.com/mathflowjs/mathflow/commit/cb9908d))
 
 ### 📖 Documentation
@@ -119,12 +118,10 @@
 
 #### ⚠️ Breaking Changes
 
-- **ci:** ⚠️  Update release workflow ([38c3ece](https://github.com/mathflowjs/mathflow/commit/38c3ece))
-- ⚠️  Update internals and exported api ([7bebd33](https://github.com/mathflowjs/mathflow/commit/7bebd33))
+- **ci:** ⚠️ Update release workflow ([38c3ece](https://github.com/mathflowjs/mathflow/commit/38c3ece))
+- ⚠️ Update internals and exported api ([7bebd33](https://github.com/mathflowjs/mathflow/commit/7bebd33))
 
 ### ❤️ Contributors
 
 - Henry Hale ([@henryhale](https://github.com/henryhale))
 - Henryhale ([@henryhale](https://github.com/henryhale))
-
-
