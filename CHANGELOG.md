@@ -1,5 +1,51 @@
 # Changelog
 
+## 2.0.0 (2026-01-02)
+
+### ⚠ BREAKING CHANGES
+
+* **ci:** update release workflow
+* this commit introduces a new API along with several internals redesigned
+
+### Features
+
+* add computeBatch function for multi-line expressions ([8a8a256](https://github.com/mathflowjs/mathflow/commit/8a8a256ad01185c590ccb97c920fbe0838cc958a))
+* add configuration object ([482cd6b](https://github.com/mathflowjs/mathflow/commit/482cd6befcf5a946cde49f1e77d00a86162ee7d9))
+* add configuration object ([5b4e6d6](https://github.com/mathflowjs/mathflow/commit/5b4e6d61561c60f7505f8d43dd34fc32c85a637b))
+* add dev playground ([0177b87](https://github.com/mathflowjs/mathflow/commit/0177b87a5030debbb67b50733c171b0f2b4e76f6))
+* add exponential support for indentifiers ([14d6362](https://github.com/mathflowjs/mathflow/commit/14d63623c197f49000ec907b7310401625f8bca7))
+* add fraction digits property to context preferences ([f10367e](https://github.com/mathflowjs/mathflow/commit/f10367eb9e785300e8692576c79b20fd05e59ada))
+* add new functions ([32d478a](https://github.com/mathflowjs/mathflow/commit/32d478a656ec7fb07a325d84e12da33feef3f6eb))
+* add new operators, constants, refactors and update docs ([d3a2399](https://github.com/mathflowjs/mathflow/commit/d3a2399ed455d250ef750eb8e76b1b7a1cb266d9))
+* add render functions for html and latex ([20d342c](https://github.com/mathflowjs/mathflow/commit/20d342c08b259e5c1efe7f237eb1232cc3577762))
+* add render functions to context api ([6fe15f0](https://github.com/mathflowjs/mathflow/commit/6fe15f0560d57e63c61b1301442ceb31326088a7))
+* add solution property in result ([c37763c](https://github.com/mathflowjs/mathflow/commit/c37763c9ea3293fc8643af50f40abbf78a9dea93))
+* add solution property in result ([1e694d1](https://github.com/mathflowjs/mathflow/commit/1e694d18379e20b4dfb0728ffb0b67a651334313))
+* add variadic function support ([426e360](https://github.com/mathflowjs/mathflow/commit/426e3609d8eeaaae800808b0dfa14b0b12abeb8e))
+* added safe functions that capture and dont throw errors at all ([0fcd673](https://github.com/mathflowjs/mathflow/commit/0fcd67382836f5063c318af64fd3f0af35dabdf2))
+* added safe functions with types fixed ([b7a4107](https://github.com/mathflowjs/mathflow/commit/b7a41077efa97647bf5a75ad323ca74b44e2c766))
+* merge pull request [#2](https://github.com/mathflowjs/mathflow/issues/2) from mathflowjs/feat/safe-functions ([f375834](https://github.com/mathflowjs/mathflow/commit/f375834328c875f0914c6d19d89cc2bde1adbd14))
+* **refactor:** split functions into topics with new functions ([8c414be](https://github.com/mathflowjs/mathflow/commit/8c414be85768109adcc195eda1e33738518a1ada))
+* support assignment expressions in solutions ([ea5ddf2](https://github.com/mathflowjs/mathflow/commit/ea5ddf24f71824d555a10e715ee3fadde7ed7ec0))
+* update color schemes to paper-like pallete ([7a0d03c](https://github.com/mathflowjs/mathflow/commit/7a0d03c4ea3168a6e1004ec071d1e678b2547515))
+* update context interface with solve and solveBatch ([84785e1](https://github.com/mathflowjs/mathflow/commit/84785e16d1e34744bb15d53bd6d6fec9de8dad3a))
+
+### Bug Fixes
+
+* bug with implicit multiplication of number and function like 2sin(90) ([4f2d14e](https://github.com/mathflowjs/mathflow/commit/4f2d14eaab99bd10c0c6e9bac45a6b20de922469))
+* **build:** export types for typescript users ([e78d1c4](https://github.com/mathflowjs/mathflow/commit/e78d1c43c2b9339dd8a30eab4bb9b89f55e8141f))
+* **ci:** allow workflow to publish releases and tags ([ea2e142](https://github.com/mathflowjs/mathflow/commit/ea2e142f83e6bc853291b92ca5402efd7f400d22))
+* **ci:** update release workflow ([38c3ece](https://github.com/mathflowjs/mathflow/commit/38c3eceed39b97575c69574cbaacf64c6570c0c2))
+* **feat:** add missing options and types ([80c7ba9](https://github.com/mathflowjs/mathflow/commit/80c7ba9401e2b31f6decbb2998c2c62cbbb1fc7f))
+* ignore functions with many arguments in solutions ([95704a9](https://github.com/mathflowjs/mathflow/commit/95704a962b329c144bc1dd080868502c7ab4fb29))
+* insert values to builtin function when generating solution ([3f7b3b9](https://github.com/mathflowjs/mathflow/commit/3f7b3b9c62570533cb6b154e2e4267111b254cec))
+* **release:** build before releasing package ([c51b098](https://github.com/mathflowjs/mathflow/commit/c51b09825b5e2b094106e4519220103d69760c2c))
+* remove extra brackets ([30152ff](https://github.com/mathflowjs/mathflow/commit/30152ffe335386715f834d5f253fe498755b9a04))
+
+### Code Refactoring
+
+* update internals and exported api ([7bebd33](https://github.com/mathflowjs/mathflow/commit/7bebd3313e8845cfcf6740996d25e8f27a86edd4))
+
 ## ...master
 
 ### 🚀 Enhancements
