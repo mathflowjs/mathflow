@@ -16,3 +16,11 @@ export {
     type IHTMLRenderResult
 } from './render/html';
 export { renderTokensAsLaTeX, type ILaTeXRenderOptions } from './render/latex';
+export {
+    safeEvaluate,
+    safeParse,
+    safeSolve,
+    safeSolveBatch,
+    safeTokenize,
+    ISafeResult
+} from './safe';

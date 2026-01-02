@@ -23,3 +23,25 @@ export function createError(
         }
     };
 }
+
+export type ISafeResult<T = unknown> =
+    | {
+          data: T;
+          error: undefined;
+      }
+    | {
+          data: undefined;
+          error: ReturnType<typeof createError>;
+      };
+
+export function safeExecutor<T = unknown>(fn: () => T): ISafeResult<T> {
+    try {
+        const data = fn();
+        return { data, error: undefined };
+    } catch (error) {
+        return {
+            data: undefined,
+            error: error as ReturnType<typeof createError>
+        };
+    }
+}

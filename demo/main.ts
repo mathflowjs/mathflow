@@ -70,9 +70,12 @@ function solve(code = '') {
         if (steps.length < 2) continue;
         solution += steps.join('\n') + '\n\n';
     }
-    solutionBox.innerHTML = renderTokensAsHTML(tokenize(ctx, solution), {
+
+    const content = renderTokensAsHTML(tokenize(ctx, solution), {
         colorScheme: 'auto'
     });
+
+    solutionBox.innerHTML = content.html + `<style>${content.css}</style>`;
 }
 
 // initial test program
