@@ -19,9 +19,9 @@
     "scripts": {
         "dev": "vite",
         "build": "unbuild --minify",
-        "format": "prettier . --write",
-        "lint": "eslint src tests && prettier src tests --check",
-        "lint:fix": "eslint --fix src tests && pnpm format",
+        "format": "prettier src tests demo --write",
+        "lint": "eslint src tests && prettier src tests demo --check",
+        "lint:fix": "eslint --fix src tests demo && pnpm format",
         "test": "vitest run",
         "prepare": "husky || true",
         "release": "release-it",
