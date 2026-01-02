@@ -8,6 +8,8 @@ import { createSolutionStack } from '../src/evaluator/solution';
 
 const input = document.querySelector('textarea')!;
 
+const errorBox = document.querySelector('#error')!;
+
 const solveBtn = document.querySelector('#solve')!;
 
 const solutionBox = document.querySelector('#solution')!;
@@ -93,9 +95,20 @@ r7 = add(x,y,z,w) + div(x^2, y^2) * log2(4)
 
 input.value = testProgram;
 
-solve(testProgram);
+function safeSolve(input: string) {
+    try {
+        solve(input);
+        errorBox.classList.remove('active');
+    } catch (err) {
+        errorBox.classList.add('active');
+        errorBox.textContent = `${err}`;
+        solutionBox.innerHTML = '';
+    }
+}
+
+safeSolve(testProgram);
 
 // solve input string when `Solve` button is clicked
 solveBtn.addEventListener('click', () => {
-    solve(input.value);
+    safeSolve(input.value);
 });
