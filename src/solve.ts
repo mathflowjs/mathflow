@@ -1,4 +1,4 @@
-import { IContext } from './context';
+import { type IContext } from './context';
 import { evaluate } from './evaluator';
 import { parse } from './parser';
 import { tokenize } from './lexer';

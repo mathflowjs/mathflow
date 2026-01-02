@@ -5,11 +5,19 @@ export enum ERRORS {
     // VARIABLE = 'VariableError'
 }
 
+export type IError = {
+    name: string;
+    type: ERRORS;
+    message: string;
+    suggestion: string | null;
+    toString(): string;
+};
+
 export function createError(
     type: ERRORS,
     message: string,
     suggestion: string | null = null
-) {
+): IError {
     return {
         name: 'MathFlowError',
         type,
@@ -31,7 +39,7 @@ export type ISafeResult<T = unknown> =
       }
     | {
           data: undefined;
-          error: ReturnType<typeof createError>;
+          error: IError;
       };
 
 export function safeExecutor<T = unknown>(fn: () => T): ISafeResult<T> {

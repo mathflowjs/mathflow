@@ -1,13 +1,13 @@
-import { IContext } from './context';
+import { type IContext } from './context';
 import { safeExecutor } from './error';
 import { evaluate } from './evaluator';
-import { ISolution } from './evaluator/solution';
+import { type ISolution } from './evaluator/solution';
 import { tokenize } from './lexer';
-import { IToken } from './lexer/tokens';
-import { INode, parse } from './parser';
+import { type IToken } from './lexer/tokens';
+import { type INode, parse } from './parser';
 import { solve, solveBatch } from './solve';
 
-export { ISafeResult } from './error';
+export { type ISafeResult } from './error';
 
 /**
  * Safely tokenize without throwing an error
