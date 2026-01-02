@@ -22,5 +22,5 @@ export {
     safeSolve,
     safeSolveBatch,
     safeTokenize,
-    ISafeResult
+    type ISafeResult
 } from './safe';
