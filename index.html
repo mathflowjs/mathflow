@@ -74,6 +74,17 @@
                 width: 50%;
                 margin: 1rem auto;
             }
+
+            #error {
+                display: none;
+            }
+
+            #error.active {
+                display: block;
+                padding: 1rem 0;
+                color: rgb(243, 96, 96);
+                border-radius: 15px;
+            }
         </style>
     </head>
 
@@ -97,6 +108,8 @@
                 <h3>Solution:</h3>
                 <div id="solution"></div>
             </div>
+
+            <p id="error"></p>
         </main>
 
         <script type="module" src="./demo/main.ts"></script>

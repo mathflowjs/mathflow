@@ -1,5 +1,5 @@
 import { createError, ERRORS } from '../error';
-import { isUnaryOperator, SYMBOL, TOKEN, Token } from '../lexer/tokens';
+import { isUnaryOperator, SYMBOL, TOKEN, type IToken } from '../lexer/tokens';
 
 export enum NODE {
     PROGRAM = 'Program',
@@ -11,13 +11,18 @@ export enum NODE {
     LITERAL = 'Literal'
 }
 
-export interface Node extends Token<NODE> {
-    left?: Node;
-    right?: Node;
-    arguments?: Node[];
+export interface INode extends IToken<NODE> {
+    left?: INode;
+    right?: INode;
+    arguments?: INode[];
 }
 
-function createTokenStream(tokens: Token[]) {
+export type IParseTree = {
+    type: NODE;
+    body: INode[];
+};
+
+function createTokenStream(tokens: IToken[]) {
     let current = 0;
 
     return {
@@ -43,7 +48,7 @@ function createTokenStream(tokens: Token[]) {
  * Build an Abstract Syntax Tree (AST) from a list of tokens
  * - follows mathematical precedence of operators
  */
-export function parse(tokens: Token[]) {
+export function parse(tokens: IToken[]): IParseTree {
     const stream = createTokenStream(tokens);
 
     function check(type: TOKEN): boolean {
@@ -72,8 +77,8 @@ export function parse(tokens: Token[]) {
     }
 
     // parse multiple line program
-    function parseProgram() {
-        const statements: Node[] = [];
+    function parseProgram(): IParseTree {
+        const statements: INode[] = [];
 
         while (!stream.isEOF) {
             // skip newline characters at the start
@@ -194,7 +199,7 @@ export function parse(tokens: Token[]) {
     }
 
     // atomic values
-    function parseFactor(): Node | undefined {
+    function parseFactor(): INode | undefined {
         // int or float
         if (matchType(TOKEN.NUMBER)) {
             return { ...stream.previous, type: NODE.LITERAL };
@@ -232,7 +237,7 @@ export function parse(tokens: Token[]) {
             const node = stream.previous;
 
             // extract arguments
-            const args: Node[] = [];
+            const args: INode[] = [];
 
             // skip (
             stream.advance();

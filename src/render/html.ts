@@ -1,9 +1,14 @@
-import { isBinaryOperator, SYMBOL, type Token, TOKEN } from '../lexer/tokens';
+import { isBinaryOperator, SYMBOL, type IToken, TOKEN } from '../lexer/tokens';
 
-export type HTMLRenderOptions = {
+export type IHTMLRenderOptions = {
     classPrefix: string;
     colorScheme: 'none' | 'auto' | 'light' | 'dark';
     includeDebugInfo: boolean;
+};
+
+export type IHTMLRenderResult = {
+    html: string;
+    css: string;
 };
 
 const characterMap: Record<string, string> = {
@@ -31,7 +36,7 @@ const typeClasses: Record<string, string> = {
     [TOKEN.NEWLINE]: 'newline'
 };
 
-function formatTokenValue(token: Token): string {
+function formatTokenValue(token: IToken): string {
     let value = characterMap[token.value] || token.value;
     if (isBinaryOperator(token.value) || token.type === TOKEN.ASSIGNMENT) {
         value = `&nbsp;${value}&nbsp;`;
@@ -46,22 +51,22 @@ function formatTokenValue(token: Token): string {
  * - _experimental_
  */
 export function renderTokensAsHTML(
-    tokens: Token[],
-    options: Partial<HTMLRenderOptions> = {}
-) {
-    const config: HTMLRenderOptions = {
+    tokens: IToken[],
+    options: Partial<IHTMLRenderOptions> = {}
+): IHTMLRenderResult {
+    const config: IHTMLRenderOptions = {
         classPrefix: options.classPrefix || 'mf',
         colorScheme: options.colorScheme || 'none',
         includeDebugInfo: options.includeDebugInfo || false,
         ...options
     };
 
-    const getTokenClass = (token: Token) => {
+    const getTokenClass = (token: IToken) => {
         const tokenClass = typeClasses[token.type] || 'unknown';
         return `${config.classPrefix}-token ${config.classPrefix}-${tokenClass}`;
     };
 
-    const renderToken = (token: Token, index: number) => {
+    const renderToken = (token: IToken, index: number) => {
         const className = getTokenClass(token);
         const value = formatTokenValue(token);
         const debugInfo = config.includeDebugInfo
@@ -111,14 +116,10 @@ export function renderTokensAsHTML(
 
     const htmlTokens = tokens.map(renderToken).filter((token) => token !== '');
 
-    const styles = generateHTMLStyles(config.classPrefix);
-
-    return `
-      <div class="${config.classPrefix}-expression ${config.classPrefix}-${config.colorScheme}" data-scheme="${config.colorScheme}">
-        <style>${styles}</style>
-        ${htmlTokens.join('').replace(/<br>$/, '')}
-      </div>
-    `;
+    return {
+        css: generateHTMLStyles(config.classPrefix),
+        html: `<div class="${config.classPrefix}-expression ${config.classPrefix}-${config.colorScheme}" data-scheme="${config.colorScheme}">${htmlTokens.join('').replace(/<br>$/, '')}</div>`
+    };
 }
 
 const generateHTMLStyles = (prefix: string) => {

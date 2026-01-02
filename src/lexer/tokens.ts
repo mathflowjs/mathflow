@@ -41,7 +41,7 @@ export enum TOKEN {
     EOF = 'EOF'
 }
 
-export interface Token<T = TOKEN> {
+export interface IToken<T = TOKEN> {
     type: T;
     value: string;
     position: number;

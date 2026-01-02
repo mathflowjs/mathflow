@@ -1,12 +1,12 @@
 import initNumbers from './numbers';
 import initLogarithms from './logarithms';
 import initTrignometry from './trignometry';
-import { Context } from '../context';
+import { type IContext } from '../context';
 
-export type ComputeFunction = (...args: number[]) => number;
+export type IComputeFunction = (...args: number[]) => number;
 
-export function addBuiltinFunctions(ctx: Context) {
-    const fns: Record<string, ComputeFunction> = {
+export function addBuiltinFunctions(ctx: IContext) {
+    const fns: Record<string, IComputeFunction> = {
         ...initNumbers(),
         ...initLogarithms(),
         ...initTrignometry(ctx.preferences)

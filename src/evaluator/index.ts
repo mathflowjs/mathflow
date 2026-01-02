@@ -1,8 +1,8 @@
-import { type Node, NODE } from '../parser';
-import { type Context } from '../context';
+import { type INode, NODE } from '../parser';
+import { type IContext } from '../context';
 import { createError, ERRORS } from '../error';
 import { SYMBOL } from '../lexer/tokens';
-import { Solution, advance, pushValue } from './solution';
+import { ISolution, advance, pushValue } from './solution';
 
 function compute(op: SYMBOL, a: number, b: number): number {
     switch (op) {
@@ -25,7 +25,11 @@ function compute(op: SYMBOL, a: number, b: number): number {
 /**
  * Run through the entire AST evaluating the expressions on each subtree left to right
  */
-export function evaluate(ctx: Context, node: Node, solution: Solution): number {
+export function evaluate(
+    ctx: IContext,
+    node: INode,
+    solution: ISolution
+): number {
     let result = 0;
     let left: number;
     let right: number;

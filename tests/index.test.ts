@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach } from 'vitest';
-import { ContextAPI, createContext } from '../src/context';
+import { type IContextAPI, createContext } from '../src/context';
 
-let ctx: ContextAPI;
+let ctx: IContextAPI;
 
 beforeEach(() => {
     ctx = createContext({

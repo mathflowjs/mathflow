@@ -1,4 +1,4 @@
-import { Context } from '../context';
+import { type IContext } from '../context';
 import { createError, ERRORS } from '../error';
 import {
     isDigit,
@@ -6,7 +6,7 @@ import {
     isBinaryOperator,
     isWhitespace,
     TOKEN,
-    type Token,
+    type IToken,
     SYMBOL
 } from './tokens';
 
@@ -28,13 +28,13 @@ function createParenStack() {
 /**
  * Break down an expression into a list of identified tokens
  */
-export function tokenize(ctx: Context, code: string): Token[] {
+export function tokenize(ctx: IContext, code: string): IToken[] {
     let position = 0;
     let line = 1;
     let column = 1;
     let char: string;
     const parenStack = createParenStack();
-    const tokens: Token[] = [];
+    const tokens: IToken[] = [];
 
     // remove all comments
     code += SYMBOL.NEWLINE;
