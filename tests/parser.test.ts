@@ -1,9 +1,9 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { tokenize } from '../src/lexer';
-import { Context, createContext } from '../src/context';
+import { IContext, createContext } from '../src/context';
 import { NODE, parse } from '../src/parser';
 
-let ctx: Context;
+let ctx: IContext;
 
 beforeEach(() => {
     ctx = createContext();

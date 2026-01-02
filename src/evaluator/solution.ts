@@ -1,31 +1,31 @@
 import { isBinaryOperator, isAlpha } from '../lexer/tokens';
 
-type SolutionConfig = {
+type ISolutionConfig = {
     id: number;
     parts: string[];
 };
 
-export type Solution = {
+export type ISolution = {
     readonly steps: string[];
     readonly id: number;
 };
 
-const store = new WeakMap<Solution, SolutionConfig>();
+const store = new WeakMap<ISolution, ISolutionConfig>();
 
-export function advance(solution: Solution) {
+export function advance(solution: ISolution) {
     if (!store.has(solution)) return;
     const c = store.get(solution)!;
     c.parts.push(`#${++c.id}`);
 }
 
-export function pushValue(solution: Solution, value: string | number) {
+export function pushValue(solution: ISolution, value: string | number) {
     if (!store.has(solution)) return;
     const c = store.get(solution)!;
     c.parts.push(value.toString());
 }
 
 export function createSolutionStack() {
-    const c: SolutionConfig = {
+    const c: ISolutionConfig = {
         id: 0,
         parts: []
     };
@@ -44,7 +44,7 @@ export function createSolutionStack() {
     return s;
 }
 
-type MapTerm = {
+type IMapTerm = {
     [k: string]: {
         result: string;
         expr: string;
@@ -62,7 +62,7 @@ export function buildSolution(raw: string[]): string[] {
             .map((step) => removeExtraParen(step));
     }
 
-    const map: MapTerm = {};
+    const map: IMapTerm = {};
     let expr: string;
     let hasExpression: boolean;
 

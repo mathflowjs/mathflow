@@ -1,34 +1,41 @@
-import { solve, solveBatch, type Result } from './solve';
-import { addBuiltinFunctions, type ComputeFunction } from './functions';
-import { renderTokensAsHTML, HTMLRenderOptions } from './render/html';
+import { solve, solveBatch, type IResult } from './solve';
+import { addBuiltinFunctions, type IComputeFunction } from './functions';
+import {
+    type IHTMLRenderResult,
+    renderTokensAsHTML,
+    type IHTMLRenderOptions
+} from './render/html';
 import { tokenize } from './lexer';
-import { renderTokensAsLaTeX, LaTeXRenderOptions } from './render/latex';
+import { renderTokensAsLaTeX, type ILaTeXRenderOptions } from './render/latex';
 
-type Preferences = {
+type IPreferences = {
     fractionDigits: number;
     precision: number;
     angles: 'rad' | 'deg';
 };
 
-export type Context = {
-    preferences: Partial<Preferences>;
+export type IContext = {
+    preferences: Partial<IPreferences>;
     variables: Map<string, number>;
     constants: Map<string, number>;
-    functions: Map<string, ComputeFunction>;
+    functions: Map<string, IComputeFunction>;
 };
 
-export interface ContextAPI extends Context {
-    solve(code: string): Result;
-    solveBatch(code: string): Result[];
-    renderAsHTML(code: string, options?: Partial<HTMLRenderOptions>): string;
-    renderAsLaTeX(code: string, options?: Partial<LaTeXRenderOptions>): string;
+export interface IContextAPI extends IContext {
+    solve(code: string): IResult;
+    solveBatch(code: string): IResult[];
+    renderAsHTML(
+        code: string,
+        options?: Partial<IHTMLRenderOptions>
+    ): IHTMLRenderResult;
+    renderAsLaTeX(code: string, options?: Partial<ILaTeXRenderOptions>): string;
 }
 
-export type ContextOptions = {
-    preferences: Partial<Preferences>;
+export type IContextOptions = {
+    preferences: Partial<IPreferences>;
     variables: Record<string, number>;
     constants: Record<string, number>;
-    functions: Record<string, ComputeFunction>;
+    functions: Record<string, IComputeFunction>;
 };
 
 function merge<T>(dest: Map<string, T>, src: Record<string, T>) {
@@ -42,9 +49,9 @@ function merge<T>(dest: Map<string, T>, src: Record<string, T>) {
  * isolated math execution context
  */
 export function createContext(
-    options: Partial<ContextOptions> = {}
-): ContextAPI {
-    const ctx: Context = {
+    options: Partial<IContextOptions> = {}
+): IContextAPI {
+    const ctx: IContext = {
         variables: new Map(),
         functions: new Map(),
         preferences: {
@@ -89,10 +96,10 @@ export function createContext(
         solveBatch(code: string) {
             return solveBatch(ctx, code);
         },
-        renderAsHTML(code: string, options?: HTMLRenderOptions) {
+        renderAsHTML(code: string, options?: IHTMLRenderOptions) {
             return renderTokensAsHTML(tokenize(ctx, code), options);
         },
-        renderAsLaTeX(code: string, options?: LaTeXRenderOptions) {
+        renderAsLaTeX(code: string, options?: ILaTeXRenderOptions) {
             return renderTokensAsLaTeX(tokenize(ctx, code), options);
         }
     };

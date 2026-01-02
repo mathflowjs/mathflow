@@ -1,16 +1,17 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { tokenize } from '../src/lexer';
 import { parse } from '../src/parser';
-import { Context, createContext } from '../src/context';
+import { type IContext, createContext } from '../src/context';
 import { evaluate } from '../src/evaluator';
-import { createSolutionStack, Solution } from '../src/evaluator/solution';
+import { createSolutionStack, type ISolution } from '../src/evaluator/solution';
 
-let ctx: Context;
-let solution: Solution;
+let ctx: IContext;
+let solution: ISolution;
 
 beforeEach(() => {
     ctx = createContext({
         variables: { x: 1 },
+        constants: { y: 1 },
         preferences: {
             angles: 'deg'
         }
