@@ -124,111 +124,111 @@ export function renderTokensAsHTML(
 
 const generateHTMLStyles = (prefix: string) => {
     return `
-        .${prefix}-expression.${prefix}-auto,
-        .${prefix}-expression.${prefix}-light {
-            --${prefix}-fg: #111827;
-            --${prefix}-bg: #f9fafb;
-            --${prefix}-border: #e5e7eb;
+.${prefix}-expression.${prefix}-auto,
+.${prefix}-expression.${prefix}-light {
+    --${prefix}-fg: #111827;
+    --${prefix}-bg: #f9fafb;
+    --${prefix}-border: #e5e7eb;
 
-            --${prefix}-number: #000000;
-            --${prefix}-identifier: #333333;
-            --${prefix}-operator: #666666;
-            --${prefix}-assignment: #000000;
-            --${prefix}-paren: #888888;
-            --${prefix}-function: #222222;
-            --${prefix}-comma: #aaaaaa;
-        }
+    --${prefix}-number: #000000;
+    --${prefix}-identifier: #333333;
+    --${prefix}-operator: #666666;
+    --${prefix}-assignment: #000000;
+    --${prefix}-paren: #888888;
+    --${prefix}-function: #222222;
+    --${prefix}-comma: #aaaaaa;
+}
 
-        .${prefix}-expression.${prefix}-dark {
-            --${prefix}-fg: #f3f4f6;
-            --${prefix}-bg: #1f2937;
-            --${prefix}-border: #374151;
+.${prefix}-expression.${prefix}-dark {
+    --${prefix}-fg: #f3f4f6;
+    --${prefix}-bg: #1f2937;
+    --${prefix}-border: #374151;
 
-            --${prefix}-number: #ffffff;
-            --${prefix}-identifier: #cccccc;
-            --${prefix}-operator: #999999;
-            --${prefix}-assignment: #ffffff;
-            --${prefix}-paren: #777777;
-            --${prefix}-function: #dddddd;
-            --${prefix}-comma: #555555;
-        }
+    --${prefix}-number: #ffffff;
+    --${prefix}-identifier: #cccccc;
+    --${prefix}-operator: #999999;
+    --${prefix}-assignment: #ffffff;
+    --${prefix}-paren: #777777;
+    --${prefix}-function: #dddddd;
+    --${prefix}-comma: #555555;
+}
 
-        @media (prefers-color-scheme: dark) {
-            .${prefix}-expression.${prefix}-auto {
-                --${prefix}-fg: #f3f4f6;
-                --${prefix}-bg: #1f2937;
-                --${prefix}-border: #374151;
+@media (prefers-color-scheme: dark) {
+    .${prefix}-expression.${prefix}-auto {
+        --${prefix}-fg: #f3f4f6;
+        --${prefix}-bg: #1f2937;
+        --${prefix}-border: #374151;
 
-                --${prefix}-number: #ffffff;
-                --${prefix}-identifier: #cccccc;
-                --${prefix}-operator: #999999;
-                --${prefix}-assignment: #ffffff;
-                --${prefix}-paren: #777777;
-                --${prefix}-function: #dddddd;
-                --${prefix}-comma: #555555;
-            }
-        }
+        --${prefix}-number: #ffffff;
+        --${prefix}-identifier: #cccccc;
+        --${prefix}-operator: #999999;
+        --${prefix}-assignment: #ffffff;
+        --${prefix}-paren: #777777;
+        --${prefix}-function: #dddddd;
+        --${prefix}-comma: #555555;
+    }
+}
 
-        .${prefix}-expression {
-            font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Courier New', monospace;
-            font-size: 16px;
-            line-height: 1.6;
-            padding: 12px 16px;
-            border-radius: 6px;
-            background: var(--${prefix}-bg, transparent);
-            border: 1px solid var(--${prefix}-border);
-            color: var(--${prefix}-fg, currentColor);
-            overflow: auto;
-        }
-      
-        .${prefix}-token {
-            margin: 0;
-            transition: background-color 0.2s ease;
-        }
-      
-        .${prefix}-token:hover {
-            background-color: var(--${prefix}-border, transparent);
-            border-radius: 2px;
-            cursor: default;
-        }
-      
-        .${prefix}-number {
-            color: var(--${prefix}-number, currentColor);
-        }
-        .${prefix}-identifier {
-            color: var(--${prefix}-identifier, currentColor);
-            font-style: italic;
-        }
-        .${prefix}-operator {
-            color: var(--${prefix}-operator, currentColor);
-            font-weight: semibold;
-        }
-        .${prefix}-assignment {
-            color: var(--${prefix}-assignment, currentColor);
-            font-weight: semibold;
-        }
-        .${prefix}-paren {
-            color: var(--${prefix}-paren, currentColor);
-            font-weight: semibold;
-        }
-        .${prefix}-function {
-            color: var(--${prefix}-function, currentColor);
-            font-weight: medium;
-        }
-        .${prefix}-comma {
-            color: var(--${prefix}-comma, currentColor);
-        }
-      
-        .${prefix}-position {
-            font-size: 0.7em;
-            color: var(--${prefix}-fg, currentColor);
-            margin-left: 4px;
-            vertical-align: super;
-        }
-      
-        sup.${prefix}-token {
-            font-size: 0.8em;
-            vertical-align: super;
-        }
+.${prefix}-expression {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Courier New', monospace;
+    font-size: 16px;
+    line-height: 1.6;
+    padding: 12px 16px;
+    border-radius: 6px;
+    background: var(--${prefix}-bg, transparent);
+    border: 1px solid var(--${prefix}-border);
+    color: var(--${prefix}-fg, currentColor);
+    overflow: auto;
+}
+
+.${prefix}-token {
+    margin: 0;
+    transition: background-color 0.2s ease;
+}
+
+.${prefix}-token:hover {
+    background-color: var(--${prefix}-border, transparent);
+    border-radius: 2px;
+    cursor: default;
+}
+
+.${prefix}-number {
+    color: var(--${prefix}-number, currentColor);
+}
+.${prefix}-identifier {
+    color: var(--${prefix}-identifier, currentColor);
+    font-style: italic;
+}
+.${prefix}-operator {
+    color: var(--${prefix}-operator, currentColor);
+    font-weight: semibold;
+}
+.${prefix}-assignment {
+    color: var(--${prefix}-assignment, currentColor);
+    font-weight: semibold;
+}
+.${prefix}-paren {
+    color: var(--${prefix}-paren, currentColor);
+    font-weight: semibold;
+}
+.${prefix}-function {
+    color: var(--${prefix}-function, currentColor);
+    font-weight: medium;
+}
+.${prefix}-comma {
+    color: var(--${prefix}-comma, currentColor);
+}
+
+.${prefix}-position {
+    font-size: 0.7em;
+    color: var(--${prefix}-fg, currentColor);
+    margin-left: 4px;
+    vertical-align: super;
+}
+
+sup.${prefix}-token {
+    font-size: 0.8em;
+    vertical-align: super;
+}
     `;
 };
