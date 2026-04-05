@@ -1,6 +1,6 @@
-import { type Context } from '../context';
+import { type IContext } from '../context';
 
-export default function initTrignometry(pref: Context['preferences']) {
+export default function initTrignometry(pref: IContext['preferences']) {
     const deg = (x: number) => (x * 180) / Math.PI;
     const rad = (x: number) => (x * Math.PI) / 180;
 

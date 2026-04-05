@@ -30,7 +30,7 @@ export function evaluate(
     node: INode,
     solution: ISolution
 ): number {
-    let result = 0;
+    let result: number;
     let left: number;
     let right: number;
 
@@ -69,7 +69,7 @@ export function evaluate(
         // handle all binary operations
         case NODE.BINARY: {
             // build the solution in parts
-            let partial = '';
+            let partial: string;
 
             // compute node.left first
             left = evaluate(ctx, node.left!, solution);

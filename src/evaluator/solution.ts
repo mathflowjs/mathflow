@@ -84,9 +84,8 @@ export function buildSolution(raw: string[]): string[] {
     const solution: string[] = [];
 
     function step(str: string, box: string[]) {
-        let tmp = str;
         if (str) {
-            tmp = str.replaceAll(/#\d+/g, (m) => map[m]?.result || '');
+            const tmp = str.replaceAll(/#\d+/g, (m) => map[m]?.result || '');
             str = str.replaceAll(/#\d+/g, (m) => {
                 return map[m]?.expr || map[m]?.result || '';
             });
