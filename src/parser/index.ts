@@ -158,7 +158,7 @@ export function parse(tokens: IToken[]): IParseTree {
 
     // multiplication and division
     function parseTerm() {
-        let node = parsePower();
+        let node = parseUnary();
 
         while (
             !stream.isEOF &&
@@ -166,7 +166,7 @@ export function parse(tokens: IToken[]): IParseTree {
             matchValue(SYMBOL.MUL, SYMBOL.DIV)
         ) {
             const op = stream.previous;
-            const factor = parsePower();
+            const factor = parseUnary();
 
             node = {
                 ...op,
@@ -179,13 +179,35 @@ export function parse(tokens: IToken[]): IParseTree {
         return node;
     }
 
-    // power - exponential
+    // unary +x or -3
+    //
+    // binds looser than `^` so that `-2^2` is `-(2^2)`, and tighter than `*`
+    // so that `-2*3` is `(-2)*3`
+    function parseUnary(): INode | undefined {
+        if (
+            !stream.isEOF &&
+            isUnaryOperator(stream.current.value) &&
+            matchType(TOKEN.OPERATOR)
+        ) {
+            const op = stream.previous;
+
+            return {
+                ...op,
+                type: NODE.UNARY,
+                right: parseUnary()
+            };
+        }
+
+        return parsePower();
+    }
+
+    // power - exponential, right-associative: `2^3^2` is `2^(3^2)`
     function parsePower() {
         const node = parseFactor();
 
         if (check(TOKEN.OPERATOR) && matchValue(SYMBOL.POW)) {
             const op = stream.previous;
-            const factor = parseFactor();
+            const factor = parseUnary();
 
             return {
                 ...op,
@@ -215,21 +237,6 @@ export function parse(tokens: IToken[]): IParseTree {
             const node = parseExpression();
             stream.advance();
             return node;
-        }
-
-        // unary +x or -3
-        if (
-            !stream.isEOF &&
-            isUnaryOperator(stream.current.value) &&
-            matchType(TOKEN.OPERATOR)
-        ) {
-            const node = stream.previous;
-            const value = parseFactor();
-            return {
-                ...node,
-                type: NODE.UNARY,
-                right: value
-            };
         }
 
         // function call
