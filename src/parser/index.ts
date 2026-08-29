@@ -76,6 +76,19 @@ export function parse(tokens: IToken[]): IParseTree {
         return false;
     }
 
+    // consume a token that the grammar requires, or say what was missing
+    function expect(type: TOKEN, symbol: SYMBOL) {
+        if (matchType(type)) return;
+
+        const token = stream.current || stream.previous;
+
+        throw createError(
+            ERRORS.SYNTAX,
+            `unexpected token near '${token.value}' at ${token.line}:${token.column}`,
+            `expecting '${symbol}'`
+        );
+    }
+
     // parse multiple line program
     function parseProgram(): IParseTree {
         const statements: INode[] = [];
@@ -109,8 +122,10 @@ export function parse(tokens: IToken[]): IParseTree {
     //
     // 1. assignment expression
     // 2. addition and subtraction (lowest precendence)
-    // 3. multiplication, division, exponential (highest precendence)
-    // 4. unary, literals, identifiers, parentheses, function call expression
+    // 3. multiplication and division
+    // 4. unary plus and minus
+    // 5. exponential (highest precendence, right-associative)
+    // 6. literals, identifiers, parentheses, function call expression
 
     function parseAssignment() {
         const node = parseExpression();
@@ -235,7 +250,7 @@ export function parse(tokens: IToken[]): IParseTree {
         // brackets
         if (matchType(TOKEN.LPAREN)) {
             const node = parseExpression();
-            stream.advance();
+            expect(TOKEN.RPAREN, SYMBOL.RPAREN);
             return node;
         }
 
@@ -254,8 +269,7 @@ export function parse(tokens: IToken[]): IParseTree {
                 if (arg) args.push(arg);
             } while (!stream.isEOF && matchType(TOKEN.COMMA));
 
-            // skip )
-            stream.advance();
+            expect(TOKEN.RPAREN, SYMBOL.RPAREN);
 
             return { ...node, type: NODE.CALL, arguments: args };
         }
