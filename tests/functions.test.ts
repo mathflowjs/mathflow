@@ -246,6 +246,48 @@ describe('special functions', () => {
     });
 });
 
+describe('finance', () => {
+    test('time value of money', () => {
+        const fv = 1000 * 1.05 ** 10;
+
+        check([
+            ['futureValue(1000, 0.05, 10)', fv],
+            [`presentValue(${fv}, 0.05, 10)`, 1000],
+            ['futureValue(1000, 0, 10)', 1000],
+            [
+                'compoundInterest(1000, 0.05, 12, 10)',
+                1000 * (1 + 0.05 / 12) ** 120
+            ],
+            [
+                'annuityPayment(0.05, 10, 1000)',
+                (1000 * 0.05) / (1 - 1.05 ** -10)
+            ],
+            // a zero rate is just the principal split evenly
+            ['annuityPayment(0, 10, 1000)', 100]
+        ]);
+    });
+});
+
+describe('number theory', () => {
+    test('totient, mobius and squares', () => {
+        check([
+            ['totient(1)', 1],
+            ['totient(9)', 6],
+            ['totient(10)', 4],
+            ['totient(97)', 96],
+            ['mobius(1)', 1],
+            ['mobius(2)', -1],
+            ['mobius(4)', 0],
+            ['mobius(6)', 1],
+            ['mobius(30)', -1],
+            ['isPerfectSquare(0)', 1],
+            ['isPerfectSquare(16)', 1],
+            ['isPerfectSquare(17)', 0],
+            ['isPerfectSquare(-4)', 0]
+        ]);
+    });
+});
+
 describe('logarithms', () => {
     test('exponents and logs', () => {
         check([
