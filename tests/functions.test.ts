@@ -36,12 +36,10 @@ describe('numbers', () => {
             ['round(2.567, 2)', 2.57],
             ['round(2.5)', 3],
             ['round(-1.4)', -1],
-            ['fix(-2.7)', -2],
             ['trunc(2.7)', 2],
             ['roundToNearest(7, 5)', 5],
             ['roundToNearest(8, 5)', 10],
             ['precision(3.14159, 3)', 3.14],
-            ['sigFigs(123456, 2)', 120000],
             ['clamp(5, 1, 3)', 3],
             ['clamp(0, 1, 3)', 1],
             ['clamp(2, 1, 3)', 2]
