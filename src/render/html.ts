@@ -1,7 +1,6 @@
 import { isBinaryOperator, SYMBOL, type IToken, TOKEN } from '../lexer/tokens';
 
 export type IHTMLRenderOptions = {
-    classPrefix: string;
     colorScheme: 'none' | 'auto' | 'light' | 'dark';
     includeDebugInfo: boolean;
 };
@@ -55,15 +54,12 @@ export function renderTokensAsHTML(
     options: Partial<IHTMLRenderOptions> = {}
 ): IHTMLRenderResult {
     const config: IHTMLRenderOptions = {
-        classPrefix: options.classPrefix || 'mf',
         colorScheme: options.colorScheme || 'none',
-        includeDebugInfo: options.includeDebugInfo || false,
-        ...options
+        includeDebugInfo: options.includeDebugInfo || false
     };
 
     const getTokenClass = (token: IToken) => {
-        const tokenClass = typeClasses[token.type] || 'unknown';
-        return `${config.classPrefix}-token ${config.classPrefix}-${tokenClass}`;
+        return `mf-token mf-${typeClasses[token.type] || 'unknown'}`;
     };
 
     const renderToken = (token: IToken, index: number) => {
@@ -117,118 +113,90 @@ export function renderTokensAsHTML(
     const htmlTokens = tokens.map(renderToken).filter((token) => token !== '');
 
     return {
-        css: generateHTMLStyles(config.classPrefix),
-        html: `<div class="${config.classPrefix}-expression ${config.classPrefix}-${config.colorScheme}" data-scheme="${config.colorScheme}">${htmlTokens.join('').replace(/<br>$/, '')}</div>`
+        css: STYLES,
+        html: `<div class="mf-expression mf-${config.colorScheme}" data-scheme="${config.colorScheme}">${htmlTokens.join('').replace(/<br>$/, '')}</div>`
     };
 }
 
-const generateHTMLStyles = (prefix: string) => {
-    return `
-.${prefix}-expression.${prefix}-auto,
-.${prefix}-expression.${prefix}-light {
-    --${prefix}-fg: #111827;
-    --${prefix}-bg: #f9fafb;
-    --${prefix}-border: #e5e7eb;
+const STYLES = `
+/* colors only apply to an explicit scheme - \`none\` inherits the page */
+.mf-expression.mf-auto {
+    color-scheme: light dark;
+}
+.mf-expression.mf-light {
+    color-scheme: light;
+}
+.mf-expression.mf-dark {
+    color-scheme: dark;
+}
+.mf-expression.mf-auto,
+.mf-expression.mf-light,
+.mf-expression.mf-dark {
+    --mf-fg: light-dark(#111827, #f3f4f6);
+    --mf-bg: light-dark(#f9fafb, #1f2937);
+    --mf-border: light-dark(#e5e7eb, #374151);
 
-    --${prefix}-number: #000000;
-    --${prefix}-identifier: #333333;
-    --${prefix}-operator: #666666;
-    --${prefix}-assignment: #000000;
-    --${prefix}-paren: #888888;
-    --${prefix}-function: #222222;
-    --${prefix}-comma: #aaaaaa;
+    --mf-number: light-dark(#000000, #ffffff);
+    --mf-identifier: light-dark(#333333, #cccccc);
+    --mf-operator: light-dark(#666666, #999999);
+    --mf-assignment: light-dark(#000000, #ffffff);
+    --mf-paren: light-dark(#888888, #777777);
+    --mf-function: light-dark(#222222, #dddddd);
+    --mf-comma: light-dark(#aaaaaa, #555555);
 }
 
-.${prefix}-expression.${prefix}-dark {
-    --${prefix}-fg: #f3f4f6;
-    --${prefix}-bg: #1f2937;
-    --${prefix}-border: #374151;
-
-    --${prefix}-number: #ffffff;
-    --${prefix}-identifier: #cccccc;
-    --${prefix}-operator: #999999;
-    --${prefix}-assignment: #ffffff;
-    --${prefix}-paren: #777777;
-    --${prefix}-function: #dddddd;
-    --${prefix}-comma: #555555;
-}
-
-@media (prefers-color-scheme: dark) {
-    .${prefix}-expression.${prefix}-auto {
-        --${prefix}-fg: #f3f4f6;
-        --${prefix}-bg: #1f2937;
-        --${prefix}-border: #374151;
-
-        --${prefix}-number: #ffffff;
-        --${prefix}-identifier: #cccccc;
-        --${prefix}-operator: #999999;
-        --${prefix}-assignment: #ffffff;
-        --${prefix}-paren: #777777;
-        --${prefix}-function: #dddddd;
-        --${prefix}-comma: #555555;
-    }
-}
-
-.${prefix}-expression {
+.mf-expression {
     font-family: 'JetBrains Mono', 'Fira Code', 'Monaco', 'Courier New', monospace;
     font-size: 16px;
     line-height: 1.6;
     padding: 12px 16px;
     border-radius: 6px;
-    background: var(--${prefix}-bg, transparent);
-    border: 1px solid var(--${prefix}-border);
-    color: var(--${prefix}-fg, currentColor);
+    background: var(--mf-bg, transparent);
+    border: 1px solid var(--mf-border, transparent);
+    color: var(--mf-fg, currentColor);
     overflow: auto;
 }
 
-.${prefix}-token {
+.mf-token {
     margin: 0;
     transition: background-color 0.2s ease;
 }
 
-.${prefix}-token:hover {
-    background-color: var(--${prefix}-border, transparent);
+.mf-token:hover {
+    background-color: var(--mf-border, transparent);
     border-radius: 2px;
     cursor: default;
 }
 
-.${prefix}-number {
-    color: var(--${prefix}-number, currentColor);
+.mf-number {
+    color: var(--mf-number, currentColor);
 }
-.${prefix}-identifier {
-    color: var(--${prefix}-identifier, currentColor);
+.mf-identifier {
+    color: var(--mf-identifier, currentColor);
     font-style: italic;
 }
-.${prefix}-operator {
-    color: var(--${prefix}-operator, currentColor);
+.mf-operator {
+    color: var(--mf-operator, currentColor);
     font-weight: semibold;
 }
-.${prefix}-assignment {
-    color: var(--${prefix}-assignment, currentColor);
+.mf-assignment {
+    color: var(--mf-assignment, currentColor);
     font-weight: semibold;
 }
-.${prefix}-paren {
-    color: var(--${prefix}-paren, currentColor);
+.mf-paren {
+    color: var(--mf-paren, currentColor);
     font-weight: semibold;
 }
-.${prefix}-function {
-    color: var(--${prefix}-function, currentColor);
+.mf-function {
+    color: var(--mf-function, currentColor);
     font-weight: medium;
 }
-.${prefix}-comma {
-    color: var(--${prefix}-comma, currentColor);
+.mf-comma {
+    color: var(--mf-comma, currentColor);
 }
 
-.${prefix}-position {
-    font-size: 0.7em;
-    color: var(--${prefix}-fg, currentColor);
-    margin-left: 4px;
-    vertical-align: super;
-}
-
-sup.${prefix}-token {
+sup.mf-token {
     font-size: 0.8em;
     vertical-align: super;
 }
-    `;
-};
+`;
