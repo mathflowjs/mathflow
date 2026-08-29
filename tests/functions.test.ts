@@ -11,7 +11,20 @@ beforeEach(() => {
 // that was never registered fails here instead of lexing as a variable
 function check(cases: [string, number][]) {
     for (const [expr, expected] of cases) {
-        expect(ctx.solve(expr).value, expr).toBeCloseTo(expected, 8);
+        const actual = ctx.solve(expr).value;
+
+        if (Number.isNaN(expected)) {
+            expect(actual, expr).toBeNaN();
+            continue;
+        }
+
+        // relative, so a large result is not held to an absolute epsilon
+        const tolerance = 1e-9 * Math.max(1, Math.abs(expected));
+
+        expect(
+            Math.abs(actual - expected),
+            `${expr} gave ${actual}, expected ${expected}`
+        ).toBeLessThanOrEqual(tolerance);
     }
 }
 
@@ -125,6 +138,53 @@ describe('statistics', () => {
             ['skewness(1, 2, 3)', 0],
             ['kurtosis(1, 2, 3, 4, 5)', -1.3]
         ]);
+    });
+});
+
+describe('probability', () => {
+    test('counting', () => {
+        check([
+            ['factorial(0)', 1],
+            ['factorial(5)', 120],
+            ['factorial(-1)', NaN],
+            ['combinations(5, 2)', 10],
+            ['combinations(52, 5)', 2598960],
+            ['combinations(5, 6)', 0],
+            ['permutations(5, 2)', 20],
+            ['permutations(5, 0)', 1],
+            ['fibonacci(0)', 0],
+            ['fibonacci(10)', 55],
+            ['isPrime(1)', 0],
+            ['isPrime(2)', 1],
+            ['isPrime(97)', 1],
+            ['isPrime(91)', 0],
+            [
+                'stirlingApproximation(10)',
+                Math.sqrt(20 * Math.PI) * (10 / Math.E) ** 10
+            ],
+            ['birthdayProblem(23)', 0.5072972343],
+            ['birthdayProblem(1)', 0],
+            ['birthdayProblem(400)', 1]
+        ]);
+    });
+
+    test('random values stay in range', () => {
+        for (let i = 0; i < 50; i++) {
+            const unit = ctx.solve('random()').value;
+            expect(unit).toBeGreaterThanOrEqual(0);
+            expect(unit).toBeLessThan(1);
+
+            const scaled = ctx.solve('random(5, 10)').value;
+            expect(scaled).toBeGreaterThanOrEqual(5);
+            expect(scaled).toBeLessThan(10);
+
+            const whole = ctx.solve('randomInt(1, 7)').value;
+            expect(Number.isInteger(whole)).toBe(true);
+            expect(whole).toBeGreaterThanOrEqual(1);
+            expect(whole).toBeLessThan(7);
+
+            expect([3, 5, 8]).toContain(ctx.solve('pickRandom(3, 5, 8)').value);
+        }
     });
 });
 

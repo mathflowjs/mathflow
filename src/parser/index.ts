@@ -264,10 +264,13 @@ export function parse(tokens: IToken[]): IParseTree {
             // skip (
             stream.advance();
 
-            do {
-                const arg = parseExpression();
-                if (arg) args.push(arg);
-            } while (!stream.isEOF && matchType(TOKEN.COMMA));
+            // a call can take no arguments at all, as in `random()`
+            if (!check(TOKEN.RPAREN)) {
+                do {
+                    const arg = parseExpression();
+                    if (arg) args.push(arg);
+                } while (!stream.isEOF && matchType(TOKEN.COMMA));
+            }
 
             expect(TOKEN.RPAREN, SYMBOL.RPAREN);
 
