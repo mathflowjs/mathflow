@@ -109,14 +109,4 @@ describe('mathflow - evaluate', () => {
         expect(ctx.solve(`(3)(2)`).value).toBe(3 * 2);
         expect(ctx.solve(`(5-2)(1+3)`).value).toBe((5 - 2) * (1 + 3));
     });
-
-    // test('batch script', () => {
-    //     const expr = `
-    //         # this is a comment
-    //         a = 1, b = 2, c = a + b
-    //         # return value
-    //         a + b + c
-    //     `
-    //     expect(() => solveBatch(ctx, expr)).not.toThrow()
-    // });
 });
