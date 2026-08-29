@@ -10,8 +10,12 @@ export default function initNumbers() {
         floor: (x: number) => Math.floor(x),
         sqrt: (x: number) => Math.sqrt(x),
         pow: (x: number, y: number) => Math.pow(x, y),
-        cbrt: (x: number) => Math.pow(x, 1 / 3),
-        root: (x: number, y: number) => Math.pow(x, 1 / y),
+        cbrt: (x: number) => Math.cbrt(x),
+        root: (x: number, y: number) =>
+            // an odd root of a negative number is real: root(-8, 3) is -2
+            x < 0 && Number.isInteger(y) && y % 2 !== 0
+                ? -Math.pow(-x, 1 / y)
+                : Math.pow(x, 1 / y),
         trunc: (x: number) => Math.trunc(x)
     };
 }
