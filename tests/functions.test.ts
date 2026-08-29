@@ -188,6 +188,64 @@ describe('probability', () => {
     });
 });
 
+describe('special functions', () => {
+    const EULER_MASCHERONI = 0.577215664901532;
+
+    test('gamma and friends', () => {
+        check([
+            ['gamma(0.5)', Math.sqrt(Math.PI)],
+            ['gamma(1)', 1],
+            ['gamma(5)', 24],
+            ['gamma(-0.5)', -2 * Math.sqrt(Math.PI)],
+            ['gamma(0)', NaN],
+            ['lngamma(10)', Math.log(362880)],
+            ['digamma(1)', -EULER_MASCHERONI],
+            ['digamma(2)', 1 - EULER_MASCHERONI],
+            ['beta(2, 3)', 1 / 12],
+            ['beta(1, 1)', 1],
+            // the lower incomplete gamma: g(1, x) is 1 - e^-x
+            ['gammaIncomplete(1, 1)', 1 - 1 / Math.E],
+            ['gammaIncomplete(1, 0)', 0]
+        ]);
+    });
+
+    test('error function', () => {
+        check([
+            ['erf(0)', 0],
+            ['erf(1)', 0.842700792949715],
+            ['erf(-1)', -0.842700792949715],
+            ['erf(3)', 0.999977909503001],
+            ['erfc(0)', 1],
+            ['erfc(1)', 1 - 0.842700792949715]
+        ]);
+    });
+
+    test('zeta and lambert w', () => {
+        check([
+            ['zeta(2)', Math.PI ** 2 / 6],
+            ['zeta(4)', Math.PI ** 4 / 90],
+            ['zeta(0)', -0.5],
+            ['zeta(-1)', -1 / 12],
+            ['zeta(-2)', 0],
+            ['lambertW(0)', 0],
+            ['lambertW(e)', 1],
+            ['lambertW(1)', 0.567143290409784],
+            // W(x)e^W(x) = x
+            ['lambertW(10) * exp(lambertW(10))', 10]
+        ]);
+    });
+
+    test('sinc and heaviside', () => {
+        check([
+            ['sinc(0)', 1],
+            ['sinc(pi)', 0],
+            ['heaviside(-2)', 0],
+            ['heaviside(0)', 0.5],
+            ['heaviside(2)', 1]
+        ]);
+    });
+});
+
 describe('logarithms', () => {
     test('exponents and logs', () => {
         check([
