@@ -25,8 +25,8 @@ export default function initTrignometry(pref: IContext['preferences']) {
         asinh: (x: number) => res(Math.asinh(val(x))),
         acosh: (x: number) => res(Math.acosh(val(x))),
         atanh: (x: number) => res(Math.atanh(val(x))),
-        hypot: (x: number, y: number) => Math.sqrt(x * x + y * y),
+        hypot: (...x: number[]) => Math.hypot(...x),
         versin: (x: number) => 1 - Math.cos(val(x)),
-        coversin: (x: number) => (1 - Math.cos(val(x))) / 2
+        coversin: (x: number) => 1 - Math.sin(val(x))
     };
 }
