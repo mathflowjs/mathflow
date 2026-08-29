@@ -92,6 +92,42 @@ describe('trigonometry', () => {
     });
 });
 
+describe('statistics', () => {
+    test('totals and averages', () => {
+        check([
+            ['sum(1, 2, 3)', 6],
+            ['prod(2, 3, 4)', 24],
+            ['min(4, 9, 2)', 2],
+            ['max(4, 9, 2)', 9],
+            ['mean(1, 2, 3)', 2],
+            ['median(1, 2, 3, 4)', 2.5],
+            ['median(3, 1, 2)', 2],
+            ['mode(1, 2, 2, 3)', 2],
+            // the smallest value wins a tie
+            ['mode(1, 1, 2, 2)', 1],
+            ['geometricMean(1, 4, 16)', 4],
+            ['harmonicMean(1, 2, 4)', 3 / 1.75]
+        ]);
+    });
+
+    test('spread and shape', () => {
+        check([
+            // sample variance, the (n - 1) normalization
+            ['variance(2, 4, 4, 4, 5, 5, 7, 9)', 32 / 7],
+            ['std(2, 4, 4, 4, 5, 5, 7, 9)', Math.sqrt(32 / 7)],
+            ['variance(5)', 0],
+            ['mad(1, 2, 3, 4)', 1],
+            ['quantile(0.5, 1, 2, 3, 4)', 2.5],
+            ['quantile(0, 3, 1, 2)', 1],
+            ['quantile(1, 3, 1, 2)', 3],
+            ['entropy(0.5, 0.5)', Math.LN2],
+            ['entropy(1, 1, 1, 1)', Math.log(4)],
+            ['skewness(1, 2, 3)', 0],
+            ['kurtosis(1, 2, 3, 4, 5)', -1.3]
+        ]);
+    });
+});
+
 describe('logarithms', () => {
     test('exponents and logs', () => {
         check([
