@@ -52,6 +52,46 @@ describe('numbers', () => {
     });
 });
 
+describe('trigonometry', () => {
+    test('degree variants are independent of the angle preference', () => {
+        ctx.preferences.angles = 'rad';
+        check([
+            ['sind(30)', 0.5],
+            ['cosd(60)', 0.5],
+            ['tand(45)', 1],
+            ['versind(0)', 0],
+            ['coversind(90)', 0]
+        ]);
+    });
+
+    test('inverse functions take a ratio and return an angle', () => {
+        check([
+            ['asin(0.5)', 30],
+            ['acos(0.5)', 60],
+            ['atan(1)', 45],
+            ['atan2(1, 1)', 45],
+            ['atan2(0, -1)', 180]
+        ]);
+
+        ctx.preferences.angles = 'rad';
+        check([
+            ['asin(0.5)', Math.PI / 6],
+            ['atan2(1, 1)', Math.PI / 4]
+        ]);
+    });
+
+    test('hyperbolic functions ignore the angle preference', () => {
+        check([
+            ['sinh(1)', Math.sinh(1)],
+            ['cosh(1)', Math.cosh(1)],
+            ['tanh(1)', Math.tanh(1)],
+            ['asinh(1)', Math.asinh(1)],
+            ['acosh(2)', Math.acosh(2)],
+            ['atanh(0.5)', Math.atanh(0.5)]
+        ]);
+    });
+});
+
 describe('logarithms', () => {
     test('exponents and logs', () => {
         check([
