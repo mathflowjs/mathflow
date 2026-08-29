@@ -60,6 +60,17 @@ describe('mathflow - evaluate', () => {
         expect(() => ctx.solve(`^2`)).toThrow();
     });
 
+    test('operator precedence', () => {
+        // `^` is right-associative, and binds tighter than unary minus
+        expect(ctx.solve(`2^3^2`)).toHaveProperty('value', 512);
+        expect(ctx.solve(`-2^2`)).toHaveProperty('value', -4);
+        expect(ctx.solve(`(-2)^2`)).toHaveProperty('value', 4);
+        expect(ctx.solve(`-2^2+1`)).toHaveProperty('value', -3);
+        expect(ctx.solve(`2^-1`)).toHaveProperty('value', 0.5);
+        expect(ctx.solve(`-2*3`)).toHaveProperty('value', -6);
+        expect(ctx.solve(`2*-3`)).toHaveProperty('value', -6);
+    });
+
     test('built-in constants', () => {
         expect(ctx.solve(`pi`).value).toBeCloseTo(Math.PI);
     });
