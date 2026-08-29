@@ -10,6 +10,14 @@ beforeEach(() => {
 });
 
 describe('latex output', () => {
+    test('delimiter-pair functions', () => {
+        expect(ctx.renderAsLaTeX('sqrt(25)')).toContain('\\sqrt{25}');
+        expect(ctx.renderAsLaTeX('abs(-10)')).toContain('\\left|-10\\right|');
+        expect(ctx.renderAsLaTeX('sqrt(x^2 + y^2)')).toContain(
+            '\\sqrt{x^2+y^2}'
+        );
+    });
+
     test('mode of output', () => {
         expect(ctx.renderAsLaTeX(expr, { mode: 'inline' })).toEqual(
             '$1+3 \\cdot \\text{sin}\\left(30\\right) \\\\ $'
