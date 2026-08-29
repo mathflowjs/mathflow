@@ -41,6 +41,33 @@ function formatTokenValue(
     return token.value;
 }
 
+// functions written as a delimiter pair rather than a name and parentheses
+const delimiters: Record<string, [string, string]> = {
+    sqrt: ['\\sqrt{', '}'],
+    abs: ['\\left|', '\\right|']
+};
+
+// read up to the paren that closes the one already consumed
+function collectGroup(
+    tokens: IToken[],
+    start: number,
+    mode: ILaTeXRenderOptions['mode']
+): { content: string; end: number } {
+    const content = [];
+    let depth = 1;
+    let i = start;
+
+    while (i < tokens.length && depth > 0) {
+        if (tokens[i].type === TOKEN.LPAREN) depth++;
+        if (tokens[i].type === TOKEN.RPAREN) depth--;
+
+        if (depth > 0) content.push(formatTokenValue(tokens[i], mode));
+        i++;
+    }
+
+    return { content: content.join(''), end: i };
+}
+
 function handleSpecialCases(
     tokens: IToken[],
     mode: ILaTeXRenderOptions['mode']
@@ -58,57 +85,24 @@ function handleSpecialCases(
             break;
         }
 
-        // Handle function calls with parentheses
+        // Handle function calls that are written as a delimiter pair
         if (
             token.type === TOKEN.FUNCTION &&
             nextToken &&
-            nextToken.type === TOKEN.LPAREN
+            nextToken.type === TOKEN.LPAREN &&
+            token.value in delimiters
         ) {
-            if (token.value === 'sqrt') {
-                // Handle square root specially
-                result.push('\\sqrt{');
-                i += 2; // Skip function and opening paren
+            const [open, close] = delimiters[token.value];
 
-                // Find matching closing paren and collect arguments
-                let parenCount = 1;
-                const sqrtContent = [];
+            // skip the function and its opening paren
+            i += 2;
 
-                while (i < tokens.length && parenCount > 0) {
-                    if (tokens[i].type === TOKEN.LPAREN) parenCount++;
-                    if (tokens[i].type === TOKEN.RPAREN) parenCount--;
+            const group = collectGroup(tokens, i, mode);
 
-                    if (parenCount > 0) {
-                        sqrtContent.push(formatTokenValue(tokens[i], mode));
-                    }
-                    i++;
-                }
+            result.push(open + group.content + close);
+            i = group.end;
 
-                result.push(sqrtContent.join('') + '}');
-                continue;
-            }
-
-            if (token.value === 'abs') {
-                // Handle absolute value specially
-                result.push('\\left|');
-                i += 2; // Skip function and opening paren
-
-                // Find matching closing paren
-                let parenCount = 1;
-                const absContent = [];
-
-                while (i < tokens.length && parenCount > 0) {
-                    if (tokens[i].type === TOKEN.LPAREN) parenCount++;
-                    if (tokens[i].type === TOKEN.RPAREN) parenCount--;
-
-                    if (parenCount > 0) {
-                        absContent.push(formatTokenValue(tokens[i], mode));
-                    }
-                    i++;
-                }
-
-                result.push(absContent.join('') + '\\right|');
-                continue;
-            }
+            continue;
         }
 
         // Handle fractions (division)
