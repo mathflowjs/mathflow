@@ -2,11 +2,9 @@ import { describe, test, expect, beforeEach } from 'vitest';
 import { tokenize } from '../src/lexer';
 import { parse } from '../src/parser';
 import { type IContext, createContext } from '../src/context';
-import { evaluate } from '../src/evaluator';
-import { createSolutionStack, type ISolution } from '../src/evaluator/solution';
+import { evaluate, explain } from '../src/evaluator';
 
 let ctx: IContext;
-let solution: ISolution;
 
 beforeEach(() => {
     ctx = createContext({
@@ -16,7 +14,6 @@ beforeEach(() => {
             angles: 'deg'
         }
     });
-    solution = createSolutionStack();
 });
 
 describe('evaluator', () => {
@@ -24,16 +21,23 @@ describe('evaluator', () => {
         const expr = '1+2+x';
         const tokens = tokenize(ctx, expr);
         const ast = parse(tokens);
-        expect(() => evaluate(ctx, ast.body[0], solution)).not.toThrow();
-        expect(evaluate(ctx, ast.body[0], solution)).toBe(4);
+        expect(() => evaluate(ctx, ast.body[0])).not.toThrow();
+        expect(evaluate(ctx, ast.body[0])).toBe(4);
     });
 
     test('complex ast tree', () => {
         const expr = `1 + add(x + 3, cos(60) + 0.25, 0.25)`;
         const tokens = tokenize(ctx, expr);
         const ast = parse(tokens);
-        expect(() => evaluate(ctx, ast.body[0], solution)).not.toThrow();
-        expect(evaluate(ctx, ast.body[0], solution)).toBe(6);
+        expect(() => evaluate(ctx, ast.body[0])).not.toThrow();
+        expect(evaluate(ctx, ast.body[0])).toBe(6);
+    });
+
+    test('unknown variables', () => {
+        const ast = parse(tokenize(ctx, 'nope + 1'));
+        expect(() => evaluate(ctx, ast.body[0])).toThrow(
+            /unknown variable 'nope'/
+        );
     });
 });
 
@@ -43,9 +47,8 @@ describe('solution generator', () => {
         const tokens = tokenize(ctx, expr);
         const ast = parse(tokens);
         ctx.preferences.precision = 4;
-        evaluate(ctx, ast.body[0], solution);
-        expect(solution.steps).toStrictEqual([
-            '(3 * 3.142) - 1',
+        expect(explain(ctx, ast.body[0]).solution).toStrictEqual([
+            '3 * 3.142 - 1',
             '9.426 - 1',
             '8.426'
         ]);

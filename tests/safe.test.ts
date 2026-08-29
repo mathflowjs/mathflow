@@ -1,10 +1,8 @@
 import { describe, test, beforeEach, expect } from 'vitest';
 import { createContext, IContext } from '../src/context';
-import { createSolutionStack, ISolution } from '../src/evaluator/solution';
 import { safeEvaluate, safeParse, safeTokenize, safeSolve } from '../src/safe';
 
 let ctx: IContext;
-let solution: ISolution;
 
 beforeEach(() => {
     ctx = createContext({
@@ -14,7 +12,6 @@ beforeEach(() => {
             angles: 'deg'
         }
     });
-    solution = createSolutionStack();
 });
 
 describe('safe tokenization', () => {
@@ -59,20 +56,20 @@ describe('safe evaluation', () => {
     test('invoking safeEvaluate does not throw errors', () => {
         const tokens = safeTokenize(ctx, '2+sin(45)*5x+y+z').data!;
         const tree = safeParse(tokens).data!;
-        safeEvaluate(ctx, tree.body[0], solution);
+        safeEvaluate(ctx, tree.body[0]);
     });
 
     test('evaluation with errors', () => {
         const tokens = safeTokenize(ctx, 'y = 2').data!;
         const tree = safeParse(tokens).data!;
-        const res = safeEvaluate(ctx, tree.body[0], solution);
+        const res = safeEvaluate(ctx, tree.body[0]);
         expect(res).toHaveProperty('data', undefined);
     });
 
     test('evaluation without errors', () => {
         const tokens = safeTokenize(ctx, '2+sin(45)*5x').data!;
         const tree = safeParse(tokens).data!;
-        const res = safeEvaluate(ctx, tree.body[0], solution);
+        const res = safeEvaluate(ctx, tree.body[0]);
         expect(res).toHaveProperty('error', undefined);
     });
 });

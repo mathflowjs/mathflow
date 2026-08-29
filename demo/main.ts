@@ -1,10 +1,9 @@
 import { tokenize } from '../src/lexer';
 import { parse } from '../src/parser';
-import { evaluate } from '../src/evaluator';
+import { explain } from '../src/evaluator';
 import { renderTokensAsHTML } from '../src/render/html';
 // import { renderTokensAsLaTeX } from '../src/render/latex';
 import { createContext } from '../src/context';
-import { createSolutionStack } from '../src/evaluator/solution';
 
 const input = document.querySelector('textarea')!;
 
@@ -49,26 +48,20 @@ function solve(code = '') {
     const ast = parse(tokens);
     console.log('ast:', ast);
 
-    const result = ast.body.map((node) => {
-        const solution = createSolutionStack();
-        const value = evaluate(ctx, node, solution);
-        return { value, solution };
-    });
+    const result = ast.body.map((node) => explain(ctx, node));
     console.log(
         'result:',
         result.map((r) => r.value)
     );
     console.log(
         'solution:',
-        result.map((r) => r.solution.steps)
+        result.map((r) => r.solution)
     );
 
     let solution = '';
     for (const r of result) {
-        const steps = r.solution.steps;
-        steps.pop();
-        if (steps.length < 2) continue;
-        solution += steps.join('\n') + '\n\n';
+        if (r.solution.length < 2) continue;
+        solution += r.solution.join('\n') + '\n\n';
     }
 
     const content = renderTokensAsHTML(tokenize(ctx, solution), {
