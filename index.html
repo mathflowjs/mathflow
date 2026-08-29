@@ -75,6 +75,25 @@
                 margin: 1rem auto;
             }
 
+            #latex {
+                padding: 0.5rem 0;
+                overflow-x: auto;
+            }
+
+            #latex .katex-display {
+                margin: 0.35rem 0;
+                text-align: left;
+            }
+
+            #latex-source {
+                font-size: 0.8rem;
+                white-space: pre-wrap;
+                word-break: break-all;
+                opacity: 0.7;
+                max-height: 30dvh;
+                overflow: auto;
+            }
+
             #error {
                 display: none;
             }
@@ -107,6 +126,15 @@
             <div>
                 <h3>Solution:</h3>
                 <div id="solution"></div>
+            </div>
+
+            <div>
+                <h3>LaTeX:</h3>
+                <div id="latex"></div>
+                <details>
+                    <summary>LaTeX source</summary>
+                    <pre id="latex-source"></pre>
+                </details>
             </div>
 
             <p id="error"></p>
