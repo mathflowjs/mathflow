@@ -2,7 +2,6 @@ import { tokenize } from '../src/lexer';
 import { parse } from '../src/parser';
 import { explain } from '../src/evaluator';
 import { renderTokensAsHTML } from '../src/render/html';
-// import { renderTokensAsLaTeX } from '../src/render/latex';
 import { createContext } from '../src/context';
 
 const input = document.querySelector('textarea')!;
@@ -38,12 +37,6 @@ function solve(code = '') {
         'tokens:',
         tokens.map((t) => `${t.type}[${t.value}] ${t.line}:${t.column}`)
     );
-
-    // const htmlStr = renderTokensAsHTML(tokens, { colorScheme: 'auto' })
-    // console.log('render: html', htmlStr)
-
-    // const latexStr = renderTokensAsLaTeX(tokens, { mode: 'align' })
-    // console.log('render: latex\n', latexStr)
 
     const ast = parse(tokens);
     console.log('ast:', ast);

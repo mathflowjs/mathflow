@@ -5,9 +5,6 @@ export default defineBuildConfig({
     outDir: 'dist',
     declaration: true,
     rollup: {
-        emitCJS: true,
-        esbuild: {
-            // minify: true
-        }
+        emitCJS: true
     }
 });
