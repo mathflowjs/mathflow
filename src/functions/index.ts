@@ -3,6 +3,7 @@ import initLogarithms from './logarithms';
 import initTrignometry from './trignometry';
 import initStatistics from './statistics';
 import initProbability from './probability';
+import initSpecial from './special';
 import { type IContext } from '../context';
 
 export type IComputeFunction = (...args: number[]) => number;
@@ -13,7 +14,8 @@ export function addBuiltinFunctions(ctx: IContext) {
         ...initLogarithms(),
         ...initTrignometry(ctx.preferences),
         ...initStatistics(),
-        ...initProbability()
+        ...initProbability(),
+        ...initSpecial()
     };
 
     for (const name in fns) {
