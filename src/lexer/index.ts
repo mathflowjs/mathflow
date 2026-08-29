@@ -4,6 +4,7 @@ import {
     isDigit,
     isAlpha,
     isBinaryOperator,
+    isUnaryOperator,
     isWhitespace,
     TOKEN,
     type IToken,
@@ -90,15 +91,25 @@ export function tokenize(ctx: IContext, code: string): IToken[] {
                 !hasExponent &&
                 !!num.length
             ) {
+                // an exponent only if digits follow, optionally signed -
+                // anything else is the constant `e`, as in `2e`
+                const signed = isUnaryOperator(code[position + 1]) ? 1 : 0;
+                if (!isDigit(code[position + 1 + signed])) break;
+
                 hasExponent = true;
                 num += x;
                 advance();
+
+                if (signed) {
+                    num += code[position];
+                    advance();
+                }
             } else {
                 break;
             }
         }
 
-        if (num.endsWith(SYMBOL.DOT) || num.endsWith(SYMBOL.EXPONENT)) {
+        if (num.endsWith(SYMBOL.DOT)) {
             throw createError(
                 ERRORS.LEXICAL,
                 `unexpected token '${x}' at ${line}:${column}`
