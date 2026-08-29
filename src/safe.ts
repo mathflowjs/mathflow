@@ -1,7 +1,6 @@
 import { type IContext } from './context';
 import { safeExecutor } from './error';
-import { evaluate } from './evaluator';
-import { type ISolution } from './evaluator/solution';
+import { evaluate, explain } from './evaluator';
 import { tokenize } from './lexer';
 import { type IToken } from './lexer/tokens';
 import { type INode, parse } from './parser';
@@ -26,8 +25,15 @@ export function safeParse(tokens: IToken[]) {
 /**
  * Safely evaluate without throwing an error
  */
-export function safeEvaluate(ctx: IContext, node: INode, solution: ISolution) {
-    return safeExecutor(() => evaluate(ctx, node, solution));
+export function safeEvaluate(ctx: IContext, node: INode) {
+    return safeExecutor(() => evaluate(ctx, node));
+}
+
+/**
+ * Safely evaluate with a step-by-step solution, without throwing an error
+ */
+export function safeExplain(ctx: IContext, node: INode) {
+    return safeExecutor(() => explain(ctx, node));
 }
 
 /**

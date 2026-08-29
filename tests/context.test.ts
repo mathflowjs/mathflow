@@ -68,16 +68,11 @@ describe('context helpers', () => {
             ctx.solveBatch(`x = 3sin(30)\ny = 2cos(60)\n\nx + y`)
         ).toStrictEqual([
             {
-                solution: [
-                    'x = (3 * sin(30))',
-                    'x = (3 * 0.5)',
-                    'x = 1.5',
-                    '1.5'
-                ],
+                solution: ['x = 3 * sin(30)', 'x = 3 * 0.5', 'x = 1.5'],
                 value: 1.5
             },
             {
-                solution: ['y = (2 * cos(60))', 'y = (2 * 0.5)', 'y = 1', '1'],
+                solution: ['y = 2 * cos(60)', 'y = 2 * 0.5', 'y = 1'],
                 value: 1
             },
             {
