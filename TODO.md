@@ -1,8 +1,19 @@
 # MathFlow | TODO
 
-A list of features to add to mathflow - based on numpy, mathjs and more.
+A list of features for mathflow - based on numpy, mathjs and more.
 
-### **1. Numbers and Big Numbers**
+## Scope
+
+Every mathflow value is a plain number. A function is in scope when it takes
+numbers and returns a single number; anything list-shaped is exposed as a
+**variadic** builtin, so a data set is written `mean(1, 2, 3)` rather than
+`mean([1, 2, 3])`.
+
+Predicates return `1` or `0`, since there is no boolean type.
+
+See [Not planned](#not-planned) for what this rules out, and why.
+
+### **1. Numbers**
 
 - [x] `add(a, b, ...)`: Adds all numbers.
 - [x] `sub(a, b)`: Subtracts the second number from the first.
@@ -17,207 +28,128 @@ A list of features to add to mathflow - based on numpy, mathjs and more.
 - [x] `pow(x, y)`: Raises `x` to the power of `y`.
 - [x] `cbrt(x)`: Computes the cube root of a number.
 - [x] `root(x, n)`: Computes the n-th root of a number.
-- [x] `trunc(x)`: Removes the fractional part of a number, leaving the integer part.
-- [ ] `round(x, n?)`: Rounds a number to the nearest integer or to `n` decimal places.
-- [ ] `gcd(a, b, ...)`: Calculates the greatest common divisor of all numbers.
-- [ ] `lcm(a, b, ...)`: Computes the least common multiple of all numbers.
-- [ ] `rand(min?, max?)`: Generates a random number within a specified range.
-- [ ] `randi(min, max)`: Generates a random integer between the specified min and max values.
-- [ ] `complex(re, im)`: Creates a complex number with real and imaginary parts.
-- [ ] `bignumber(x)`: Creates a big number with arbitrary precision.
-- [ ] `fraction(x)`: Creates a fraction from a number or a string.
-- [ ] `clamp(x, min, max)`: Clamps a value between a minimum and maximum value.
-- [ ] `modExp(base, exponent, modulus)`: Computes the modular exponentiation of a number.
-- [ ] `fix(x)`: Rounds towards zero, removing the fractional part.
-- [ ] `precision(x, n)`: Adjusts a number to `n` significant digits.
-- [ ] `sigFigs(x, n)`: Rounds a number to `n` significant figures.
-- [ ] `roundToNearest(x, step)`: Rounds `x` to the nearest multiple of `step`.
+- [x] `trunc(x)`: Removes the fractional part of a number.
+- [x] `round(x, n?)`: Rounds to the nearest integer or to `n` decimal places.
+- [x] `roundToNearest(x, step)`: Rounds `x` to the nearest multiple of `step`.
+- [x] `precision(x, n)`: Adjusts a number to `n` significant digits.
+- [x] `clamp(x, min, max)`: Clamps a value between a minimum and maximum.
+- [x] `gcd(a, b, ...)`: Greatest common divisor of all numbers.
+- [x] `lcm(a, b, ...)`: Least common multiple of all numbers.
+- [x] `modExp(base, exponent, modulus)`: Modular exponentiation.
+- [x] `lerp(a, b, t)`: Linear interpolation between `a` and `b`.
+- [x] `hermite(p0, m0, p1, m1, t)`: Cubic Hermite interpolation.
 
-### **2. Matrices and Arrays**
+### **2. Statistics**
 
-- [ ] `matrix(data)`: Creates a matrix from an array or other data format.
-- [ ] `identity(n)`: Creates an identity matrix of size `n`.
-- [ ] `transpose(matrix)`: Returns the transpose of a matrix.
-- [ ] `det(matrix)`: Calculates the determinant of a matrix.
-- [ ] `inv(matrix)`: Computes the inverse of a matrix.
-- [ ] `concat(a, b, dim?)`: Concatenates two arrays or matrices along the specified dimension.
-- [ ] `size(matrix)`: Returns the size (dimensions) of a matrix.
-- [ ] `reshape(matrix, sizes)`: Reshapes a matrix to the specified sizes.
-- [ ] `flatten(matrix)`: Flattens a multi-dimensional matrix into a single dimension.
-- [ ] `dot(a, b)`: Computes the dot product of two vectors or matrices.
-- [ ] `cross(a, b)`: Calculates the cross product of two 3D vectors.
-- [ ] `subset(matrix, index, replacement?)`: Retrieves or sets a subset of a matrix.
-- [ ] `diag(matrix, k?)`: Extracts or creates a diagonal matrix.
-- [ ] `norm(matrix, p?)`: Computes the norm of a matrix or vector.
-- [ ] `trace(matrix)`: Computes the trace (sum of diagonal elements) of a matrix.
-- [ ] `zeros(m, n)`: Creates a matrix filled with zeros of specified dimensions.
-- [ ] `ones(m, n)`: Creates a matrix filled with ones of specified dimensions.
-- [ ] `range(start, end, step?)`: Generates an array of numbers from `start` to `end` with a specified step.
-- [ ] `sort(matrix, compare?)`: Sorts the elements of a matrix according to a compare function.
-- [ ] `magnitude(vector)`: Computes the magnitude (length) of a vector.
-- [ ] `normalize(vector)`: Normalizes a vector to a unit length.
+All variadic - `mean(1, 2, 3)`, not `mean([1, 2, 3])`.
 
-### **3. Algebra**
+- [x] `sum(...x)`: Sum of all values.
+- [x] `prod(...x)`: Product of all values.
+- [x] `min(...x)`: Smallest value.
+- [x] `max(...x)`: Largest value.
+- [x] `mean(...x)`: Arithmetic mean.
+- [x] `median(...x)`: Median value.
+- [x] `mode(...x)`: Most frequent value, the smallest of them on a tie.
+- [x] `quantile(p, ...x)`: Quantile at probability `p`, interpolated.
+- [x] `variance(...x)`: Sample variance, the `n - 1` normalization.
+- [x] `std(...x)`: Sample standard deviation.
+- [x] `mad(...x)`: Mean absolute deviation.
+- [x] `entropy(...x)`: Shannon entropy in nats, over the given distribution.
+- [x] `geometricMean(...x)`: Geometric mean.
+- [x] `harmonicMean(...x)`: Harmonic mean.
+- [x] `skewness(...x)`: Skewness, indicating asymmetry.
+- [x] `kurtosis(...x)`: Excess kurtosis - `0` for a normal distribution.
 
-- [ ] `simplify(expr, rules?)`: Simplifies an algebraic expression using optional rules.
-- [ ] `solve(equation, variable?)`: Solves an equation for a specified variable.
-- [ ] `expand(expr)`: Expands an algebraic expression.
-- [ ] `evaluate(expr, scope?)`: Evaluates an expression given optional variable values.
-- [ ] `derivative(expr, variable)`: Computes the derivative of an expression with respect to a variable.
-- [ ] `parse(expr)`: Parses a string into an expression tree.
-- [ ] `rationalize(expr, scope?)`: Converts an expression into a rational fraction form.
-- [ ] `binomialCoefficient(n, k)`: Computes the binomial coefficient, representing combinations of `n` items taken `k` at a time.
+### **3. Probability and Combinatorics**
 
-### **4. Statistics**
+- [x] `factorial(n)`: Factorial of `n`.
+- [x] `combinations(n, k)`: Ways to choose `k` items from `n`.
+- [x] `permutations(n, k)`: Ways to arrange `k` items out of `n`.
+- [x] `stirlingApproximation(n)`: Approximates `n!` by Stirling's formula.
+- [x] `isPrime(n)`: `1` if `n` is prime, else `0`.
+- [x] `fibonacci(n)`: The n-th Fibonacci number.
+- [x] `birthdayProblem(n, days?)`: Chance two of `n` share one of `days` days.
+- [x] `random(min?, max?)`: Random number - unit, `[0, min)`, or `[min, max)`.
+- [x] `randomInt(min?, max?)`: As `random`, truncated to an integer.
+- [x] `pickRandom(...x)`: Randomly selects one of the given values.
 
-- [ ] `mean(arr)`: Computes the mean (average) of an array of numbers.
-- [ ] `median(arr)`: Finds the median value in an array of numbers.
-- [ ] `mode(arr)`: Identifies the mode (most frequent value) in an array.
-- [ ] `variance(arr, normalization?)`: Calculates the variance of a data set.
-- [ ] `std(arr, normalization?)`: Computes the standard deviation of a data set.
-- [ ] `sum(arr)`: Computes the sum of all elements in an array.
-- [ ] `prod(arr)`: Calculates the product of all elements in an array.
-- [ ] `min(arr)`: Finds the minimum value in an array.
-- [ ] `max(arr)`: Finds the maximum value in an array.
-- [ ] `quantileSeq(arr, prob, sorted?)`: Computes the specified quantile of a sorted array.
-- [ ] `mad(arr)`: Computes the mean absolute deviation of an array.
-- [ ] `entropy(arr)`: Calculates the entropy of a data set.
-- [ ] `covariance(arr1, arr2)`: Computes the covariance between two data sets.
-- [ ] `corr(arr1, arr2)`: Calculates the correlation coefficient between two data sets.
-- [ ] `weightedMean(values, weights)`: Computes the weighted mean of values given their weights.
-- [ ] `geometricMean(values)`: Calculates the geometric mean of a set of values.
-- [ ] `harmonicMean(values)`: Computes the harmonic mean of a set of values.
-- [ ] `skewness(arr)`: Measures the skewness of a data set, indicating asymmetry.
-- [ ] `kurtosis(arr)`: Measures the kurtosis of a data set, indicating the tails' heaviness.
-
-### **5. Probability and Combinatorics**
-
-- [ ] `combinations(n, k)`: Calculates the number of ways to choose `k` items from `n`.
-- [ ] `permutations(n, k)`: Computes the number of ways to arrange `k` items out of `n`.
-- [ ] `random(min?, max?)`: Generates a random number within a range.
-- [ ] `randomInt(min, max)`: Generates a random integer between specified bounds.
-- [ ] `pickRandom(arr)`: Randomly selects an element from an array.
-- [ ] `shuffle(arr)`: Randomly shuffles the elements of an array.
-- [ ] `factorial(n)`: Computes the factorial of a number.
-- [ ] `stirlingApproximation(n)`: Approximates the factorial of `n` using Stirling's formula.
-- [ ] `isPrime(n)`: Checks if a number is a prime number.
-- [ ] `primeFactors(n)`: Returns the prime factors of a number.
-- [ ] `fibonacci(n)`: Calculates the n-th Fibonacci number.
-- [ ] `birthdayProblem(p, n)`: Computes the probability of a shared birthday in a group of `n`.
-
-### **6. Trigonometry**
+### **4. Trigonometry**
 
 - [x] `deg(x)`: Converts the angle from radians to degrees.
 - [x] `rad(x)`: Converts the angle from degrees to radians.
-- [x] `sin(x)`: Computes the sine of an angle (in radians).
-- [x] `cos(x)`: Computes the cosine of an angle (in radians).
-- [x] `tan(x)`: Computes the tangent of an angle (in radians).
-- [x] `sind(x)`: Computes the sine of an angle (in degrees).
-- [x] `cosd(x)`: Computes the cosine of an angle (in degrees).
-- [x] `tand(x)`: Computes the tangent of an angle (in degrees).
-- [x] `sec(x)`: Computes the secant of an angle.
-- [x] `csc(x)`: Computes the cosecant of an angle.
-- [x] `cot(x)`: Computes the cotangent of an angle.
-- [x] `asin(x)`: Computes the inverse sine of a value.
-- [x] `acos(x)`: Computes the inverse cosine of a value.
-- [x] `atan(x)`: Computes the inverse tangent of a value.
-- [ ] `atan2(y, x)`: Computes the angle from the x-axis to a point (`x`, `y`).
-- [x] `sinh(x)`: Computes the hyperbolic sine of a value.
-- [x] `cosh(x)`: Computes the hyperbolic cosine of a value.
-- [x] `tanh(x)`: Computes the hyperbolic tangent of a value.
-- [x] `asinh(x)`: Computes the inverse hyperbolic sine of a value.
-- [x] `acosh(x)`: Computes the inverse hyperbolic cosine of a value.
-- [x] `atanh(x)`: Computes the inverse hyperbolic tangent of a value.
-- [x] `hypot(a, b, ...)`: Computes the square root of the sum of squares (Euclidean norm).
-- [x] `versin(x)`: Computes the versine of an angle (in radians).
-- [x] `versind(x)`: Computes the versine of an angle (in degrees).
-- [x] `coversin(x)`: Computes the coversine of an angle (in radians).
-- [x] `coversin(x)`: Computes the coversine of an angle (in degrees).
+- [x] `sin(x)`, `cos(x)`, `tan(x)`: In the context's angle unit.
+- [x] `sind(x)`, `cosd(x)`, `tand(x)`: Always in degrees.
+- [x] `sec(x)`, `csc(x)`, `cot(x)`: Reciprocal functions.
+- [x] `asin(x)`, `acos(x)`, `atan(x)`: Take a ratio, return an angle.
+- [x] `atan2(y, x)`: Angle from the x-axis to the point (`x`, `y`).
+- [x] `sinh(x)`, `cosh(x)`, `tanh(x)`: Hyperbolic, on plain reals.
+- [x] `asinh(x)`, `acosh(x)`, `atanh(x)`: Inverse hyperbolic, on plain reals.
+- [x] `hypot(a, b, ...)`: Euclidean norm.
+- [x] `versin(x)`, `coversin(x)`: Versine and coversine.
+- [x] `versind(x)`, `coversind(x)`: The same, always in degrees.
 
-### **7. Calculus**
-
-- [ ] `derivative(expr, variable)`: Calculates the derivative of an expression.
-- [ ] `integrate(expr, variable)`: Computes the integral of an expression.
-- [ ] `numericDerivative(func, x)`: Numerically computes the derivative at a point.
-
-### **8. Complex Numbers**
-
-- [ ] `complex(re, im)`: Creates a complex number from real and imaginary parts.
-- [ ] `re(complex)`: Extracts the real part of a complex number.
-- [ ] `im(complex)`: Extracts the imaginary part of a complex number.
-- [ ] `arg(complex)`: Computes the argument (phase angle) of a complex number.
-- [ ] `conj(complex)`: Returns the complex conjugate of a complex number.
-- [ ] `iabs(complex)`: Computes the magnitude (absolute value) of a complex number.
-- [ ] `iadd(complex1, complex2)`: Adds two complex numbers.
-- [ ] `isub(complex1, complex2)`: Subtracts the second complex number from the first.
-- [ ] `imul(complex1, complex2)`: Multiplies two complex numbers.
-- [ ] `idiv(complex1, complex2)`: Divides the first complex number by the second.
-- [ ] `isqrt(complex)`: Computes the square root of a complex number.
-- [ ] `iexp(complex)`: Calculates the exponential of a complex number.
-- [ ] `ilog(complex)`: Computes the natural logarithm of a complex number.
-- [ ] `ipow(complex, exponent)`: Raises a complex number to a specified power.
-- [ ] `phase(complex)`: Returns the phase angle (argument) of a complex number.
-
-### **9. Special Functions**
-
-- [ ] `gamma(x)`: Computes the gamma function of `x`, an extension of the factorial.
-- [ ] `sinc(x)`: Computes the sinc function, defined as `sin(x)/x`.
-- [ ] `heaviside(x)`: Computes the Heaviside step function.
-- [ ] `erf(x)`: Computes the error function of `x`.
-- [ ] `beta(a, b)`: Calculates the beta function.
-- [ ] `lambertW(x)`: Computes the Lambert W function.
-- [ ] `digamma(x)`: Calculates the digamma function, the logarithmic derivative of the gamma function.
-- [ ] `zeta(s)`: Computes the Riemann zeta function of `s`.
-- [ ] `gammaIncomplete(a, x)`: Computes the incomplete gamma function.
-
-### **11. Exponential and Logarithmic Functions**
+### **5. Exponential and Logarithmic**
 
 - [x] `exp(x)`: Computes `e` raised to the power of `x`.
-- [x] `ln(x)`: Computes the natural logarithm of `x`.
-- [x] `log(x, base)`: Computes the logarithm of `x` with a specified `base`.
-- [x] `log10(x)`: Computes the base-10 logarithm of `x`.
-- [x] `log2(x)`: Computes the base-2 logarithm of `x`.
-- [ ] `pow10(exp)`: Computes `10` raised to the power of `exp`.
-- [ ] `pow2(exp)`: Computes `2` raised to the power of `exp`.
-- [ ] `expm1(x)`: Computes `e^x - [ ]  1`, useful for small values of `x` to reduce numerical error.
-- [ ] `log1p(x)`: Computes `log(1 + x)`, improving accuracy for small `x`.
+- [x] `expm1(x)`: `e^x - 1`, accurate for small `x`.
+- [x] `ln(x)`: Natural logarithm.
+- [x] `log(x, base?)`: Logarithm of `x`, base 10 by default.
+- [x] `log10(x)`, `log2(x)`: Base-10 and base-2 logarithms.
+- [x] `log1p(x)`: `log(1 + x)`, accurate for small `x`.
+- [x] `pow10(x)`, `pow2(x)`: Powers of 10 and 2.
 
-### **12. Linear Algebra and Geometry**
+### **6. Special Functions**
 
-- [ ] `dotProduct(a, b)`: Computes the dot product of two vectors.
-- [ ] `crossProduct(a, b)`: Computes the cross product of two 3D vectors.
-- [ ] `projection(u, v)`: Projects vector `u` onto vector `v`.
-- [ ] `angleBetween(u, v)`: Calculates the angle between two vectors.
-- [ ] `distance(p1, p2)`: Computes the Euclidean distance between two points.
-- [ ] `reflect(point, line)`: Reflects a point over a line.
-- [ ] `intersect(line1, line2)`: Finds the intersection point of two lines.
+- [x] `gamma(x)`: Gamma function, an extension of the factorial.
+- [x] `lngamma(x)`: Natural log of the gamma function.
+- [x] `digamma(x)`: Logarithmic derivative of the gamma function.
+- [x] `beta(a, b)`: Beta function.
+- [x] `gammaIncomplete(a, x)`: Lower incomplete gamma, unregularized.
+- [x] `erf(x)`, `erfc(x)`: Error function and its complement.
+- [x] `zeta(s)`: Riemann zeta function.
+- [x] `lambertW(x)`: Lambert W function, principal branch.
+- [x] `sinc(x)`: Unnormalized `sin(x)/x`, always in radians.
+- [x] `heaviside(x)`: Step function, `0.5` at the origin.
 
-### **13. Signal Processing**
+### **7. Number Theory**
 
-- [ ] `fft(arr)`: Computes the Fast Fourier Transform of an array.
-- [ ] `ifft(arr)`: Computes the inverse Fast Fourier Transform.
-- [ ] `dft(arr)`: Calculates the Discrete Fourier Transform of an array.
-- [ ] `idft(arr)`: Calculates the inverse Discrete Fourier Transform.
-- [ ] `convolve(arr1, arr2)`: Computes the convolution of two sequences.
-- [ ] `correlate(arr1, arr2)`: Computes the cross-correlation of two sequences.
+- [x] `totient(n)`: Euler's totient function.
+- [x] `mobius(n)`: Mobius function.
+- [x] `isPerfectSquare(n)`: `1` if `n` is a perfect square, else `0`.
 
-### **14. Financial Math**
+### **8. Financial Math**
 
-- [ ] `futureValue(principal, rate, periods)`: Computes the future value of an investment.
-- [ ] `presentValue(futureValue, rate, periods)`: Computes the present value given the future value.
-- [ ] `compoundInterest(principal, rate, timesCompounded, periods)`: Calculates compound interest over time.
-- [ ] `annuityPayment(rate, periods, presentValue)`: Computes the payment amount of an annuity.
+- [x] `futureValue(principal, rate, periods)`: Future value of an investment.
+- [x] `presentValue(future, rate, periods)`: Present value of a future sum.
+- [x] `compoundInterest(principal, rate, times, periods)`: Accrued amount.
+- [x] `annuityPayment(rate, periods, present)`: Level payment of an annuity.
 
-### **15. Interpolation and Approximation**
+## Not planned
 
-- [ ] `lerp(a, b, t)`: Performs linear interpolation between two values `a` and `b` based on `t`.
-- [ ] `hermite(p0, p1, t)`: Performs Hermite interpolation.
-- [ ] `lagrange(points, x)`: Uses Lagrange polynomials to interpolate the value at `x`.
-- [ ] `spline(points, x)`: Computes spline interpolation at `x`.
+Ruled out to keep every value a plain number and the library small.
 
-### **16. Number Theory**
+**Needs an array value type** - matrices and vectors (`matrix`, `det`, `inv`,
+`transpose`, `dot`, `cross`, `reshape`, `norm`, ...), signal processing
+(`fft`, `dft`, `convolve`, `correlate`), and vector geometry (`projection`,
+`angleBetween`, `reflect`, `intersect`).
 
-- [ ] `totient(n)`: Computes Euler’s totient function of `n`.
-- [ ] `mobius(n)`: Computes the Möbius function of `n`.
-- [ ] `isPerfectSquare(n)`: Checks whether a number is a perfect square.
-- [ ] `divisors(n)`: Lists all divisors of a number `n`.
+**Returns a list rather than a number** - `shuffle`, `primeFactors`,
+`divisors`, `range`, `lagrange`, `spline`.
+
+**Needs two independent lists** - `covariance`, `corr`, `weightedMean`. These
+cannot be written variadically.
+
+**Needs a different numeric type** - `complex` and everything on it (`re`,
+`im`, `arg`, `conj`, ...), plus `bignumber` and `fraction`.
+
+**Symbolic, not numeric** - `simplify`, `expand`, `derivative`, `integrate`,
+`rationalize`, and solving an equation for a variable. These need a computer
+algebra system, which is a different project from an evaluator.
+
+**Takes a function as a value** - `numericDerivative`. There is no function
+type.
+
+**Already covered** - one name per behaviour, so nothing is implemented twice:
+`fix` is `trunc`, `sigFigs` is `precision`, `rand`/`randi` are
+`random`/`randomInt`, and `binomialCoefficient` is `combinations`. `parse` and
+`evaluate(expr, scope?)` are the public `parse` and `solve` APIs.

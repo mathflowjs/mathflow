@@ -2,11 +2,6 @@ function gcd2(a: number, b: number): number {
     return b ? gcd2(b, a % b) : Math.abs(a);
 }
 
-// `toPrecision` only accepts 1..100 significant digits
-function significant(x: number, n: number): number {
-    return Number(x.toPrecision(Math.min(Math.max(Math.trunc(n), 1), 100)));
-}
-
 // modular exponentiation, in BigInt so that a large modulus cannot overflow
 function modExp(base: number, exponent: number, modulus: number): number {
     if (modulus <= 0 || exponent < 0) return NaN;
@@ -47,15 +42,15 @@ export default function initNumbers() {
                 ? -Math.pow(-x, 1 / y)
                 : Math.pow(x, 1 / y),
         trunc: (x: number) => Math.trunc(x),
-        fix: (x: number) => Math.trunc(x),
         round: (x: number, n = 0) => {
             const scale = 10 ** n;
             return Math.round(x * scale) / scale;
         },
         roundToNearest: (x: number, step: number) =>
             Math.round(x / step) * step,
-        precision: (x: number, n: number) => significant(x, n),
-        sigFigs: (x: number, n: number) => significant(x, n),
+        // `toPrecision` only accepts 1..100 significant digits
+        precision: (x: number, n: number) =>
+            Number(x.toPrecision(Math.min(Math.max(Math.trunc(n), 1), 100))),
         clamp: (x: number, min: number, max: number) =>
             Math.min(Math.max(x, min), max),
         gcd: (...x: number[]) => x.map(Math.trunc).reduce(gcd2, 0),
