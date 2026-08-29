@@ -1,6 +1,10 @@
 import { describe, test, beforeEach, expect } from 'vitest';
 import { createContext, IContext } from '../src/context';
-import { safeEvaluate, safeParse, safeTokenize, safeSolve } from '../src/safe';
+import { safe } from '../src/error';
+import { evaluate } from '../src/evaluator';
+import { tokenize } from '../src/lexer';
+import { parse } from '../src/parser';
+import { solve } from '../src/solve';
 
 let ctx: IContext;
 
@@ -14,78 +18,41 @@ beforeEach(() => {
     });
 });
 
-describe('safe tokenization', () => {
-    test('invoking safeTokenize does not throw errors', () => {
-        safeTokenize(ctx, '2+x*');
+describe('safe', () => {
+    test('does not throw on invalid input', () => {
+        expect(() => safe(() => tokenize(ctx, 'sin(45'))).not.toThrow();
+        expect(() => safe(() => solve(ctx, '2+'))).not.toThrow();
     });
 
-    test('tokenizing an invalid expression', () => {
-        const res = safeTokenize(ctx, 'sin(45');
+    test('reports a lexical error', () => {
+        const res = safe(() => tokenize(ctx, 'sin(45'));
         expect(res).toHaveProperty('data', undefined);
+        expect(res.error?.type).toBe('LexicalError');
     });
 
-    test('tokenizing a valid expression', () => {
-        const res = safeTokenize(ctx, '2+x');
-        expect(res).toHaveProperty('error', undefined);
-    });
-});
-
-describe('safe parsing', () => {
-    test('invoking safeParse does not throw errors', () => {
-        const tokens = safeTokenize(ctx, '2+sin(45)*5x').data!;
-        safeParse(tokens);
-    });
-
-    test('parsing corrupted token stream', () => {
-        const tokens = safeTokenize(ctx, '2+sin(45)*5x').data!;
+    test('reports a syntax error', () => {
+        const tokens = safe(() => tokenize(ctx, '2+sin(45)*5x')).data!;
         tokens.pop();
         tokens.pop();
         tokens.pop();
-        const res = safeParse(tokens);
+
+        const res = safe(() => parse(tokens));
         expect(res).toHaveProperty('data', undefined);
+        expect(res.error?.type).toBe('SyntaxError');
     });
 
-    test('parsing a valid token stream', () => {
-        const tokens = safeTokenize(ctx, '2+sin(45)*5x').data!;
-        const res = safeParse(tokens);
-        expect(res).toHaveProperty('error', undefined);
-    });
-});
+    test('reports a runtime error', () => {
+        const tree = safe(() => parse(tokenize(ctx, 'y = 2'))).data!;
+        const res = safe(() => evaluate(ctx, tree.body[0]));
 
-describe('safe evaluation', () => {
-    test('invoking safeEvaluate does not throw errors', () => {
-        const tokens = safeTokenize(ctx, '2+sin(45)*5x+y+z').data!;
-        const tree = safeParse(tokens).data!;
-        safeEvaluate(ctx, tree.body[0]);
-    });
-
-    test('evaluation with errors', () => {
-        const tokens = safeTokenize(ctx, 'y = 2').data!;
-        const tree = safeParse(tokens).data!;
-        const res = safeEvaluate(ctx, tree.body[0]);
         expect(res).toHaveProperty('data', undefined);
+        expect(res.error?.type).toBe('RuntimeError');
     });
 
-    test('evaluation without errors', () => {
-        const tokens = safeTokenize(ctx, '2+sin(45)*5x').data!;
-        const tree = safeParse(tokens).data!;
-        const res = safeEvaluate(ctx, tree.body[0]);
+    test('passes the value through when nothing throws', () => {
+        const res = safe(() => solve(ctx, '2+3'));
+
         expect(res).toHaveProperty('error', undefined);
-    });
-});
-
-describe('safe solve', () => {
-    test('invoking safeSolve does not throw errors', () => {
-        safeSolve(ctx, '2+');
-    });
-
-    test('evaluation with errors', () => {
-        const res = safeSolve(ctx, '2+');
-        expect(res).toHaveProperty('data', undefined);
-    });
-
-    test('evaluation without errors', () => {
-        const res = safeSolve(ctx, '2+3');
-        expect(res).toHaveProperty('error', undefined);
+        expect(res.data).toMatchObject({ value: 5 });
     });
 });
