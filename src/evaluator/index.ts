@@ -176,8 +176,8 @@ function reduceOnce(ctx: IContext, node: INode): INode {
 
             return {
                 ...node,
-                left: isReducible(left) ? reduceOnce(ctx, left) : left,
-                right: isReducible(right) ? reduceOnce(ctx, right) : right
+                left: reduceOnce(ctx, left),
+                right: reduceOnce(ctx, right)
             };
         }
 
@@ -191,9 +191,7 @@ function reduceOnce(ctx: IContext, node: INode): INode {
 
             return {
                 ...node,
-                arguments: args.map((arg) =>
-                    isReducible(arg) ? reduceOnce(ctx, arg) : arg
-                )
+                arguments: args.map((arg) => reduceOnce(ctx, arg))
             };
         }
 
