@@ -60,3 +60,36 @@ describe('stringify', () => {
         expect(print('(1+3)2')).toBe('(1 + 3) * 2');
     });
 });
+
+describe('solution steps', () => {
+    // one case per node shape - a step that silently drops out of the output
+    // is the failure mode this table exists to catch
+    const cases: [string, number, string[]][] = [
+        ['5', 5, ['5']],
+        ['', 0, []],
+        ['1 + 2 + 3', 6, ['1 + 2 + 3', '3 + 3', '6']],
+        ['(1+2)*(3+4)', 21, ['(1 + 2) * (3 + 4)', '3 * 7', '21']],
+        [
+            '((1+2)*(3+4))/(5-3)',
+            10.5,
+            ['(1 + 2) * (3 + 4) / (5 - 3)', '3 * 7 / 2', '21 / 2', '10.5']
+        ],
+        ['add(1,2,3)', 6, ['add(1, 2, 3)', '6']],
+        ['pow(2,3)+1', 9, ['pow(2, 3) + 1', '8 + 1', '9']],
+        ['1 + add(2,3)', 6, ['1 + add(2, 3)', '1 + 5', '6']],
+        ['sqrt(abs(-16))', 4, ['sqrt(abs(-16))', 'sqrt(16)', '4']],
+        ['-(3+4)', -7, ['-(3 + 4)', '-7']],
+        ['2 - -3', 5, ['2 - (-3)', '5']],
+        ['2x + 1', 5, ['2 * 2 + 1', '4 + 1', '5']],
+        ['x = 2(x + 1)', 6, ['x = 2 * (2 + 1)', 'x = 2 * 3', 'x = 6']]
+    ];
+
+    test.each(cases)('%s', (expr, value, steps) => {
+        const scope = createContext({
+            variables: { x: 2 },
+            preferences: { angles: 'deg' }
+        });
+
+        expect(scope.solve(expr)).toStrictEqual({ value, solution: steps });
+    });
+});
