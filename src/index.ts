@@ -15,12 +15,4 @@ export {
     type IHTMLRenderResult
 } from './render/html';
 export { renderTokensAsLaTeX, type ILaTeXRenderOptions } from './render/latex';
-export {
-    safeEvaluate,
-    safeExplain,
-    safeParse,
-    safeSolve,
-    safeSolveBatch,
-    safeTokenize,
-    type ISafeResult
-} from './safe';
+export { safe, type ISafeResult } from './error';

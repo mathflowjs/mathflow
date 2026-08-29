@@ -42,7 +42,10 @@ export type ISafeResult<T = unknown> =
           error: IError;
       };
 
-export function safeExecutor<T = unknown>(fn: () => T): ISafeResult<T> {
+/**
+ * Run any throwing mathflow API and get `{ data, error }` back instead
+ */
+export function safe<T = unknown>(fn: () => T): ISafeResult<T> {
     try {
         const data = fn();
         return { data, error: undefined };
