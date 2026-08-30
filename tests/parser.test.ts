@@ -67,6 +67,12 @@ describe('parser', () => {
             ]
         });
     });
+    test('calls with no arguments', () => {
+        expect(parse(tokenize(ctx, 'random()'))).toMatchObject({
+            body: [{ type: NODE.CALL, value: 'random', arguments: [] }]
+        });
+    });
+
     test('invalid token streams', () => {
         expect(() => {
             const tokens = tokenize(

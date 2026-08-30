@@ -7,20 +7,12 @@ export {
 export { tokenize } from './lexer';
 export { TOKEN, type IToken } from './lexer/tokens';
 export { parse, NODE, type IParseTree, type INode } from './parser';
-export { createSolutionStack, type ISolution } from './evaluator/solution';
-export { evaluate } from './evaluator';
-export { solve, solveBatch, type IResult } from './solve';
+export { evaluate, explain, type IResult } from './evaluator';
+export { solve, solveBatch } from './solve';
 export {
     renderTokensAsHTML,
     type IHTMLRenderOptions,
     type IHTMLRenderResult
 } from './render/html';
 export { renderTokensAsLaTeX, type ILaTeXRenderOptions } from './render/latex';
-export {
-    safeEvaluate,
-    safeParse,
-    safeSolve,
-    safeSolveBatch,
-    safeTokenize,
-    type ISafeResult
-} from './safe';
+export { safe, type ISafeResult } from './error';

@@ -76,6 +76,19 @@ export function parse(tokens: IToken[]): IParseTree {
         return false;
     }
 
+    // consume a token that the grammar requires, or say what was missing
+    function expect(type: TOKEN, symbol: SYMBOL) {
+        if (matchType(type)) return;
+
+        const token = stream.current || stream.previous;
+
+        throw createError(
+            ERRORS.SYNTAX,
+            `unexpected token near '${token.value}' at ${token.line}:${token.column}`,
+            `expecting '${symbol}'`
+        );
+    }
+
     // parse multiple line program
     function parseProgram(): IParseTree {
         const statements: INode[] = [];
@@ -109,8 +122,10 @@ export function parse(tokens: IToken[]): IParseTree {
     //
     // 1. assignment expression
     // 2. addition and subtraction (lowest precendence)
-    // 3. multiplication, division, exponential (highest precendence)
-    // 4. unary, literals, identifiers, parentheses, function call expression
+    // 3. multiplication and division
+    // 4. unary plus and minus
+    // 5. exponential (highest precendence, right-associative)
+    // 6. literals, identifiers, parentheses, function call expression
 
     function parseAssignment() {
         const node = parseExpression();
@@ -158,7 +173,7 @@ export function parse(tokens: IToken[]): IParseTree {
 
     // multiplication and division
     function parseTerm() {
-        let node = parsePower();
+        let node = parseUnary();
 
         while (
             !stream.isEOF &&
@@ -166,7 +181,7 @@ export function parse(tokens: IToken[]): IParseTree {
             matchValue(SYMBOL.MUL, SYMBOL.DIV)
         ) {
             const op = stream.previous;
-            const factor = parsePower();
+            const factor = parseUnary();
 
             node = {
                 ...op,
@@ -179,13 +194,35 @@ export function parse(tokens: IToken[]): IParseTree {
         return node;
     }
 
-    // power - exponential
+    // unary +x or -3
+    //
+    // binds looser than `^` so that `-2^2` is `-(2^2)`, and tighter than `*`
+    // so that `-2*3` is `(-2)*3`
+    function parseUnary(): INode | undefined {
+        if (
+            !stream.isEOF &&
+            isUnaryOperator(stream.current.value) &&
+            matchType(TOKEN.OPERATOR)
+        ) {
+            const op = stream.previous;
+
+            return {
+                ...op,
+                type: NODE.UNARY,
+                right: parseUnary()
+            };
+        }
+
+        return parsePower();
+    }
+
+    // power - exponential, right-associative: `2^3^2` is `2^(3^2)`
     function parsePower() {
         const node = parseFactor();
 
         if (check(TOKEN.OPERATOR) && matchValue(SYMBOL.POW)) {
             const op = stream.previous;
-            const factor = parseFactor();
+            const factor = parseUnary();
 
             return {
                 ...op,
@@ -213,23 +250,8 @@ export function parse(tokens: IToken[]): IParseTree {
         // brackets
         if (matchType(TOKEN.LPAREN)) {
             const node = parseExpression();
-            stream.advance();
+            expect(TOKEN.RPAREN, SYMBOL.RPAREN);
             return node;
-        }
-
-        // unary +x or -3
-        if (
-            !stream.isEOF &&
-            isUnaryOperator(stream.current.value) &&
-            matchType(TOKEN.OPERATOR)
-        ) {
-            const node = stream.previous;
-            const value = parseFactor();
-            return {
-                ...node,
-                type: NODE.UNARY,
-                right: value
-            };
         }
 
         // function call
@@ -242,13 +264,15 @@ export function parse(tokens: IToken[]): IParseTree {
             // skip (
             stream.advance();
 
-            do {
-                const arg = parseExpression();
-                if (arg) args.push(arg);
-            } while (!stream.isEOF && matchType(TOKEN.COMMA));
+            // a call can take no arguments at all, as in `random()`
+            if (!check(TOKEN.RPAREN)) {
+                do {
+                    const arg = parseExpression();
+                    if (arg) args.push(arg);
+                } while (!stream.isEOF && matchType(TOKEN.COMMA));
+            }
 
-            // skip )
-            stream.advance();
+            expect(TOKEN.RPAREN, SYMBOL.RPAREN);
 
             return { ...node, type: NODE.CALL, arguments: args };
         }

@@ -4,26 +4,12 @@ import {
     isDigit,
     isAlpha,
     isBinaryOperator,
+    isUnaryOperator,
     isWhitespace,
     TOKEN,
     type IToken,
     SYMBOL
 } from './tokens';
-
-function createParenStack() {
-    const values: boolean[] = [];
-    return {
-        get active() {
-            return !!values.at(-1);
-        },
-        push() {
-            values.push(true);
-        },
-        pop() {
-            return values.pop();
-        }
-    };
-}
 
 /**
  * Break down an expression into a list of identified tokens
@@ -33,7 +19,7 @@ export function tokenize(ctx: IContext, code: string): IToken[] {
     let line = 1;
     let column = 1;
     let char: string;
-    const parenStack = createParenStack();
+    let depth = 0;
     const tokens: IToken[] = [];
 
     // remove all comments
@@ -90,15 +76,25 @@ export function tokenize(ctx: IContext, code: string): IToken[] {
                 !hasExponent &&
                 !!num.length
             ) {
+                // an exponent only if digits follow, optionally signed -
+                // anything else is the constant `e`, as in `2e`
+                const signed = isUnaryOperator(code[position + 1]) ? 1 : 0;
+                if (!isDigit(code[position + 1 + signed])) break;
+
                 hasExponent = true;
                 num += x;
                 advance();
+
+                if (signed) {
+                    num += code[position];
+                    advance();
+                }
             } else {
                 break;
             }
         }
 
-        if (num.endsWith(SYMBOL.DOT) || num.endsWith(SYMBOL.EXPONENT)) {
+        if (num.endsWith(SYMBOL.DOT)) {
             throw createError(
                 ERRORS.LEXICAL,
                 `unexpected token '${x}' at ${line}:${column}`
@@ -126,10 +122,6 @@ export function tokenize(ctx: IContext, code: string): IToken[] {
         return str;
     }
 
-    function matchType<T>(type: T, ...others: T[]) {
-        return others.includes(type);
-    }
-
     function expandImplicitMultiplication() {
         if (position >= code.length) return;
 
@@ -143,23 +135,19 @@ export function tokenize(ctx: IContext, code: string): IToken[] {
             // )sin
             // )(
             prev.type === TOKEN.RPAREN &&
-                matchType(
-                    curr.type,
+                [
                     TOKEN.IDENTIFIER,
                     TOKEN.FUNCTION,
                     TOKEN.NUMBER,
                     TOKEN.LPAREN
-                ),
+                ].includes(curr.type),
 
             // 2sin
             // 2x
             // 2(
             prev.type === TOKEN.NUMBER &&
-                matchType(
-                    curr.type,
-                    TOKEN.LPAREN,
-                    TOKEN.IDENTIFIER,
-                    TOKEN.FUNCTION
+                [TOKEN.LPAREN, TOKEN.IDENTIFIER, TOKEN.FUNCTION].includes(
+                    curr.type
                 ),
 
             // x(
@@ -187,19 +175,19 @@ export function tokenize(ctx: IContext, code: string): IToken[] {
             }
             advance();
         } else if (char === SYMBOL.LPAREN) {
-            parenStack.push();
+            depth++;
             addToken(TOKEN.LPAREN, char);
             advance();
-        } else if (char === SYMBOL.RPAREN && parenStack.active) {
-            parenStack.pop();
+        } else if (char === SYMBOL.RPAREN && depth > 0) {
+            depth--;
             addToken(TOKEN.RPAREN, char);
             advance();
-        } else if (char === SYMBOL.COMMA && parenStack.active) {
+        } else if (char === SYMBOL.COMMA && depth > 0) {
             addToken(TOKEN.COMMA, char);
             advance();
         } else if (
             char === SYMBOL.EQUAL &&
-            !parenStack.active &&
+            depth === 0 &&
             !!tokens.length &&
             tokens.at(-1)?.type === TOKEN.IDENTIFIER
         ) {
@@ -229,7 +217,7 @@ export function tokenize(ctx: IContext, code: string): IToken[] {
     }
 
     // in case of missing right parenthesis
-    if (parenStack.active) {
+    if (depth > 0) {
         throw createError(
             ERRORS.LEXICAL,
             `unexpected token at ${line}:${column}`,

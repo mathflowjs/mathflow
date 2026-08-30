@@ -65,14 +65,7 @@ export function createContext(
         ])
     };
 
-    if (options?.preferences) {
-        for (const k in ctx.preferences) {
-            const v = (options.preferences as Record<string, string | number>)[
-                k
-            ];
-            if (v) (ctx.preferences as Record<string, string | number>)[k] = v;
-        }
-    }
+    Object.assign(ctx.preferences, options.preferences);
 
     if (options?.constants) {
         merge(ctx.constants, options.constants);

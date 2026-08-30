@@ -87,6 +87,30 @@ describe('lexer', () => {
             { value: 'EOF', type: TOKEN.EOF }
         ]);
     });
+    test('scientific notation', () => {
+        expect(tokenize(ctx, `1e-3`)[0]).toMatchObject({
+            value: '1e-3',
+            type: TOKEN.NUMBER
+        });
+        expect(tokenize(ctx, `1e+2`)[0]).toMatchObject({
+            value: '1e+2',
+            type: TOKEN.NUMBER
+        });
+        expect(tokenize(ctx, `2.5e3`)[0]).toMatchObject({
+            value: '2.5e3',
+            type: TOKEN.NUMBER
+        });
+
+        // a trailing `e` is the constant, not an exponent
+        expect(tokenize(ctx, `2e`)).toMatchObject([
+            { value: '2', type: TOKEN.NUMBER },
+            { value: '*', type: TOKEN.OPERATOR },
+            { value: 'e', type: TOKEN.IDENTIFIER },
+            { value: '\n', type: TOKEN.NEWLINE },
+            { value: 'EOF', type: TOKEN.EOF }
+        ]);
+    });
+
     test('invalid expression', () => {
         expect(() => tokenize(ctx, `sin(x`)).toThrow();
         expect(() => tokenize(ctx, `2. + 3`)).toThrow();

@@ -1,3 +1,7 @@
+allowBuilds:
+  '@parcel/watcher': false
+  esbuild: false
+  unrs-resolver: false
 overrides:
   undici@<6.24.0: '>=6.24.0'
   undici@>=6.0.0 <6.24.0: '>=6.24.0'

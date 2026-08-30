@@ -2,7 +2,12 @@ import { type INode, NODE } from '../parser';
 import { type IContext } from '../context';
 import { createError, ERRORS } from '../error';
 import { SYMBOL } from '../lexer/tokens';
-import { ISolution, advance, pushValue } from './solution';
+import { stringify } from './solution';
+
+export type IResult = {
+    value: number;
+    solution: string[];
+};
 
 function compute(op: SYMBOL, a: number, b: number): number {
     switch (op) {
@@ -18,163 +23,231 @@ function compute(op: SYMBOL, a: number, b: number): number {
             return a ** b;
         default:
             throw createError(ERRORS.RUNTIME, `unknown operator: '${op}'`);
-            break;
     }
 }
 
 /**
- * Run through the entire AST evaluating the expressions on each subtree left to right
+ * Apply the context's rounding preferences - this happens on every node, not
+ * just the final result, so that each step of a solution adds up on its own.
  */
-export function evaluate(
-    ctx: IContext,
-    node: INode,
-    solution: ISolution
-): number {
-    let result: number;
-    let left: number;
-    let right: number;
-
-    function toNumber(value: string | number) {
-        value = value.toString();
-        if (ctx.preferences.precision && ctx.preferences.precision > 0) {
-            value = Number(value).toPrecision(ctx.preferences.precision);
-        }
-        if (
-            ctx.preferences.fractionDigits &&
-            ctx.preferences.fractionDigits > 0
-        ) {
-            value = Number(value).toFixed(ctx.preferences.fractionDigits);
-        }
-        return Number.parseFloat(value);
+function toNumber(ctx: IContext, value: string | number): number {
+    value = value.toString();
+    if (ctx.preferences.precision && ctx.preferences.precision > 0) {
+        value = Number(value).toPrecision(ctx.preferences.precision);
     }
+    if (ctx.preferences.fractionDigits && ctx.preferences.fractionDigits > 0) {
+        value = Number(value).toFixed(ctx.preferences.fractionDigits);
+    }
+    return Number.parseFloat(value);
+}
 
+/**
+ * A computed value, as a node that can take the place of the sub-tree it came
+ * from. Children are dropped - the sub-tree has been reduced away.
+ */
+function literal(node: INode, value: number): INode {
+    return {
+        type: NODE.LITERAL,
+        value: String(value),
+        position: node.position,
+        line: node.line,
+        column: node.column
+    };
+}
+
+function valueOf(node: INode): number {
+    return Number(node.value);
+}
+
+function isValue(node: INode): boolean {
+    return node.type === NODE.LITERAL;
+}
+
+/**
+ * Apply a sign to a value. `-3` is notation for a negative number rather than
+ * a step of working out, so it never earns a line of its own in a solution.
+ */
+function signed(ctx: IContext, node: INode, operand: INode): INode {
+    const result = compute(node.value as SYMBOL, 0, valueOf(operand));
+    return literal(node, toNumber(ctx, result));
+}
+
+/**
+ * Replace every name with the value it stands for, so that what is left is
+ * pure arithmetic. An assignment target is a name, not a value, and is left
+ * alone.
+ */
+function resolve(ctx: IContext, node: INode): INode {
     switch (node.type) {
-        // handle both floats and integers
-        case NODE.LITERAL: {
-            result = toNumber(node.value);
-            pushValue(solution, result);
-            break;
-        }
-
-        // explicit negative/positive sign
-        case NODE.UNARY: {
-            left = 0;
-            right = evaluate(ctx, node.right!, solution);
-            result = compute(node.value as SYMBOL, left, right);
-
-            pushValue(solution, result);
-            break;
-        }
-
-        // handle all binary operations
-        case NODE.BINARY: {
-            // build the solution in parts
-            let partial: string;
-
-            // compute node.left first
-            left = evaluate(ctx, node.left!, solution);
-
-            // build node.left solution
-            const trackLeft =
-                node.left?.type === NODE.BINARY ||
-                node.left?.type === NODE.CALL;
-            if (trackLeft) advance(solution);
-            partial = `(${trackLeft ? '#' + solution.id : left} ${node.value} `;
-
-            // compute node.right
-            right = evaluate(ctx, node.right!, solution);
-
-            // build node.right solution
-            const trackRight =
-                node.right?.type === NODE.BINARY ||
-                node.right?.type === NODE.CALL;
-            if (trackRight) advance(solution);
-            partial += `${trackRight ? '#' + solution.id : right})`;
-
-            // save solutions for both nodes - left & right
-            pushValue(solution, partial);
-
-            // apply binary operator
-            result = compute(node.value as SYMBOL, left, right);
-
-            result = toNumber(result);
-
-            // save final result
-            pushValue(solution, result);
-            break;
-        }
-
-        case NODE.CALL: {
-            // first evaluate the arguments
-            // e.g. sin(15 + 15) - compute (15 + 15) first
-            const args = node.arguments!.map((arg) =>
-                evaluate(ctx, arg, solution)
-            );
-            const fn = ctx.functions.get(node.value)!;
-            result = fn(...args);
-
-            result = toNumber(result);
-
-            if (args.length === 1) {
-                advance(solution);
-                pushValue(solution, `${node.value}(#${solution.id})`);
-            }
-
-            pushValue(solution, result);
-
-            break;
-        }
+        case NODE.LITERAL:
+            return literal(node, toNumber(ctx, node.value));
 
         case NODE.IDENTIFIER: {
-            if (ctx.constants.has(node.value)) {
-                result = ctx.constants.get(node.value)!;
-            } else {
-                result = ctx.variables.get(node.value) || 0;
-            }
-            result = toNumber(result);
+            const source = ctx.constants.has(node.value)
+                ? ctx.constants
+                : ctx.variables;
 
-            pushValue(solution, result);
-            break;
+            if (!source.has(node.value)) {
+                throw createError(
+                    ERRORS.RUNTIME,
+                    `unknown variable '${node.value}' at ${node.line}:${node.column}`,
+                    `declare it first, e.g. ${node.value} = 1`
+                );
+            }
+
+            return literal(node, toNumber(ctx, source.get(node.value)!));
         }
 
-        case NODE.ASSIGNMENT: {
+        case NODE.UNARY: {
+            const right = resolve(ctx, node.right!);
+            return isValue(right)
+                ? signed(ctx, node, right)
+                : { ...node, right };
+        }
+
+        case NODE.BINARY:
+            return {
+                ...node,
+                left: resolve(ctx, node.left!),
+                right: resolve(ctx, node.right!)
+            };
+
+        case NODE.CALL:
+            return {
+                ...node,
+                arguments: node.arguments!.map((arg) => resolve(ctx, arg))
+            };
+
+        case NODE.ASSIGNMENT:
             if (ctx.constants.has(node.left!.value)) {
                 throw createError(
                     ERRORS.RUNTIME,
                     `invalid operation: '${node.left!.value}' is a constant`
                 );
             }
+            return { ...node, right: resolve(ctx, node.right!) };
 
-            // build solution like binary ops
+        default:
+            return node;
+    }
+}
 
-            let partial = `${node.left!.value} ${node.value} `;
+function isReducible(node: INode): boolean {
+    switch (node.type) {
+        case NODE.UNARY:
+        case NODE.BINARY:
+        case NODE.CALL:
+            return true;
+        case NODE.ASSIGNMENT:
+            return !isValue(node.right!);
+        default:
+            return false;
+    }
+}
 
-            // compute node.right
-            right = evaluate(ctx, node.right!, solution);
+/**
+ * Collapse every sub-expression whose operands are already values, leaving the
+ * rest of the tree untouched. One call is one step of the solution.
+ */
+function reduceOnce(ctx: IContext, node: INode): INode {
+    switch (node.type) {
+        case NODE.UNARY: {
+            const right = isValue(node.right!)
+                ? node.right!
+                : reduceOnce(ctx, node.right!);
 
-            // build node.right solution
-            const trackRight =
-                node.right?.type === NODE.BINARY ||
-                node.right?.type === NODE.CALL;
-            if (trackRight) advance(solution);
-            partial += `${trackRight ? '#' + solution.id : right}`;
-
-            pushValue(solution, partial);
-
-            result = right;
-            ctx.variables.set(node.left!.value, right);
-
-            pushValue(solution, result);
-            break;
+            return isValue(right)
+                ? signed(ctx, node, right)
+                : { ...node, right };
         }
 
-        default: {
-            throw createError(
-                ERRORS.RUNTIME,
-                `unknown node type: ${node.type}`
-            );
+        case NODE.BINARY: {
+            const left = node.left!;
+            const right = node.right!;
+
+            if (isValue(left) && isValue(right)) {
+                const result = compute(
+                    node.value as SYMBOL,
+                    valueOf(left),
+                    valueOf(right)
+                );
+                return literal(node, toNumber(ctx, result));
+            }
+
+            return {
+                ...node,
+                left: reduceOnce(ctx, left),
+                right: reduceOnce(ctx, right)
+            };
         }
+
+        case NODE.CALL: {
+            const args = node.arguments!;
+
+            if (args.every(isValue)) {
+                const fn = ctx.functions.get(node.value)!;
+                return literal(node, toNumber(ctx, fn(...args.map(valueOf))));
+            }
+
+            return {
+                ...node,
+                arguments: args.map((arg) => reduceOnce(ctx, arg))
+            };
+        }
+
+        case NODE.ASSIGNMENT:
+            return { ...node, right: reduceOnce(ctx, node.right!) };
+
+        default:
+            return node;
+    }
+}
+
+/**
+ * Reduce a tree to a single value, reporting each intermediate tree
+ */
+function run(
+    ctx: IContext,
+    node: INode,
+    onStep?: (node: INode) => void
+): number {
+    let current = resolve(ctx, node);
+
+    onStep?.(current);
+
+    while (isReducible(current)) {
+        current = reduceOnce(ctx, current);
+        onStep?.(current);
     }
 
-    return toNumber(result);
+    const assignment = current.type === NODE.ASSIGNMENT;
+
+    if (!assignment && !isValue(current)) {
+        throw createError(ERRORS.RUNTIME, `unknown node type: ${current.type}`);
+    }
+
+    const value = valueOf(assignment ? current.right! : current);
+
+    if (assignment) {
+        ctx.variables.set(current.left!.value, value);
+    }
+
+    return value;
+}
+
+/**
+ * Run through the entire AST evaluating the expressions on each subtree
+ */
+export function evaluate(ctx: IContext, node: INode): number {
+    return run(ctx, node);
+}
+
+/**
+ * Evaluate an expression, recording the working out step by step
+ */
+export function explain(ctx: IContext, node: INode): IResult {
+    const solution: string[] = [];
+    const value = run(ctx, node, (step) => solution.push(stringify(step)));
+
+    return { value, solution };
 }
