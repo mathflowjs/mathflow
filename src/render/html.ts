@@ -1,6 +1,7 @@
 import { isBinaryOperator, SYMBOL, type IToken, TOKEN } from '../lexer/tokens';
 
 export type IHTMLRenderOptions = {
+    classPrefix: string;
     colorScheme: 'none' | 'auto' | 'light' | 'dark';
     includeDebugInfo: boolean;
 };
@@ -54,12 +55,14 @@ export function renderTokensAsHTML(
     options: Partial<IHTMLRenderOptions> = {}
 ): IHTMLRenderResult {
     const config: IHTMLRenderOptions = {
+        classPrefix: options.classPrefix || 'mf',
         colorScheme: options.colorScheme || 'none',
         includeDebugInfo: options.includeDebugInfo || false
     };
+    const prefix = config.classPrefix;
 
     const getTokenClass = (token: IToken) => {
-        return `mf-token mf-${typeClasses[token.type] || 'unknown'}`;
+        return `${prefix}-token ${prefix}-${typeClasses[token.type] || 'unknown'}`;
     };
 
     const renderToken = (token: IToken, index: number) => {
@@ -113,8 +116,9 @@ export function renderTokensAsHTML(
     const htmlTokens = tokens.map(renderToken).filter((token) => token !== '');
 
     return {
-        css: STYLES,
-        html: `<div class="mf-expression mf-${config.colorScheme}" data-scheme="${config.colorScheme}">${htmlTokens.join('').replace(/<br>$/, '')}</div>`
+        // every `mf-` in the stylesheet is a class or custom property name
+        css: STYLES.replaceAll('mf-', `${prefix}-`),
+        html: `<div class="${prefix}-expression ${prefix}-${config.colorScheme}" data-scheme="${config.colorScheme}">${htmlTokens.join('').replace(/<br>$/, '')}</div>`
     };
 }
 

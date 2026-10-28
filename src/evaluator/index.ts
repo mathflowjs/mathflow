@@ -2,7 +2,7 @@ import { type INode, NODE } from '../parser';
 import { type IContext } from '../context';
 import { createError, ERRORS } from '../error';
 import { SYMBOL } from '../lexer/tokens';
-import { stringify } from './solution';
+import { createSolutionStack, type ISolution, stringify } from './solution';
 
 export type IResult = {
     value: number;
@@ -236,18 +236,27 @@ function run(
 }
 
 /**
- * Run through the entire AST evaluating the expressions on each subtree
+ * Run through the entire AST evaluating the expressions on each subtree,
+ * recording the working out into `solution` when one is given
  */
-export function evaluate(ctx: IContext, node: INode): number {
-    return run(ctx, node);
+export function evaluate(
+    ctx: IContext,
+    node: INode,
+    solution?: ISolution
+): number {
+    return run(
+        ctx,
+        node,
+        solution && ((step) => solution.steps.push(stringify(step)))
+    );
 }
 
 /**
  * Evaluate an expression, recording the working out step by step
  */
 export function explain(ctx: IContext, node: INode): IResult {
-    const solution: string[] = [];
-    const value = run(ctx, node, (step) => solution.push(stringify(step)));
+    const solution = createSolutionStack();
+    const value = evaluate(ctx, node, solution);
 
-    return { value, solution };
+    return { value, solution: solution.steps };
 }

@@ -1,6 +1,25 @@
 import { NODE, type INode } from '../parser';
 import { SYMBOL } from '../lexer/tokens';
 
+export type ISolution = {
+    readonly steps: string[];
+    readonly id: number;
+};
+
+/**
+ * Create a solution for `evaluate` to record its steps into
+ */
+export function createSolutionStack(): ISolution {
+    const steps: string[] = [];
+
+    return {
+        steps,
+        get id() {
+            return steps.length;
+        }
+    };
+}
+
 /**
  * Operator precedence, used to decide where parentheses are required.
  * Unary sits between `* /` and `^`: `-2^2` is `-(2^2)`, but `-2*3` is `(-2)*3`.
