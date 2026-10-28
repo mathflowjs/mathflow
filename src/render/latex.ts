@@ -1,4 +1,4 @@
-import { TOKEN, type IToken } from '../lexer/tokens';
+import { isUnaryOperator, SYMBOL, TOKEN, type IToken } from '../lexer/tokens';
 
 export type ILaTeXRenderOptions = {
     mode: 'inline' | 'display' | 'align';
@@ -14,9 +14,6 @@ const characterMap: Record<string, string> = {
     asin: '\\arcsin',
     acos: '\\arccos',
     atan: '\\arctan',
-    abs: '\\left|',
-    floor: '\\lfloor',
-    ceil: '\\lceil',
     exp: '\\exp',
     sqrt: '\\sqrt',
     min: '\\min',
@@ -41,12 +38,114 @@ function formatTokenValue(
     return token.value;
 }
 
+// functions written as a delimiter pair rather than a name and parentheses -
+// each entry has to close what it opens, or the output will not parse
+const delimiters: Record<string, [string, string]> = {
+    sqrt: ['\\sqrt{', '}'],
+    abs: ['\\left|', '\\right|'],
+    ceil: ['\\left\\lceil ', '\\right\\rceil'],
+    floor: ['\\left\\lfloor ', '\\right\\rfloor']
+};
+
+// read up to the paren that closes the one already consumed, rendering what is
+// inside through the same rules - a group is an expression like any other, so
+// a superscript or a nested call within it has to be handled, not copied out
+function collectGroup(
+    tokens: IToken[],
+    start: number,
+    mode: ILaTeXRenderOptions['mode']
+): { content: string; end: number } {
+    let depth = 1;
+    let i = start;
+
+    while (i < tokens.length && depth > 0) {
+        if (tokens[i].type === TOKEN.LPAREN) depth++;
+        if (tokens[i].type === TOKEN.RPAREN) depth--;
+        i++;
+    }
+
+    // exclude the closing paren, unless the group was never closed
+    const end = depth === 0 ? i - 1 : i;
+
+    return {
+        content: handleSpecialCases(tokens.slice(start, end), mode),
+        end: i
+    };
+}
+
+/**
+ * Read one operand of `^`.
+ *
+ * A superscript takes a single token or a braced group, so `2^(5-1)` has to
+ * come out as `2^{5-1}` - emitting `^` and walking on gives `2^\left(5-1\right)`,
+ * which is a parse error rather than a wrong-looking result.
+ */
+function readExponent(
+    tokens: IToken[],
+    start: number,
+    mode: ILaTeXRenderOptions['mode']
+): { content: string; end: number } {
+    let content = '';
+    let i = start;
+
+    // a sign belongs to the exponent, as in `2^-1`
+    while (
+        tokens[i] &&
+        tokens[i].type === TOKEN.OPERATOR &&
+        isUnaryOperator(tokens[i].value)
+    ) {
+        content += tokens[i].value;
+        i++;
+    }
+
+    const token = tokens[i];
+
+    if (!token) return { content, end: i };
+
+    if (token.type === TOKEN.FUNCTION && tokens[i + 1]?.type === TOKEN.LPAREN) {
+        const pair = delimiters[token.value];
+        const group = collectGroup(tokens, i + 2, mode);
+
+        content += pair
+            ? pair[0] + group.content + pair[1]
+            : `${formatTokenValue(token, mode)}\\left(${group.content}\\right)`;
+        i = group.end;
+    } else if (token.type === TOKEN.LPAREN) {
+        // the braces already group it, so the parentheses are redundant
+        const group = collectGroup(tokens, i + 1, mode);
+
+        content += group.content;
+        i = group.end;
+    } else {
+        content += formatTokenValue(token, mode);
+        i++;
+    }
+
+    // `^` is right-associative: 2^3^2 is 2^{3^{2}}
+    if (
+        tokens[i] &&
+        tokens[i].type === TOKEN.OPERATOR &&
+        tokens[i].value === SYMBOL.POW
+    ) {
+        const nested = readExponent(tokens, i + 1, mode);
+
+        content += `^{${nested.content}}`;
+        i = nested.end;
+    }
+
+    return { content, end: i };
+}
+
 function handleSpecialCases(
     tokens: IToken[],
     mode: ILaTeXRenderOptions['mode']
 ): string {
     const result = [];
     let i = 0;
+
+    // index of the token whose rendering is the last entry in `result`, when
+    // that entry is a lone value - only then is it safe to pop as a numerator
+    let atom = -1;
 
     while (i < tokens.length) {
         const token = tokens[i];
@@ -58,57 +157,34 @@ function handleSpecialCases(
             break;
         }
 
-        // Handle function calls with parentheses
+        // Handle function calls that are written as a delimiter pair
         if (
             token.type === TOKEN.FUNCTION &&
             nextToken &&
-            nextToken.type === TOKEN.LPAREN
+            nextToken.type === TOKEN.LPAREN &&
+            token.value in delimiters
         ) {
-            if (token.value === 'sqrt') {
-                // Handle square root specially
-                result.push('\\sqrt{');
-                i += 2; // Skip function and opening paren
+            const [open, close] = delimiters[token.value];
 
-                // Find matching closing paren and collect arguments
-                let parenCount = 1;
-                const sqrtContent = [];
+            // skip the function and its opening paren
+            i += 2;
 
-                while (i < tokens.length && parenCount > 0) {
-                    if (tokens[i].type === TOKEN.LPAREN) parenCount++;
-                    if (tokens[i].type === TOKEN.RPAREN) parenCount--;
+            const group = collectGroup(tokens, i, mode);
 
-                    if (parenCount > 0) {
-                        sqrtContent.push(formatTokenValue(tokens[i], mode));
-                    }
-                    i++;
-                }
+            result.push(open + group.content + close);
+            i = group.end;
 
-                result.push(sqrtContent.join('') + '}');
-                continue;
-            }
+            continue;
+        }
 
-            if (token.value === 'abs') {
-                // Handle absolute value specially
-                result.push('\\left|');
-                i += 2; // Skip function and opening paren
+        // Handle superscripts, which have to be braced as a single group
+        if (token.type === TOKEN.OPERATOR && token.value === SYMBOL.POW) {
+            const exponent = readExponent(tokens, i + 1, mode);
 
-                // Find matching closing paren
-                let parenCount = 1;
-                const absContent = [];
+            result.push(`^{${exponent.content}}`);
+            i = exponent.end;
 
-                while (i < tokens.length && parenCount > 0) {
-                    if (tokens[i].type === TOKEN.LPAREN) parenCount++;
-                    if (tokens[i].type === TOKEN.RPAREN) parenCount--;
-
-                    if (parenCount > 0) {
-                        absContent.push(formatTokenValue(tokens[i], mode));
-                    }
-                    i++;
-                }
-
-                result.push(absContent.join('') + '\\right|');
-                continue;
-            }
+            continue;
         }
 
         // Handle fractions (division)
@@ -117,6 +193,7 @@ function handleSpecialCases(
             if (
                 prevToken &&
                 nextToken &&
+                atom === i - 1 &&
                 (prevToken.type === TOKEN.NUMBER ||
                     prevToken.type === TOKEN.IDENTIFIER) &&
                 (nextToken.type === TOKEN.NUMBER ||
@@ -130,6 +207,10 @@ function handleSpecialCases(
                 i += 2; // Skip division operator and next token
                 continue;
             }
+        }
+
+        if (token.type === TOKEN.NUMBER || token.type === TOKEN.IDENTIFIER) {
+            atom = i;
         }
 
         result.push(formatTokenValue(token, mode));

@@ -1,10 +1,13 @@
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
+
 import { tokenize } from '../src/lexer';
 import { parse } from '../src/parser';
 import { evaluate } from '../src/evaluator';
-import { renderTokensAsHTML } from '../src/render/html';
-// import { renderTokensAsLaTeX } from '../src/render/latex';
-import { createContext } from '../src/context';
 import { createSolutionStack } from '../src/evaluator/solution';
+import { renderTokensAsHTML } from '../src/render/html';
+import { renderTokensAsLaTeX } from '../src/render/latex';
+import { createContext } from '../src/context';
 
 const input = document.querySelector('textarea')!;
 
@@ -13,6 +16,10 @@ const errorBox = document.querySelector('#error')!;
 const solveBtn = document.querySelector('#solve')!;
 
 const solutionBox = document.querySelector('#solution')!;
+
+const latexBox = document.querySelector('#latex')!;
+
+const latexSource = document.querySelector('#latex-source')!;
 
 // create evaluation context
 const ctx = createContext({
@@ -28,7 +35,7 @@ const ctx = createContext({
 //      - tokenize input string
 //      - parse tokens into AST tree
 //      - evaluate and solve each node in AST body
-//      - render solution as HTML
+//      - render solution as HTML and as typeset LaTeX
 function solve(code = '') {
     console.clear();
 
@@ -40,19 +47,13 @@ function solve(code = '') {
         tokens.map((t) => `${t.type}[${t.value}] ${t.line}:${t.column}`)
     );
 
-    // const htmlStr = renderTokensAsHTML(tokens, { colorScheme: 'auto' })
-    // console.log('render: html', htmlStr)
-
-    // const latexStr = renderTokensAsLaTeX(tokens, { mode: 'align' })
-    // console.log('render: latex\n', latexStr)
-
     const ast = parse(tokens);
     console.log('ast:', ast);
 
     const result = ast.body.map((node) => {
         const solution = createSolutionStack();
         const value = evaluate(ctx, node, solution);
-        return { value, solution };
+        return { value, solution: solution.steps };
     });
     console.log(
         'result:',
@@ -60,22 +61,49 @@ function solve(code = '') {
     );
     console.log(
         'solution:',
-        result.map((r) => r.solution.steps)
+        result.map((r) => r.solution)
     );
 
-    let solution = '';
-    for (const r of result) {
-        const steps = r.solution.steps;
-        steps.pop();
-        if (steps.length < 2) continue;
-        solution += steps.join('\n') + '\n\n';
-    }
+    // a statement with a single step had nothing to work through
+    const groups = result
+        .map((r) => r.solution)
+        .filter((steps) => steps.length > 1);
 
-    const content = renderTokensAsHTML(tokenize(ctx, solution), {
-        colorScheme: 'auto'
-    });
+    const content = renderTokensAsHTML(
+        tokenize(ctx, groups.map((steps) => steps.join('\n')).join('\n\n')),
+        { colorScheme: 'auto' }
+    );
 
     solutionBox.innerHTML = content.html + `<style>${content.css}</style>`;
+
+    renderLaTeX(groups.flat());
+}
+
+// Typeset each step on its own. KaTeX is all-or-nothing per call, so one
+// construct it rejects would otherwise blank the whole solution instead of
+// showing which line is at fault.
+function renderLaTeX(steps: string[]) {
+    const source: string[] = [];
+    const typeset: string[] = [];
+
+    for (const step of steps) {
+        const latex = renderTokensAsLaTeX(tokenize(ctx, step), {
+            mode: 'align'
+        });
+
+        source.push(latex);
+        typeset.push(
+            katex.renderToString(latex, {
+                displayMode: true,
+                throwOnError: false
+            })
+        );
+    }
+
+    console.log('latex:', source);
+
+    latexSource.textContent = source.join('\n');
+    latexBox.innerHTML = typeset.join('');
 }
 
 // initial test program
@@ -106,6 +134,8 @@ function safeSolve(input: string) {
         errorBox.classList.add('active');
         errorBox.textContent = `${err}`;
         solutionBox.innerHTML = '';
+        latexBox.innerHTML = '';
+        latexSource.textContent = '';
     }
 }
 

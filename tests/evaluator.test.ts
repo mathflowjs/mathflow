@@ -35,6 +35,13 @@ describe('evaluator', () => {
         expect(() => evaluate(ctx, ast.body[0], solution)).not.toThrow();
         expect(evaluate(ctx, ast.body[0], solution)).toBe(6);
     });
+
+    test('unknown variables', () => {
+        const ast = parse(tokenize(ctx, 'nope + 1'));
+        expect(() => evaluate(ctx, ast.body[0], solution)).toThrow(
+            /unknown variable 'nope'/
+        );
+    });
 });
 
 describe('solution generator', () => {
@@ -45,7 +52,7 @@ describe('solution generator', () => {
         ctx.preferences.precision = 4;
         evaluate(ctx, ast.body[0], solution);
         expect(solution.steps).toStrictEqual([
-            '(3 * 3.142) - 1',
+            '3 * 3.142 - 1',
             '9.426 - 1',
             '8.426'
         ]);
