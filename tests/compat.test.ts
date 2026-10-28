@@ -1,4 +1,5 @@
 import { describe, test, expect } from 'vitest';
+import * as api from '../src';
 import {
     createContext,
     createSolutionStack,
@@ -16,6 +17,27 @@ import {
 // the public API as released from master; it must keep working unchanged
 describe('v2 api', () => {
     const ctx = createContext();
+
+    test('exports exactly the released runtime API', () => {
+        expect(Object.keys(api).sort()).toStrictEqual([
+            'NODE',
+            'TOKEN',
+            'createContext',
+            'createSolutionStack',
+            'evaluate',
+            'parse',
+            'renderTokensAsHTML',
+            'renderTokensAsLaTeX',
+            'safeEvaluate',
+            'safeParse',
+            'safeSolve',
+            'safeSolveBatch',
+            'safeTokenize',
+            'solve',
+            'solveBatch',
+            'tokenize'
+        ]);
+    });
 
     test('evaluate records steps into a solution stack', () => {
         const solution = createSolutionStack();

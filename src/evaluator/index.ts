@@ -2,12 +2,7 @@ import { type INode, NODE } from '../parser';
 import { type IContext } from '../context';
 import { createError, ERRORS } from '../error';
 import { SYMBOL } from '../lexer/tokens';
-import { createSolutionStack, type ISolution, stringify } from './solution';
-
-export type IResult = {
-    value: number;
-    solution: string[];
-};
+import { type ISolution, stringify } from './solution';
 
 function compute(op: SYMBOL, a: number, b: number): number {
     switch (op) {
@@ -204,20 +199,21 @@ function reduceOnce(ctx: IContext, node: INode): INode {
 }
 
 /**
- * Reduce a tree to a single value, reporting each intermediate tree
+ * Run through the entire AST evaluating the expressions on each subtree,
+ * recording each intermediate tree into `solution`
  */
-function run(
+export function evaluate(
     ctx: IContext,
     node: INode,
-    onStep?: (node: INode) => void
+    solution: ISolution
 ): number {
     let current = resolve(ctx, node);
 
-    onStep?.(current);
+    solution.steps.push(stringify(current));
 
     while (isReducible(current)) {
         current = reduceOnce(ctx, current);
-        onStep?.(current);
+        solution.steps.push(stringify(current));
     }
 
     const assignment = current.type === NODE.ASSIGNMENT;
@@ -233,30 +229,4 @@ function run(
     }
 
     return value;
-}
-
-/**
- * Run through the entire AST evaluating the expressions on each subtree,
- * recording the working out into `solution` when one is given
- */
-export function evaluate(
-    ctx: IContext,
-    node: INode,
-    solution?: ISolution
-): number {
-    return run(
-        ctx,
-        node,
-        solution && ((step) => solution.steps.push(stringify(step)))
-    );
-}
-
-/**
- * Evaluate an expression, recording the working out step by step
- */
-export function explain(ctx: IContext, node: INode): IResult {
-    const solution = createSolutionStack();
-    const value = evaluate(ctx, node, solution);
-
-    return { value, solution: solution.steps };
 }

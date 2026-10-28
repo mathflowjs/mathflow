@@ -3,7 +3,8 @@ import 'katex/dist/katex.min.css';
 
 import { tokenize } from '../src/lexer';
 import { parse } from '../src/parser';
-import { explain } from '../src/evaluator';
+import { evaluate } from '../src/evaluator';
+import { createSolutionStack } from '../src/evaluator/solution';
 import { renderTokensAsHTML } from '../src/render/html';
 import { renderTokensAsLaTeX } from '../src/render/latex';
 import { createContext } from '../src/context';
@@ -49,7 +50,11 @@ function solve(code = '') {
     const ast = parse(tokens);
     console.log('ast:', ast);
 
-    const result = ast.body.map((node) => explain(ctx, node));
+    const result = ast.body.map((node) => {
+        const solution = createSolutionStack();
+        const value = evaluate(ctx, node, solution);
+        return { value, solution: solution.steps };
+    });
     console.log(
         'result:',
         result.map((r) => r.value)
